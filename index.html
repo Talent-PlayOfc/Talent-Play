@@ -660,6 +660,57 @@
 
     // Inicia a verificação assim que a página carrega
     verificarSessao();
+    
+    <!-- ==========================================
+       MODAL DE ONBOARDING (BOAS-VINDAS)
+       ========================================== -->
+  <div id="onboarding-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[70] hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+    <div class="max-w-md w-full bg-slate-900 border border-indigo-500/30 rounded-2xl shadow-2xl overflow-hidden p-8 text-center relative">
+      
+      <div class="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="ph ph-rocket-launch text-3xl text-indigo-400"></i>
+      </div>
+      
+      <h3 class="text-2xl font-extrabold text-white mb-2">Bem-vindo(a) ao Jogo!</h3>
+      <p class="text-slate-400 mb-6 text-sm">Para configurar seu painel, precisamos de duas informações rápidas.</p>
+
+      <form id="onboarding-form" onsubmit="salvarPerfil(event)" class="space-y-5 text-left">
+        <!-- Nome -->
+        <div>
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Como devemos te chamar?</label>
+          <div class="relative">
+            <i class="ph ph-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
+            <input id="onboarding-nome" type="text" placeholder="Seu nome ou apelido" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors" required>
+          </div>
+        </div>
+
+        <!-- Tipo de Conta (Radio Buttons Estilizados) -->
+        <div>
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qual é o seu objetivo aqui?</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="cursor-pointer">
+              <input type="radio" name="tipo_conta" value="candidato" class="peer sr-only" required>
+              <div class="text-center p-3 border border-slate-700 rounded-lg peer-checked:bg-indigo-600/20 peer-checked:border-indigo-500 peer-checked:text-indigo-400 text-slate-400 hover:bg-slate-800 transition-all">
+                <i class="ph ph-sword text-2xl mb-1 block"></i>
+                <span class="text-xs font-bold">Sou Talento</span>
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="tipo_conta" value="empresa" class="peer sr-only">
+              <div class="text-center p-3 border border-slate-700 rounded-lg peer-checked:bg-emerald-600/20 peer-checked:border-emerald-500 peer-checked:text-emerald-400 text-slate-400 hover:bg-slate-800 transition-all">
+                <i class="ph ph-buildings text-2xl mb-1 block"></i>
+                <span class="text-xs font-bold">Sou Empresa</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <button id="onboarding-submit-btn" type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold text-sm transition-colors shadow-lg shadow-indigo-600/20 mt-4">
+          Salvar e Entrar
+        </button>
+      </form>
+    </div>
+  </div>
   </script>
 </body>
 </html>
