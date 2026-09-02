@@ -370,11 +370,11 @@
 
   <script>
    // ========================================================
-    // INTEGRAÇÃO COM SUPABASE
+    // INTEGRAÇÃO COM SUPABASE (COMPLETA E FINAL)
     // ========================================================
     const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
     
-    // COLE SUA CHAVE PUBLISHABLE COMPLETA AQUI ENTRE AS ASPAS:
+    // ⚠️ COLE SUA CHAVE PUBLISHABLE COMPLETA AQUI DE NOVO:
     const SUPABASE_KEY = 'sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45';
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -383,6 +383,7 @@
     const loginModal = document.getElementById('login-modal');
     let modoAutenticacao = 'login'; // 'login' ou 'signup'
 
+    // Função de fechar no X (Já ativada)
     function abrirLogin() {
       loginModal.classList.remove('hidden');
       setTimeout(() => loginModal.classList.remove('opacity-0'), 50);
@@ -397,6 +398,7 @@
       }, 300);
     }
 
+    // Alternar abas
     function alternarModoAuth(modo) {
       modoAutenticacao = modo;
       const tabLogin = document.getElementById('tab-login');
@@ -405,78 +407,134 @@
       const authTitle = document.getElementById('auth-title');
       const authDesc = document.getElementById('auth-desc');
       const forgotLink = document.getElementById('auth-forgot');
-      const feedback = document.getElementById('auth-feedback');
-      feedback.classList.add('hidden');
+      
+      document.getElementById('auth-feedback').classList.add('hidden');
 
       if (modo === 'signup') {
         tabSignup.className = 'flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors';
         tabLogin.className = 'flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors';
         submitBtn.innerText = 'Criar Minha Conta';
-        authTitle.innerText = 'Crie sua Conta';
-        authDesc.innerText = 'Cadastre-se para dar play em sua carreira!';
+        authTitle.innerText = 'Crie Sua Conta';
+        authDesc.innerText = 'Cadastre-se para acessar';
         forgotLink.classList.add('hidden');
       } else {
         tabLogin.className = 'flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors';
         tabSignup.className = 'flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors';
         submitBtn.innerText = 'Entrar no Sistema';
         authTitle.innerText = 'Acesse o TalentPlay';
-        authDesc.innerText = 'Faça login para gerenciar sua carreira';
+        authDesc.innerText = 'Faça login para começar';
         forgotLink.classList.remove('hidden');
       }
     }
 
+    // Função Auxiliar de Mensagens Visuais
+    function mostrarFeedback(mensagem, tipo) {
+      const feedback = document.getElementById('auth-feedback');
+      feedback.classList.remove('hidden', 'bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20', 'bg-red-500/10', 'text-red-400', 'border-red-500/20');
+      
+      if (tipo === 'sucesso') {
+        feedback.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20', 'block');
+      } else {
+        feedback.classList.add('bg-red-500/10', 'text-red-400', 'border', 'border-red-500/20', 'block');
+      }
+      feedback.innerText = mensagem;
+    }
+
+    // Processamento de Login e Cadastro
     async function executarAutenticacao(e) {
       e.preventDefault();
       const email = document.getElementById('auth-email').value;
       const password = document.getElementById('auth-password').value;
       const submitBtn = document.getElementById('auth-submit-btn');
-      const feedback = document.getElementById('auth-feedback');
 
       submitBtn.disabled = true;
       submitBtn.innerText = 'Processando...';
-      feedback.classList.add('hidden');
+      document.getElementById('auth-feedback').classList.add('hidden');
 
       try {
         if (modoAutenticacao === 'signup') {
-          // CADASTRO NO SUPABASE
           const { data, error } = await supabaseClient.auth.signUp({
             email: email,
             password: password,
           });
-
           if (error) throw error;
-
-          feedback.className = 'text-xs p-3 rounded-lg mb-4 font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 block';
-          feedback.innerText = 'Conta criada com sucesso! Verifique seu e-mail para confirmar ou faça login.';
+          
+          mostrarFeedback('Conta criada com sucesso! Você já pode entrar.', 'sucesso');
+          // Limpa a senha e muda pra tela de login automaticamente
+          document.getElementById('auth-password').value = '';
+          alternarModoAuth('login'); 
+          
         } else {
-          // LOGIN NO SUPABASE
           const { data, error } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password,
           });
-
           if (error) throw error;
-
-          feedback.className = 'text-xs p-3 rounded-lg mb-4 font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 block';
-          feedback.innerText = 'Login realizado com sucesso! Redirecionando...';
-
+          
+          mostrarFeedback('Login realizado com sucesso! Preparando sistema...', 'sucesso');
+          
           setTimeout(() => {
             fecharLogin();
-            // Atualiza os dados na tela com o email logado
-            if (data.user) {
-              const userEmailEl = document.querySelector('.player-card p.text-xs') || document.querySelector('aside p.text-xs');
-              if (userEmailEl) userEmailEl.innerText = data.user.email;
-            }
+            // Atualiza e-mail visualmente na lateral do site
+            const userEmailEl = document.querySelector('aside p.text-xs');
+            if (userEmailEl) userEmailEl.innerText = data.user.email;
           }, 1200);
         }
       } catch (err) {
-        feedback.className = 'text-xs p-3 rounded-lg mb-4 font-medium bg-red-500/10 text-red-400 border border-red-500/20 block';
-        feedback.innerText = err.message || 'Erro ao processar autenticação.';
+        let msg = err.message;
+        if (msg.includes('Invalid login credentials')) msg = 'E-mail ou senha incorretos.';
+        if (msg.includes('already registered')) msg = 'Este e-mail já está cadastrado.';
+        mostrarFeedback(msg, 'erro');
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = modoAutenticacao === 'signup' ? 'Criar Minha Conta' : 'Entrar no Sistema';
       }
     }
+
+    // NOVA FUNÇÃO: Dispara e-mail de recuperação
+    async function recuperarSenha(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('auth-email').value;
+
+      if (!emailInput) {
+        mostrarFeedback('Por favor, digite seu e-mail no campo acima antes de clicar em Esqueci.', 'erro');
+        return;
+      }
+
+      mostrarFeedback('Enviando e-mail de recuperação...', 'sucesso');
+
+      try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(emailInput, {
+          // Garante que o usuário volte exatamente para o seu site no GitHub Pages ou Localhost
+          redirectTo: window.location.origin + window.location.pathname, 
+        });
+        
+        if (error) throw error;
+        mostrarFeedback('Link enviado! Verifique sua caixa de entrada e a pasta spam.', 'sucesso');
+      } catch (err) {
+        mostrarFeedback('Erro ao enviar e-mail. Verifique se digitou corretamente.', 'erro');
+      }
+    }
+
+    // LISTENER DE REDEFINIÇÃO: Captura o usuário quando ele clica no link do e-mail
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        const novaSenha = prompt('🔐 Recuperação TalentPlay:\n\nDigite sua nova senha (mínimo 6 caracteres):');
+        
+        if (novaSenha && novaSenha.length >= 6) {
+          const { error } = await supabaseClient.auth.updateUser({ password: novaSenha });
+          if (error) {
+            alert('Erro ao atualizar senha. Tente enviar o link novamente.');
+          } else {
+            alert('✅ Senha atualizada com sucesso! Você já pode fazer login no TalentPlay.');
+            // Limpa a URL do navegador para remover o token gigante de segurança
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+        } else if (novaSenha) {
+          alert('❌ A senha deve ter pelo menos 6 caracteres. Atualize a página e clique no link do e-mail novamente.');
+        }
+      }
+    });
   </script>
 </body>
 </html>
