@@ -175,10 +175,33 @@
           <i class="ph ph-briefcase"></i> Área do Recrutador
         </a>
 
-        <!-- Botão de Login -->
-        <button onclick="abrirLogin()" class="hidden sm:flex items-center gap-2 px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg text-sm font-semibold transition-colors">
-          <i class="ph ph-sign-in"></i> Entrar
-        </button>
+        <!-- ==========================================
+             CONTROLE DE USUÁRIO (HEADER)
+             ========================================== -->
+        <div id="auth-container" class="flex items-center gap-4">
+          
+          <!-- Botão Padrão (Aparece quando deslogado) -->
+          <button id="btn-entrar-header" onclick="abrirLogin()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-bold text-sm transition-colors shadow-lg shadow-indigo-600/20">
+            Entrar
+          </button>
+
+          <!-- Menu do Jogador (Aparece quando logado) -->
+          <div id="user-menu-header" class="hidden items-center gap-3">
+             <div class="text-right hidden sm:block">
+               <p id="user-email-display" class="text-sm font-bold text-white">carregando...</p>
+               <p class="text-xs text-indigo-400 font-medium">Nível 1 • Novato</p>
+             </div>
+             <!-- Avatar -->
+             <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-600 flex items-center justify-center text-slate-300">
+               <i class="ph ph-user text-lg"></i>
+             </div>
+             <!-- Botão Sair -->
+             <button onclick="fazerLogout()" class="text-slate-500 hover:text-red-400 transition-colors ml-1 p-2 bg-slate-900 hover:bg-slate-800 rounded-lg border border-transparent hover:border-red-500/30" title="Desconectar">
+               <i class="ph ph-sign-out text-xl"></i>
+             </button>
+          </div>
+
+        </div>
 
         <!-- Linha Divisória -->
         <div class="hidden sm:block w-px h-6 bg-slate-700 mx-1"></div>
@@ -586,6 +609,52 @@
         alternarModoAuth('recovery');
       }
     });
+    // ========================================================
+    // GESTÃO DE SESSÃO (MANTER LOGADO) E LOGOUT
+    // ========================================================
+
+    // 1. Atualiza o visual do Header baseado no status do usuário
+    function atualizarInterfaceAuth(session) {
+      const btnEntrar = document.getElementById('btn-entrar-header');
+      const userMenu = document.getElementById('user-menu-header');
+      const emailDisplay = document.getElementById('user-email-display');
+
+      if (session && session.user) {
+        // MODO LOGADO: Esconde o "Entrar", mostra o "Perfil"
+        if (btnEntrar) btnEntrar.classList.add('hidden');
+        if (userMenu) {
+          userMenu.classList.remove('hidden');
+          userMenu.classList.add('flex');
+        }
+        if (emailDisplay) emailDisplay.innerText = session.user.email;
+      } else {
+        // MODO DESLOGADO: Mostra o "Entrar", esconde o "Perfil"
+        if (btnEntrar) btnEntrar.classList.remove('hidden');
+        if (userMenu) {
+          userMenu.classList.add('hidden');
+          userMenu.classList.remove('flex');
+        }
+      }
+    }
+
+    // 2. Verifica silenciosamente se o usuário já está logado ao abrir o site
+    async function verificarSessao() {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      atualizarInterfaceAuth(session);
+    }
+
+    // 3. Função do botão de Sair (Logout)
+    window.fazerLogout = async function() {
+      const { error } = await supabaseClient.auth.signOut();
+      if (!error) {
+        atualizarInterfaceAuth(null);
+        // Opcional: Recarregar a página para limpar qualquer dado sensível da tela
+        window.location.reload(); 
+      }
+    }
+
+    // Inicia a verificação assim que a página carrega
+    verificarSessao();
   </script>
 </body>
 </html>
