@@ -603,6 +603,11 @@
 
     // LISTENER INTELIGENTE: Detecta quando a pessoa volta do e-mail
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      // Atualiza o topo do site automaticamente no Login e Logout
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        atualizarInterfaceAuth(session);
+      }
+
       if (event === 'PASSWORD_RECOVERY') {
         // Abre o modal automaticamente e coloca no modo de recuperação
         abrirLogin();
