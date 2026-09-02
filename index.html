@@ -22,6 +22,8 @@
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
   </style>
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-950 text-slate-200 h-screen flex overflow-hidden selection:bg-indigo-500 selection:text-white">
 
@@ -321,122 +323,65 @@
       <div class="p-8 relative z-10">
         
         <!-- Cabeçalho -->
-        <div class="text-center mb-8">
+        <div class="text-center mb-6">
           <div class="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white text-2xl mx-auto mb-3 shadow-lg shadow-indigo-500/30">T</div>
-          <h3 class="text-2xl font-extrabold text-white">Acesse a Taverna</h3>
-          <p class="text-sm text-slate-400 mt-1">Faça login ou crie sua conta para jogar</p>
+          <h3 id="auth-title" class="text-2xl font-extrabold text-white">Acesse o TalentPlay</h3>
+          <p id="auth-desc" class="text-sm text-slate-400 mt-1">Faça login para gerenciar sua carreira</p>
         </div>
 
         <!-- Abas Login / Cadastro -->
         <div class="flex p-1 bg-slate-950 rounded-lg mb-6">
-          <button class="flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors">Entrar</button>
-          <button class="flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors">Cadastrar</button>
+          <button id="tab-login" onclick="alternarModoAuth('login')" class="flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors">Entrar</button>
+          <button id="tab-signup" onclick="alternarModoAuth('signup')" class="flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors">Cadastrar</button>
         </div>
 
-        <!-- Formulário (Por enquanto visual) -->
-        <form onsubmit="event.preventDefault(); alert('Em breve conectaremos ao Banco de Dados!');" class="space-y-4">
+        <!-- Mensagem de Feedback -->
+        <div id="auth-feedback" class="hidden text-xs p-3 rounded-lg mb-4 font-medium"></div>
+
+        <!-- Formulário Funcional -->
+        <form id="auth-form" onsubmit="executarAutenticacao(event)" class="space-y-4">
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">E-mail</label>
             <div class="relative">
               <i class="ph ph-envelope absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
-              <input type="email" placeholder="seu@email.com" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors" required>
+              <input id="auth-email" type="email" placeholder="seu@email.com" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors" required>
             </div>
           </div>
           
           <div>
             <div class="flex justify-between items-center mb-1.5">
               <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Senha</label>
-              <a href="#" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium">Esqueceu?</a>
+              <a href="#" id="auth-forgot" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium">Esqueceu?</a>
             </div>
             <div class="relative">
               <i class="ph ph-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
-              <input type="password" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors" required>
+              <input id="auth-password" type="password" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors" required minlength="6">
             </div>
           </div>
 
-          <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold text-sm transition-colors shadow-lg shadow-indigo-600/20 mt-2">
+          <button id="auth-submit-btn" type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold text-sm transition-colors shadow-lg shadow-indigo-600/20 mt-2">
             Entrar no Sistema
           </button>
         </form>
-
-        <!-- Divisor -->
-        <div class="flex items-center gap-3 my-6">
-          <div class="flex-1 h-px bg-slate-800"></div>
-          <span class="text-xs text-slate-500 font-medium">OU</span>
-          <div class="flex-1 h-px bg-slate-800"></div>
-        </div>
-
-        <!-- Botões Sociais -->
-        <div class="grid grid-cols-2 gap-3">
-          <button class="flex items-center justify-center gap-2 py-2.5 bg-slate-950 border border-slate-700 hover:border-slate-500 rounded-lg text-sm font-medium text-slate-300 transition-colors">
-            <i class="ph ph-google-logo text-lg"></i> Google
-          </button>
-          <button class="flex items-center justify-center gap-2 py-2.5 bg-slate-950 border border-slate-700 hover:border-slate-500 rounded-lg text-sm font-medium text-slate-300 transition-colors">
-            <i class="ph ph-github-logo text-lg"></i> GitHub
-          </button>
-        </div>
 
       </div>
     </div>
   </div>
 
   <script>
-    const modal = document.getElementById('rpg-modal');
-    const textContainer = document.getElementById('rpg-text');
-    const choicesContainer = document.getElementById('rpg-choices');
+   // ========================================================
+    // INTEGRAÇÃO COM SUPABASE
+    // ========================================================
+    const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
     
-    let pontuacao = 0;
-    const cena1Texto = "Você acaba de ser contratado. São 08h00. Imediatamente, um fornecedor liga irritado, seu gerente para na sua mesa pedindo um relatório urgente para uma reunião agora, e os chamados de suporte começam a apitar. O que você faz primeiro?";
+    // COLE SUA CHAVE PUBLISHABLE COMPLETA AQUI ENTRE AS ASPAS:
+    const SUPABASE_KEY = 'sb_publishable_COLE_O_RESTANTE_AQUI';
 
-    function iniciarRPG() {
-      modal.classList.remove('hidden');
-      setTimeout(() => modal.classList.remove('opacity-0'), 50);
-      textContainer.innerHTML = '';
-      choicesContainer.classList.add('hidden');
-      digitarTexto(cena1Texto, 0);
-    }
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    function digitarTexto(texto, index) {
-      if (index < texto.length) {
-        textContainer.innerHTML += texto.charAt(index);
-        setTimeout(() => digitarTexto(texto, index + 1), 30);
-      } else {
-        choicesContainer.classList.remove('hidden');
-      }
-    }
-
-    function escolherOpcao(opcao) {
-      choicesContainer.classList.add('hidden');
-      let feedback = "";
-      
-      if(opcao === 'A') {
-        pontuacao += 10;
-        feedback = "Você garantiu a reunião, mas o fornecedor desligou na sua cara e o suporte virou uma bola de neve. Cuidado com a visão de túnel!";
-      } else if (opcao === 'B') {
-        pontuacao += 5;
-        feedback = "Você tentou abraçar o mundo, mas enviou o relatório errado para a impressora e não resolveu o problema do fornecedor.";
-      } else if (opcao === 'C') {
-        pontuacao += 20;
-        feedback = "Excelente inteligência emocional! Você comunicou os próximos passos para o gerente, reteve o fornecedor na linha e agiu com clareza sob pressão.";
-      }
-
-      textContainer.innerHTML = `<span class="text-emerald-400 font-bold">[Análise do Sistema]</span><br><br>${feedback}<br><br>Sua nota até aqui: ${pontuacao} XP.`;
-      
-      setTimeout(() => {
-        choicesContainer.innerHTML = `<button onclick="fecharRPG()" class="w-full text-center p-4 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-white font-bold transition-all shadow-lg">Encerrar Protótipo (Por Enquanto)</button>`;
-        choicesContainer.classList.remove('hidden');
-      }, 1000);
-    }
-
-    function fecharRPG() {
-      modal.classList.add('opacity-0');
-      setTimeout(() => {
-        modal.classList.add('hidden');
-        pontuacao = 0; 
-      }, 300);
-    }
-    // Funções do Modal de Login
+    // Controle do Modal de Autenticação
     const loginModal = document.getElementById('login-modal');
+    let modoAutenticacao = 'login'; // 'login' ou 'signup'
 
     function abrirLogin() {
       loginModal.classList.remove('hidden');
@@ -450,6 +395,87 @@
         loginModal.classList.add('hidden');
         loginModal.classList.remove('flex');
       }, 300);
+    }
+
+    function alternarModoAuth(modo) {
+      modoAutenticacao = modo;
+      const tabLogin = document.getElementById('tab-login');
+      const tabSignup = document.getElementById('tab-signup');
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const authTitle = document.getElementById('auth-title');
+      const authDesc = document.getElementById('auth-desc');
+      const forgotLink = document.getElementById('auth-forgot');
+      const feedback = document.getElementById('auth-feedback');
+      feedback.classList.add('hidden');
+
+      if (modo === 'signup') {
+        tabSignup.className = 'flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors';
+        tabLogin.className = 'flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors';
+        submitBtn.innerText = 'Criar Minha Conta';
+        authTitle.innerText = 'Crie seu Personagem';
+        authDesc.innerText = 'Cadastre-se para iniciar suas missões';
+        forgotLink.classList.add('hidden');
+      } else {
+        tabLogin.className = 'flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors';
+        tabSignup.className = 'flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors';
+        submitBtn.innerText = 'Entrar no Sistema';
+        authTitle.innerText = 'Acesse o TalentPlay';
+        authDesc.innerText = 'Faça login para gerenciar sua carreira';
+        forgotLink.classList.remove('hidden');
+      }
+    }
+
+    async function executarAutenticacao(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const feedback = document.getElementById('auth-feedback');
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Processando...';
+      feedback.classList.add('hidden');
+
+      try {
+        if (modoAutenticacao === 'signup') {
+          // CADASTRO NO SUPABASE
+          const { data, error } = await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+          });
+
+          if (error) throw error;
+
+          feedback.className = 'text-xs p-3 rounded-lg mb-4 font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 block';
+          feedback.innerText = 'Conta criada com sucesso! Verifique seu e-mail para confirmar ou faça login.';
+        } else {
+          // LOGIN NO SUPABASE
+          const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password,
+          });
+
+          if (error) throw error;
+
+          feedback.className = 'text-xs p-3 rounded-lg mb-4 font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 block';
+          feedback.innerText = 'Login realizado com sucesso! Redirecionando...';
+
+          setTimeout(() => {
+            fecharLogin();
+            // Atualiza os dados na tela com o email logado
+            if (data.user) {
+              const userEmailEl = document.querySelector('.player-card p.text-xs') || document.querySelector('aside p.text-xs');
+              if (userEmailEl) userEmailEl.innerText = data.user.email;
+            }
+          }, 1200);
+        }
+      } catch (err) {
+        feedback.className = 'text-xs p-3 rounded-lg mb-4 font-medium bg-red-500/10 text-red-400 border border-red-500/20 block';
+        feedback.innerText = err.message || 'Erro ao processar autenticação.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = modoAutenticacao === 'signup' ? 'Criar Minha Conta' : 'Entrar no Sistema';
+      }
     }
   </script>
 </body>
