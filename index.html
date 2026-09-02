@@ -335,10 +335,10 @@
           <button id="tab-signup" onclick="alternarModoAuth('signup')" class="flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors">Cadastrar</button>
         </div>
 
-        <!-- Mensagem de Feedback -->
+        <!-- Mensagem de Feedback (Erros e Sucesso) -->
         <div id="auth-feedback" class="hidden text-xs p-3 rounded-lg mb-4 font-medium"></div>
 
-        <!-- Formulário Funcional -->
+        <!-- Formulário Funcional (Conectado ao JS) -->
         <form id="auth-form" onsubmit="executarAutenticacao(event)" class="space-y-4">
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">E-mail</label>
@@ -351,7 +351,7 @@
           <div>
             <div class="flex justify-between items-center mb-1.5">
               <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Senha</label>
-              <a href="#" id="auth-forgot" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium">Esqueceu?</a>
+              <a href="#" id="auth-forgot" onclick="recuperarSenha(event)" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium transition-colors">Esqueceu?</a>
             </div>
             <div class="relative">
               <i class="ph ph-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
