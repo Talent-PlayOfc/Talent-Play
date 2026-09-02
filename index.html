@@ -642,24 +642,91 @@
       }
     }
 
-    // 2. Verifica silenciosamente se o usuário já está logado ao abrir o site
+    // 2. Verifica se está logado e busca o Perfil no Banco
     async function verificarSessao() {
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       atualizarInterfaceAuth(session);
-    }
-
-    // 3. Função do botão de Sair (Logout)
-    window.fazerLogout = async function() {
-      const { error } = await supabaseClient.auth.signOut();
-      if (!error) {
-        atualizarInterfaceAuth(null);
-        // Opcional: Recarregar a página para limpar qualquer dado sensível da tela
-        window.location.reload(); 
+      
+      // Se a pessoa estiver logada, vamos checar se ela já tem ficha criada
+      if (session && session.user) {
+        verificarPerfil(session.user);
       }
     }
 
-    // Inicia a verificação assim que a página carrega
-    verificarSessao();
+    // 4. Lógica do Perfil de Personagem (RPG)
+    let usuarioLogado = null;
+
+    async function verificarPerfil(user) {
+      usuarioLogado = user;
+      
+      // Procura na tabela 'perfis' alguém com esse ID
+      const { data, error } = await supabaseClient
+        .from('perfis')
+        .select('*')
+        .eq('id', user.id)
+        .single(); // Garante que pega apenas 1 resultado
+
+      if (!data) {
+        // Se NÃO ACHOU perfil, abre a tela de Onboarding
+        const modalOnboarding = document.getElementById('onboarding-modal');
+        modalOnboarding.classList.remove('hidden');
+        setTimeout(() => modalOnboarding.classList.remove('opacity-0'), 50);
+        modalOnboarding.classList.add('flex');
+      } else {
+        // SE ACHOU o perfil, atualiza o Cabeçalho com as informações reais
+        const emailDisplay = document.getElementById('user-email-display');
+        const infosDisplay = emailDisplay.nextElementSibling; // O texto abaixo do nome
+        
+        emailDisplay.innerText = data.nome;
+        
+        if (data.tipo_conta === 'candidato') {
+          infosDisplay.innerText = `Nível ${data.nivel} • ${data.xp} XP`;
+          infosDisplay.className = "text-xs text-indigo-400 font-medium";
+        } else {
+          infosDisplay.innerText = `Recrutador (Empresa)`;
+          infosDisplay.className = "text-xs text-emerald-400 font-medium";
+        }
+      }
+    }
+
+    // 5. Salva o perfil novo no banco de dados
+    window.salvarPerfil = async function(e) {
+      e.preventDefault();
+      const nome = document.getElementById('onboarding-nome').value;
+      const tipoConta = document.querySelector('input[name="tipo_conta"]:checked').value;
+      const btn = document.getElementById('onboarding-submit-btn');
+
+      btn.disabled = true;
+      btn.innerText = 'Salvando dados...';
+
+      // Salva na tabela que acabamos de criar
+      const { error } = await supabaseClient
+        .from('perfis')
+        .insert([
+          { 
+            id: usuarioLogado.id, 
+            nome: nome, 
+            tipo_conta: tipoConta 
+            // xp e nivel o banco já coloca 0 e 1 automático!
+          }
+        ]);
+
+      if (error) {
+        alert("Erro ao salvar perfil: " + error.message);
+        btn.disabled = false;
+        btn.innerText = 'Salvar e Entrar';
+      } else {
+        // Sucesso! Fecha o modal e atualiza a tela
+        const modalOnboarding = document.getElementById('onboarding-modal');
+        modalOnboarding.classList.add('opacity-0');
+        setTimeout(() => {
+          modalOnboarding.classList.add('hidden');
+          modalOnboarding.classList.remove('flex');
+          // Recarrega o perfil para atualizar o cabeçalho
+          verificarPerfil(usuarioLogado);
+        }, 300);
+      }
+    }
     
     <!-- ==========================================
        MODAL DE ONBOARDING (BOAS-VINDAS)
