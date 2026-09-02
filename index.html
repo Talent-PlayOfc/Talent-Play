@@ -3,46 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TalentPlay | A Revolução do Recrutamento</title>
+  <title>TalentPlay | Sua Carreira em Outro Nível</title>
+  
+  <!-- Tailwind & Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; }
+    
+    /* Scrollbar Gamer Minimalista */
     .menu-scroll::-webkit-scrollbar { width: 4px; }
     .menu-scroll::-webkit-scrollbar-track { background: transparent; }
-    .menu-scroll::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; }
+    .menu-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    .menu-scroll:hover::-webkit-scrollbar-thumb { background: #334155; }
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #020617; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    
+    /* Efeitos Visuais UI */
     .glass-panel { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(51, 65, 85, 0.4); }
-    .fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
-    .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    /* Notificações (Toasts) */
+    .rpg-border { border: 1px solid rgba(99, 102, 241, 0.3); box-shadow: 0 0 15px rgba(79, 70, 229, 0.1) inset; }
+    
+    /* Animações SPA */
+    .app-screen { display: none; }
+    .app-screen.active { display: block; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Sistema de Toasts (Notificações) */
     #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-    .toast { padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 700; color: white; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s forwards, fadeOut 0.3s 2.7s forwards; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .toast.success { background: #059669; border: 1px solid #10b981; }
-    .toast.info { background: #4f46e5; border: 1px solid #6366f1; }
+    .toast { padding: 14px 24px; border-radius: 12px; font-size: 14px; font-weight: 700; color: white; display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s forwards, fadeOut 0.3s 3.7s forwards; box-shadow: 0 10px 25px rgba(0,0,0,0.5); backdrop-filter: blur(8px); }
+    .toast.success { background: rgba(5, 150, 105, 0.9); border: 1px solid #10b981; }
+    .toast.error { background: rgba(220, 38, 38, 0.9); border: 1px solid #ef4444; }
+    .toast.info { background: rgba(79, 70, 229, 0.9); border: 1px solid #6366f1; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes fadeOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="text-slate-200 h-screen flex overflow-hidden selection:bg-indigo-500 selection:text-white">
 
-  <!-- ==========================================
-       TOAST NOTIFICATIONS
-       ========================================== -->
   <div id="toast-container"></div>
 
   <!-- ==========================================
-       SIDEBAR UNIVERSAL
+       BARRA LATERAL SUPER COMPLETA (SIDEBAR)
        ========================================== -->
-  <aside class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col hidden md:flex z-20 shadow-2xl relative">
-    <div class="absolute top-0 right-0 w-full h-40 bg-gradient-to-b from-indigo-900/10 to-transparent pointer-events-none"></div>
+  <aside class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col hidden md:flex z-30 shadow-[4px_0_24px_rgba(0,0,0,0.5)] relative">
+    <div class="absolute top-0 right-0 w-full h-48 bg-gradient-to-b from-indigo-900/10 to-transparent pointer-events-none"></div>
     
+    <!-- Player Widget -->
     <div class="p-6 border-b border-slate-800 relative z-10">
       <div class="flex items-center gap-4">
         <div class="relative group cursor-pointer" onclick="abrirModal('modal-editar-perfil')">
@@ -50,7 +62,7 @@
              <i id="sidebar-avatar-icon" class="ph ph-user text-2xl text-slate-400 group-hover:text-indigo-400"></i>
           </div>
           <div class="absolute inset-0 bg-slate-900/60 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><i class="ph ph-pencil-simple text-white font-bold"></i></div>
-          <div id="sidebar-level-badge" class="absolute -bottom-2 -right-2 bg-indigo-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-lg border-2 border-slate-900 hidden">Lvl.1</div>
+          <div id="sidebar-level-badge" class="absolute -bottom-2 -right-2 bg-indigo-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-lg border-2 border-slate-950 hidden">Lvl.1</div>
         </div>
         <div class="flex-1 overflow-hidden">
           <h2 id="sidebar-name" class="text-white font-bold text-base truncate">Visitante</h2>
@@ -58,325 +70,796 @@
         </div>
       </div>
       
+      <!-- Barra de XP -->
       <div id="sidebar-xp-container" class="mt-5 hidden">
         <div class="flex justify-between items-end mb-1.5">
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Progresso</span>
-          <span id="sidebar-xp-text" class="text-xs font-bold text-indigo-400">0 XP</span>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1"><i class="ph ph-star text-yellow-500"></i> XP Total</span>
+          <span id="sidebar-xp-text" class="text-xs font-bold text-indigo-400">0</span>
         </div>
-        <div class="w-full bg-slate-950 rounded-full h-2 border border-slate-800 overflow-hidden">
-          <div id="sidebar-xp-bar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full relative w-0 transition-all duration-1000"></div>
+        <div class="w-full bg-slate-950 rounded-full h-2 border border-slate-800 overflow-hidden relative">
+          <div id="sidebar-xp-bar" class="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 h-full relative w-0 transition-all duration-1000">
+            <div class="absolute right-0 top-0 bottom-0 w-4 bg-white/20 blur-[2px]"></div>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Navegação (Restaurada e Expandida) -->
     <div class="flex-1 overflow-y-auto menu-scroll py-6 px-4">
-      <!-- MENU DO CANDIDATO -->
+      
+      <!-- MENU DO TALENTO (CANDIDATO) -->
       <div id="menu-candidato" class="space-y-6">
+        
+        <!-- Categoria 1: Central -->
         <div>
-          <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Sua Jornada</p>
+          <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Página Inicial</p>
           <div class="space-y-1">
-            <button onclick="navegarPara('tela-home-candidato')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 bg-indigo-500/10 text-indigo-400 rounded-xl font-bold border border-indigo-500/20 text-sm transition-all" data-target="tela-home-candidato">
-              <i class="ph ph-house text-xl"></i> Painel de Missões
+            <button onclick="navegarPara('tela-home-candidato')" class="nav-btn active w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-home-candidato">
+              <i class="ph ph-house text-xl"></i> Painel de Controle
             </button>
-            <button onclick="navegarPara('tela-vagas')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-all text-sm" data-target="tela-vagas">
-              <i class="ph ph-magnifying-glass text-xl"></i> Explorar Oportunidades
+            <button onclick="navegarPara('tela-candidaturas')" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-candidaturas">
+              <div class="flex items-center gap-3"><i class="ph ph-paper-plane-tilt text-xl"></i> Candidaturas</div>
+              <span class="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-md">2</span>
             </button>
-            <button onclick="navegarPara('tela-ficha-personagem')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-all text-sm" data-target="tela-ficha-personagem">
-              <i class="ph ph-sword text-xl"></i> Ficha de Personagem (CV)
+            <button onclick="navegarPara('tela-vagas')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-vagas">
+              <i class="ph ph-briefcase text-xl"></i> Buscar Missões
             </button>
           </div>
         </div>
+
+        <!-- Categoria 2: Evolução RPG -->
+        <div>
+          <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Sua Jornada</p>
+          <div class="space-y-1">
+            <button onclick="navegarPara('tela-ficha-personagem')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-ficha-personagem">
+              <i class="ph ph-user-circle-gear text-xl"></i> Personagem (CV)
+            </button>
+            <button onclick="mostrarToast('Em breve: Testes práticos para validar habilidades.', 'info')" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
+              <div class="flex items-center gap-3"><i class="ph ph-sword text-xl"></i> Provas e Testes</div>
+            </button>
+            <button onclick="mostrarToast('Ranking da temporada atualizando...', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
+              <i class="ph ph-trophy text-xl text-yellow-500/70"></i> Conquistas e Ranking
+            </button>
+          </div>
+        </div>
+
+        <!-- Categoria 3: Networking -->
+        <div>
+          <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Conexões</p>
+          <div class="space-y-1">
+            <button onclick="mostrarToast('Diretório de Guildas corporativas em manutenção.', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
+              <i class="ph ph-buildings text-xl"></i> Empresas Parceiras
+            </button>
+            <button onclick="mostrarToast('Área de mentoria liberada no Nível 5.', 'error')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50 opacity-60">
+              <i class="ph ph-users-three text-xl"></i> Mentorias <i class="ph ph-lock text-xs ml-auto"></i>
+            </button>
+          </div>
+        </div>
+
       </div>
 
-      <!-- MENU DA EMPRESA -->
+      <!-- MENU DO RECRUTADOR (EMPRESA) -->
       <div id="menu-empresa" class="space-y-6 hidden">
         <div>
-          <p class="px-2 text-[10px] font-extrabold text-emerald-600/70 uppercase tracking-widest mb-3">Recrutamento Integrado</p>
+          <p class="px-2 text-[10px] font-extrabold text-emerald-600/70 uppercase tracking-widest mb-3">Gestão de Guilda (RH)</p>
           <div class="space-y-1">
-            <button onclick="navegarPara('tela-home-empresa')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 bg-emerald-500/10 text-emerald-400 rounded-xl font-bold border border-emerald-500/20 text-sm transition-all" data-target="tela-home-empresa">
+            <button onclick="navegarPara('tela-home-empresa')" class="nav-btn active w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-home-empresa">
               <i class="ph ph-radar text-xl"></i> Radar de Talentos
             </button>
-            <button class="nav-btn w-full flex items-center justify-between px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-all text-sm">
-              <div class="flex items-center gap-3"><i class="ph ph-scroll text-xl"></i> Minhas Vagas</div>
-              <span class="bg-slate-800 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded-md" id="contador-vagas-sidebar">1</span>
+            <button onclick="navegarPara('tela-gerenciar-vagas')" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-gerenciar-vagas">
+              <div class="flex items-center gap-3"><i class="ph ph-scroll text-xl"></i> Missões Abertas</div>
+              <span class="bg-slate-800 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-md" id="contador-vagas-sidebar">3</span>
             </button>
-            <button onclick="mostrarToast('Relatórios detalhados estarão disponíveis em breve!', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-all text-sm">
+            <button onclick="mostrarToast('Gerador de relatórios analíticos em breve.', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
               <i class="ph ph-chart-bar text-xl"></i> Relatórios de XP
             </button>
           </div>
         </div>
       </div>
+
     </div>
 
-    <!-- Rodapé Sidebar -->
-    <div class="px-4 py-4 border-t border-slate-800 bg-slate-900 flex items-center justify-between">
-      <button onclick="abrirModal('modal-configuracoes')" class="text-slate-500 hover:text-indigo-400 transition-colors" title="Configurações"><i class="ph ph-gear-six text-2xl"></i></button>
-      <button class="text-slate-500 hover:text-blue-400 transition-colors" title="Idioma"><i class="ph ph-globe-hemisphere-west text-2xl"></i></button>
-      <button class="text-slate-500 hover:text-emerald-400 transition-colors" title="Central de Ajuda"><i class="ph ph-lifebuoy text-2xl"></i></button>
+    <!-- Rodapé Sidebar Fixa -->
+    <div class="px-4 py-4 border-t border-slate-800 bg-slate-900 flex items-center justify-between z-20">
+      <button onclick="abrirModal('modal-configuracoes')" class="text-slate-500 hover:text-indigo-400 transition-colors p-2 rounded-lg hover:bg-slate-800" title="Configurações"><i class="ph ph-gear-six text-2xl"></i></button>
+      <button class="text-slate-500 hover:text-blue-400 transition-colors p-2 rounded-lg hover:bg-slate-800" title="Idioma"><i class="ph ph-globe-hemisphere-west text-2xl"></i></button>
+      <button class="text-slate-500 hover:text-yellow-400 transition-colors p-2 rounded-lg hover:bg-slate-800" title="Ajuda"><i class="ph ph-lifebuoy text-2xl"></i></button>
     </div>
   </aside>
   
   <!-- ==========================================
-       ÁREA PRINCIPAL
+       ÁREA PRINCIPAL (HEADER + CONTAINER SPA)
        ========================================== -->
   <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-950">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-600/5 blur-[120px] rounded-full pointer-events-none"></div>
+    
+    <!-- Luz de Fundo Decorativa -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-indigo-600/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
 
-    <!-- HEADER -->
-    <header class="h-20 border-b border-slate-800/60 glass-panel flex items-center justify-between px-6 z-10 sticky top-0">
-      <div class="flex items-center gap-3">
-        <!-- Menu Mobile Button -->
-        <button class="md:hidden text-white text-2xl mr-2"><i class="ph ph-list"></i></button>
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-black text-white text-xl shadow-lg shadow-indigo-500/30">T</div>
-        <span class="font-extrabold text-xl text-white tracking-tight hidden sm:block">TalentPlay</span>
+    <!-- HEADER SUPERIOR -->
+    <header class="h-20 border-b border-slate-800/60 glass-panel flex items-center justify-between px-6 z-20 sticky top-0">
+      <div class="flex items-center gap-4">
+        <button class="md:hidden text-white text-2xl hover:text-indigo-400 transition-colors"><i class="ph ph-list"></i></button>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-black text-white text-xl shadow-[0_0_15px_rgba(99,102,241,0.4)] border border-indigo-400/50">T</div>
+        <div class="hidden sm:block">
+          <span class="font-extrabold text-xl text-white tracking-tight leading-none block">TalentPlay</span>
+          <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest leading-none block mt-0.5">Build 1.4 Beta</span>
+        </div>
       </div>
       
-      <div id="auth-container" class="flex items-center gap-4">
-        <button id="btn-entrar-header" onclick="abrirModal('login-modal')" class="bg-white hover:bg-slate-200 text-slate-900 px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg hover:scale-105">
-          Acessar o Jogo
-        </button>
-        <div id="user-menu-header" class="hidden items-center gap-3">
-           <button class="relative text-slate-400 hover:text-white transition-colors p-2" onclick="mostrarToast('Nenhuma notificação nova.', 'info')">
-             <i class="ph ph-bell text-2xl"></i>
-             <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900"></span>
-           </button>
-           <div class="w-px h-6 bg-slate-700 mx-1"></div>
-           <button onclick="fazerLogout()" class="text-slate-400 hover:text-red-400 transition-colors flex items-center gap-2 text-sm font-bold bg-slate-900 hover:bg-red-500/10 px-3 py-2 rounded-lg border border-slate-800 hover:border-red-500/30">
-             Sair <i class="ph ph-sign-out text-lg"></i>
-           </button>
+      <!-- Ferramentas Header Direito -->
+      <div class="flex items-center gap-5">
+        <!-- Search Bar Header (Desktop) -->
+        <div class="hidden lg:flex items-center relative">
+          <i class="ph ph-magnifying-glass absolute left-3 text-slate-500 text-lg"></i>
+          <input type="text" placeholder="Buscar missões ou guildas..." class="bg-slate-900 border border-slate-700 text-white text-sm rounded-full pl-10 pr-4 py-2 focus:border-indigo-500 outline-none w-64 transition-all focus:w-80">
+        </div>
+
+        <!-- Auth & Perfil -->
+        <div id="auth-container" class="flex items-center gap-4 border-l border-slate-800 pl-5">
+          <button id="btn-entrar-header" onclick="abrirModal('login-modal')" class="bg-white hover:bg-slate-200 text-slate-900 px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:scale-105 flex items-center gap-2">
+            <i class="ph ph-sign-in"></i> Acessar o Jogo
+          </button>
+          
+          <div id="user-menu-header" class="hidden items-center gap-2">
+             <button class="relative text-slate-400 hover:text-white transition-colors p-2 bg-slate-900 rounded-xl border border-slate-800 hover:border-slate-700" onclick="mostrarToast('Notificação: Candeias-BA tem novas missões no radar.', 'info')">
+               <i class="ph ph-bell text-xl"></i>
+               <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900"></span>
+             </button>
+             <button onclick="fazerLogout()" class="text-slate-400 hover:text-red-400 transition-colors p-2 bg-slate-900 rounded-xl border border-slate-800 hover:border-red-500/30" title="Desconectar da Sessão">
+               <i class="ph ph-power text-xl"></i>
+             </button>
+          </div>
         </div>
       </div>
     </header>
 
-    <!-- CONTENT (SPA Container) -->
-    <div class="flex-1 overflow-y-auto p-4 sm:p-8 relative z-0 menu-scroll">
-      <div class="max-w-6xl mx-auto pb-20">
-        
-        <!-- TELA 1: HOME CANDIDATO -->
-        <section id="tela-home-candidato" class="app-screen slide-up">
-          <div class="bg-gradient-to-br from-indigo-900/40 via-slate-900 to-slate-900 border border-indigo-500/30 rounded-3xl p-8 sm:p-12 relative overflow-hidden shadow-2xl mb-8">
-            <div class="absolute right-0 top-0 w-96 h-96 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
-            <span class="inline-block py-1 px-3 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-bold uppercase tracking-widest mb-4">Temporada Atual</span>
-            <h1 class="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight">Sua Carreira não é um PDF.<br>É uma <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Jornada Épica.</span></h1>
-            <p class="text-slate-400 max-w-2xl text-lg mb-8 font-medium">Complete desafios práticos elaborados pelas empresas. Ganhe XP, suba de nível e seja contratado pelas suas habilidades.</p>
+    <!-- CONTAINER DAS TELAS (Deixe aberto para o Bloco 2) -->
+    <div id="app-content-area" class="flex-1 overflow-y-auto p-4 sm:p-8 relative z-10 menu-scroll">
+      <div class="max-w-7xl mx-auto pb-24" id="spa-screens-container">
+        <!-- O conteúdo dinâmico das telas será colado aqui no Bloco 2 -->
+        <!-- ============================================================== -->
+        <!-- TELA 1: PAINEL DE CONTROLE DO CANDIDATO (HOME)                 -->
+        <!-- ============================================================== -->
+        <section id="tela-home-candidato" class="app-screen active">
+          
+          <!-- Banner Hero Gamificado -->
+          <div class="bg-gradient-to-br from-indigo-900/40 via-slate-900 to-slate-900 border border-indigo-500/30 rounded-[2rem] p-8 sm:p-12 relative overflow-hidden shadow-2xl mb-10 group">
+            <div class="absolute right-0 top-0 w-[500px] h-[500px] bg-indigo-500/20 blur-[120px] rounded-full pointer-events-none group-hover:bg-indigo-500/30 transition-colors duration-700"></div>
+            <div class="absolute -bottom-10 -right-10 opacity-10 pointer-events-none"><i class="ph ph-sword text-[250px] text-indigo-400 rotate-45"></i></div>
             
-            <div class="flex flex-col sm:flex-row gap-4 relative z-10">
-              <button onclick="navegarPara('tela-vagas')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2">
-                <i class="ph ph-sword text-xl"></i> Aceitar Nova Missão
-              </button>
-              <button onclick="navegarPara('tela-ficha-personagem')" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
-                <i class="ph ph-user text-xl"></i> Ver Minha Ficha
-              </button>
-            </div>
-          </div>
-
-          <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2"><i class="ph ph-fire text-orange-500"></i> Missões Recomendadas (Baseado no seu perfil)</h2>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="lista-recomendadas">
-            <!-- Vaga Card Dinâmico -->
-            <div class="bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-2xl p-6 transition-all group relative shadow-lg">
-              <div class="flex justify-between items-start mb-6">
-                <div>
-                  <div class="flex gap-2 mb-3">
-                    <span class="text-[10px] font-black text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-md border border-emerald-400/20">NÍVEL 1+</span>
-                    <span class="text-[10px] font-black text-indigo-400 bg-indigo-400/10 px-2.5 py-1 rounded-md border border-indigo-400/20">ADMINISTRATIVO</span>
-                  </div>
-                  <h3 class="text-2xl font-bold text-white group-hover:text-indigo-300 transition-colors">Auxiliar de Operações</h3>
-                  <p class="text-sm text-slate-400 mt-1"><i class="ph ph-map-pin"></i> Candeias, BA • Mosaic</p>
-                </div>
-                <div class="w-14 h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-3xl shadow-inner">🏢</div>
-              </div>
-              <div class="bg-slate-950 rounded-xl p-4 mb-6 border border-slate-800/50 flex justify-between items-center">
-                <div><p class="text-xs text-slate-500 font-bold uppercase mb-1">Recompensa</p><p class="text-lg font-black text-indigo-400">+50 XP</p></div>
-                <div class="text-right"><p class="text-xs text-slate-500 font-bold uppercase mb-1">Salário Estimado</p><p class="text-lg font-black text-emerald-400">R$ 1.800</p></div>
-              </div>
-              <button onclick="iniciarRPG('Auxiliar de Operações', 'Mosaic')" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)]">
-                Iniciar Desafio Prático
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- TELA 2: EXPLORAR VAGAS -->
-        <section id="tela-vagas" class="app-screen hidden slide-up">
-          <div class="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
-            <div>
-              <h1 class="text-3xl font-black text-white">Quadro de Missões</h1>
-              <p class="text-slate-400 mt-2">Explore todas as oportunidades do reino corporativo.</p>
-            </div>
-            <div class="w-full md:w-auto flex gap-2">
-              <div class="relative flex-1 md:w-72">
-                <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
-                <input type="text" id="busca-vagas-input" onkeyup="filtrarVagas()" placeholder="Buscar cargo ou empresa..." class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl pl-10 pr-4 py-3 focus:border-indigo-500 outline-none">
-              </div>
-            </div>
-          </div>
-          
-          <div class="border-b border-slate-800 flex gap-6 mb-8 overflow-x-auto menu-scroll">
-            <button class="px-1 py-3 border-b-2 border-indigo-500 text-indigo-400 font-bold whitespace-nowrap">Todas as Missões</button>
-            <button class="px-1 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-300 font-bold whitespace-nowrap transition-colors">Em Andamento</button>
-          </div>
-
-          <!-- Container Dinâmico de Vagas -->
-          <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="container-todas-vagas">
-            <!-- Vaga Fixa (Sempre existe) -->
-            <div class="vaga-card bg-slate-900 border border-slate-800 rounded-2xl p-6 relative shadow-lg" data-titulo="Auxiliar de Operações" data-empresa="Mosaic">
-              <div class="flex justify-between items-start mb-6">
-                <div>
-                  <span class="text-[10px] font-black text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-md border border-emerald-400/20">FÁCIL</span>
-                  <h3 class="text-xl font-bold text-white mt-2 vaga-titulo">Auxiliar de Operações</h3>
-                  <p class="text-sm text-slate-400 mt-1 vaga-empresa">Mosaic • Candeias, BA</p>
-                </div>
-              </div>
-              <button onclick="iniciarRPG('Auxiliar de Operações', 'Mosaic')" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm transition-all">Iniciar Desafio</button>
-            </div>
-            <!-- Vaga Fixa 2 -->
-            <div class="vaga-card bg-slate-900 border border-slate-800 rounded-2xl p-6 relative shadow-lg" data-titulo="Atendimento SAC" data-empresa="Nubank">
-              <div class="flex justify-between items-start mb-6">
-                <div>
-                  <span class="text-[10px] font-black text-yellow-400 bg-yellow-400/10 px-2 py-1 rounded-md border border-yellow-400/20">MÉDIO</span>
-                  <h3 class="text-xl font-bold text-white mt-2 vaga-titulo">Atendimento SAC</h3>
-                  <p class="text-sm text-slate-400 mt-1 vaga-empresa">Nubank • Remoto</p>
-                </div>
-              </div>
-              <button onclick="mostrarToast('Requer Nível 3 para iniciar.', 'erro')" class="w-full py-3 bg-slate-800 text-slate-400 rounded-xl font-bold text-sm border border-slate-700 cursor-not-allowed flex items-center justify-center gap-2"><i class="ph ph-lock-key"></i> Nível Insuficiente</button>
-            </div>
-          </div>
-          
-          <div id="vagas-vazio" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-16 text-center mt-6">
-            <i class="ph ph-ghost text-5xl text-slate-600 mb-4 block"></i>
-            <h3 class="text-lg font-bold text-white">Nenhuma missão encontrada com esse nome.</h3>
-          </div>
-        </section>
-
-        <!-- TELA 3: FICHA DE PERSONAGEM -->
-        <section id="tela-ficha-personagem" class="app-screen hidden slide-up">
-          <div class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl font-black text-white">Ficha do Personagem</h1>
-            <button onclick="abrirModal('modal-editar-perfil')" class="text-sm font-bold text-indigo-400 bg-indigo-500/10 px-4 py-2 rounded-lg hover:bg-indigo-500/20"><i class="ph ph-pencil-simple mr-1"></i> Editar</button>
-          </div>
-          
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 relative overflow-hidden h-fit shadow-xl">
-              <div class="absolute top-0 right-0 w-full h-32 bg-gradient-to-b from-indigo-600/20 to-transparent pointer-events-none"></div>
-              <div class="relative z-10 flex flex-col items-center text-center">
-                <div class="w-24 h-24 rounded-3xl bg-slate-800 border-4 border-indigo-500/50 flex items-center justify-center mb-4 shadow-xl">
-                   <i class="ph ph-user text-5xl text-slate-400"></i>
-                </div>
-                <h2 class="text-2xl font-black text-white" id="ficha-nome">Visitante</h2>
-                <p class="text-sm font-bold text-indigo-400 uppercase tracking-widest mt-1 mb-6">Explorador Corporativo</p>
+            <div class="relative z-10 flex flex-col md:flex-row gap-8 items-center md:items-start justify-between">
+              <div class="flex-1">
+                <span class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[10px] font-black uppercase tracking-widest mb-6 backdrop-blur-md">
+                  <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Temporada Alpha 1.0
+                </span>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight tracking-tight">Sua Carreira não é um PDF.<br>É uma <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-300 animate-gradient">Jornada Épica.</span></h1>
+                <p class="text-slate-400 max-w-2xl text-lg mb-10 font-medium leading-relaxed">Complete desafios práticos elaborados diretamente pelos recrutadores. Ganhe XP, suba de nível e seja contratado pelas suas habilidades reais.</p>
                 
-                <div class="w-full bg-slate-950 rounded-2xl p-4 border border-slate-800 text-left mb-6">
-                  <div class="flex justify-between items-center mb-2">
-                    <span class="text-xs font-black text-slate-400 uppercase">Nível Atual</span>
-                    <span class="text-xl font-black text-white" id="ficha-nivel">Lvl. 1</span>
-                  </div>
-                  <div class="w-full bg-slate-900 rounded-full h-3 border border-slate-700 overflow-hidden mb-2">
-                    <div id="ficha-xp-bar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full w-0 transition-all duration-1000"></div>
-                  </div>
-                  <p class="text-[10px] text-slate-500 text-right font-bold" id="ficha-xp-texto">0 XP acumulados</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                  <button onclick="navegarPara('tela-vagas')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-xl font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1">
+                    <i class="ph ph-crosshair text-xl"></i> Encontrar Missões
+                  </button>
+                  <button onclick="navegarPara('tela-ficha-personagem')" class="bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-white px-8 py-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-3 backdrop-blur-md">
+                    <i class="ph ph-user text-xl"></i> Ver Minha Ficha
+                  </button>
                 </div>
-                <button class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold text-sm transition-colors border border-slate-700 flex items-center justify-center gap-2">
-                  <i class="ph ph-share-network text-lg"></i> Compartilhar Perfil
+              </div>
+              
+              <!-- Card de Status Rápido -->
+              <div class="w-full md:w-72 bg-slate-950/50 border border-slate-800 rounded-3xl p-6 backdrop-blur-xl shrink-0 shadow-2xl">
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 text-center">Estatísticas da Temporada</p>
+                <div class="space-y-4">
+                  <div class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400"><i class="ph ph-target text-xl"></i></div>
+                    <div><p class="text-xs text-slate-400 font-bold">Taxa de Acerto</p><p class="text-lg font-black text-white">0%</p></div>
+                  </div>
+                  <div class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400"><i class="ph ph-buildings text-xl"></i></div>
+                    <div><p class="text-xs text-slate-400 font-bold">Empresas de Olho</p><p class="text-lg font-black text-white">0</p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-black text-white flex items-center gap-3"><i class="ph ph-fire text-orange-500 text-3xl animate-pulse"></i> Missões Recomendadas</h2>
+            <button class="text-sm font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Ver todas &rarr;</button>
+          </div>
+          
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="lista-recomendadas">
+            <!-- Vaga Card Dinâmico -->
+            <div class="bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-7 transition-all duration-300 group relative shadow-lg hover:shadow-[0_10px_40px_rgba(79,70,229,0.15)] flex flex-col h-full">
+              <div class="flex justify-between items-start mb-6">
+                <div>
+                  <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="text-[9px] font-black text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-md border border-emerald-400/20 tracking-widest uppercase shadow-sm">Lvl. 1+ Requisitado</span>
+                    <span class="text-[9px] font-black text-indigo-400 bg-indigo-400/10 px-2.5 py-1 rounded-md border border-indigo-400/20 tracking-widest uppercase shadow-sm">Administrativo</span>
+                  </div>
+                  <h3 class="text-2xl font-black text-white group-hover:text-indigo-300 transition-colors">Auxiliar de Operações</h3>
+                  <p class="text-sm text-slate-400 font-medium flex items-center gap-1.5 mt-2"><i class="ph ph-map-pin text-indigo-400"></i> Candeias, BA • Mosaic Fertilizantes</p>
+                </div>
+                <div class="w-16 h-16 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-inner shrink-0">🏢</div>
+              </div>
+              
+              <div class="mt-auto">
+                <div class="bg-slate-950 rounded-2xl p-5 mb-6 border border-slate-800/50 flex justify-between items-center relative overflow-hidden">
+                  <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+                  <div class="pl-2">
+                    <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">Recompensa</p>
+                    <p class="text-xl font-black text-indigo-400 flex items-center gap-2"><i class="ph ph-sparkle text-yellow-400"></i> +50 XP</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">Status</p>
+                    <p class="text-sm font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20">Aberta</p>
+                  </div>
+                </div>
+                <button onclick="iniciarRPG('Auxiliar de Operações', 'Mosaic')" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)] transform group-hover:-translate-y-1 flex items-center justify-center gap-2">
+                  <i class="ph ph-play text-lg"></i> Iniciar Desafio Prático
                 </button>
               </div>
             </div>
 
-            <div class="lg:col-span-2 space-y-6">
-              <!-- Habilidades -->
-              <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2"><i class="ph ph-magic-wand text-indigo-400 text-xl"></i> Árvore de Habilidades (Hard Skills)</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="container-habilidades">
-                  <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl text-center"><p class="text-sm font-bold text-slate-300">Pacote Office</p><p class="text-[10px] text-emerald-400 font-black mt-1 uppercase tracking-wider">Avançado</p></div>
-                  <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl text-center"><p class="text-sm font-bold text-slate-300">Atendimento</p><p class="text-[10px] text-emerald-400 font-black mt-1 uppercase tracking-wider">Avançado</p></div>
+            <!-- Vaga Card Bloqueado -->
+            <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-3xl p-7 transition-all duration-300 relative shadow-lg flex flex-col h-full opacity-80">
+              <div class="absolute inset-0 bg-slate-950/40 rounded-3xl z-10 flex flex-col items-center justify-center backdrop-blur-[2px]">
+                <div class="bg-slate-900 border border-slate-700 p-4 rounded-full mb-3 shadow-2xl"><i class="ph ph-lock-key text-3xl text-slate-400"></i></div>
+                <p class="font-bold text-white">Requer Nível 3</p>
+                <p class="text-xs text-slate-400 mt-1">Acumule mais XP para desbloquear</p>
+              </div>
+              <div class="flex justify-between items-start mb-6 blur-[2px]">
+                <div>
+                  <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="text-[9px] font-black text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-md border border-yellow-400/20 tracking-widest uppercase">Lvl. 3+ Requisitado</span>
+                  </div>
+                  <h3 class="text-2xl font-black text-slate-500">Analista de Suporte Júnior</h3>
+                  <p class="text-sm text-slate-600 font-medium flex items-center gap-1.5 mt-2"><i class="ph ph-map-pin"></i> Remoto • SeuCondominio</p>
+                </div>
+                <div class="w-16 h-16 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-3xl shadow-inner shrink-0 grayscale opacity-50">💻</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- TELA 2: MINHAS CANDIDATURAS (NOVA)                             -->
+        <!-- ============================================================== -->
+        <section id="tela-candidaturas" class="app-screen">
+          <div class="mb-10">
+            <h1 class="text-4xl font-black text-white mb-2">Histórico de Batalhas</h1>
+            <p class="text-slate-400 text-lg">Acompanhe o status das missões que você já iniciou.</p>
+          </div>
+
+          <div class="space-y-6">
+            <!-- Candidatura 1 -->
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 lg:p-8 flex flex-col lg:flex-row gap-6 items-center shadow-xl">
+              <div class="w-20 h-20 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-4xl shadow-inner shrink-0">🛒</div>
+              <div class="flex-1 text-center lg:text-left">
+                <h3 class="text-2xl font-black text-white">Auxiliar de Estoque</h3>
+                <p class="text-slate-400 mt-1 font-medium">Mercado Central • Candeias, BA</p>
+                <div class="flex items-center justify-center lg:justify-start gap-4 mt-4">
+                  <span class="text-xs font-bold text-slate-400 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800"><i class="ph ph-calendar-blank"></i> Aplicado há 3 dias</span>
+                  <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20"><i class="ph ph-check-circle"></i> Teste Concluído</span>
+                </div>
+              </div>
+              <div class="w-full lg:w-64 bg-slate-950 rounded-2xl p-5 border border-slate-800 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 text-center">Status Atual</p>
+                <p class="text-lg font-black text-white text-center mb-1">Em Análise pelo RH</p>
+                <p class="text-xs text-slate-400 text-center text-center">Aguardando retorno da empresa.</p>
+              </div>
+            </div>
+
+            <!-- Candidatura 2 -->
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 lg:p-8 flex flex-col lg:flex-row gap-6 items-center shadow-xl">
+              <div class="w-20 h-20 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-4xl shadow-inner shrink-0 grayscale opacity-70">🏢</div>
+              <div class="flex-1 text-center lg:text-left">
+                <h3 class="text-2xl font-black text-white opacity-80">Jovem Aprendiz Administrativo</h3>
+                <p class="text-slate-500 mt-1 font-medium">Valobras • Salvador, BA</p>
+                <div class="flex items-center justify-center lg:justify-start gap-4 mt-4 opacity-80">
+                  <span class="text-xs font-bold text-slate-500 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800"><i class="ph ph-calendar-blank"></i> Há 2 meses</span>
+                </div>
+              </div>
+              <div class="w-full lg:w-64 bg-slate-950 rounded-2xl p-5 border border-slate-800 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-red-500"></div>
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 text-center">Status Atual</p>
+                <p class="text-lg font-black text-red-400 text-center mb-1">Missão Encerrada</p>
+                <p class="text-xs text-slate-500 text-center text-center">A vaga foi fechada.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- TELA 3: EXPLORAR MISSÕES (BUSCA DE VAGAS)                      -->
+        <!-- ============================================================== -->
+        <section id="tela-vagas" class="app-screen">
+          <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-10 gap-6">
+            <div>
+              <h1 class="text-4xl font-black text-white mb-2">Mural de Missões</h1>
+              <p class="text-slate-400 text-lg">Explore as oportunidades abertas no reino corporativo.</p>
+            </div>
+            
+            <div class="w-full lg:w-auto bg-slate-900 border border-slate-700 p-2 rounded-2xl flex flex-col sm:flex-row gap-2 shadow-xl">
+              <div class="relative flex-1 sm:w-64">
+                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl"></i>
+                <input type="text" id="busca-vagas-input" onkeyup="filtrarVagas()" placeholder="Cargo, empresa, skill..." class="w-full bg-slate-950 border-none text-white rounded-xl pl-12 pr-4 py-3.5 focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+              </div>
+              <div class="hidden sm:block w-px bg-slate-700 my-2"></div>
+              <div class="relative flex-1 sm:w-48">
+                <i class="ph ph-map-pin absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl"></i>
+                <select class="w-full bg-slate-950 border-none text-slate-300 rounded-xl pl-12 pr-4 py-3.5 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none font-medium cursor-pointer">
+                  <option value="">Qualquer Local</option>
+                  <option value="candeias">Candeias, BA</option>
+                  <option value="remoto">100% Remoto</option>
+                </select>
+              </div>
+              <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3.5 rounded-xl font-black uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/30">Filtrar</button>
+            </div>
+          </div>
+          
+          <div class="border-b border-slate-800 flex gap-8 mb-8 overflow-x-auto menu-scroll pb-2">
+            <button class="py-2 border-b-2 border-indigo-500 text-indigo-400 font-black tracking-wide whitespace-nowrap text-sm">TODAS AS MISSÕES</button>
+            <button class="py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-300 font-bold tracking-wide whitespace-nowrap transition-colors text-sm">SALVAS</button>
+            <button class="py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-300 font-bold tracking-wide whitespace-nowrap transition-colors text-sm">NO SEU NÍVEL</button>
+          </div>
+
+          <!-- Container Dinâmico de Vagas -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" id="container-todas-vagas">
+            
+            <!-- Vaga Card 1 -->
+            <div class="vaga-card bg-slate-900 border border-slate-800 rounded-3xl p-6 relative shadow-lg flex flex-col h-full hover:border-indigo-500/50 transition-colors group" data-titulo="Auxiliar de Operações" data-empresa="Mosaic">
+              <div class="flex justify-between items-start mb-6">
+                <div>
+                  <span class="text-[9px] font-black text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-md border border-emerald-400/20 tracking-widest uppercase">FÁCIL</span>
+                  <h3 class="text-xl font-bold text-white mt-3 vaga-titulo group-hover:text-indigo-300 transition-colors leading-tight">Auxiliar de Operações</h3>
+                  <p class="text-sm text-slate-400 mt-1 vaga-empresa">Mosaic • Candeias, BA</p>
+                </div>
+                <div class="w-12 h-12 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-2xl shadow-inner shrink-0">🏢</div>
+              </div>
+              <div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between">
+                <span class="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20">+50 XP</span>
+                <button onclick="iniciarRPG('Auxiliar de Operações', 'Mosaic')" class="text-sm font-bold text-white bg-slate-800 hover:bg-indigo-600 px-5 py-2.5 rounded-xl transition-colors shadow-md">Iniciar</button>
+              </div>
+            </div>
+
+            <!-- Vaga Card 2 -->
+            <div class="vaga-card bg-slate-900 border border-slate-800 rounded-3xl p-6 relative shadow-lg flex flex-col h-full hover:border-indigo-500/50 transition-colors group" data-titulo="Atendimento SAC" data-empresa="Nubank">
+              <div class="flex justify-between items-start mb-6">
+                <div>
+                  <span class="text-[9px] font-black text-yellow-400 bg-yellow-400/10 px-2 py-1 rounded-md border border-yellow-400/20 tracking-widest uppercase">MÉDIO</span>
+                  <h3 class="text-xl font-bold text-white mt-3 vaga-titulo group-hover:text-indigo-300 transition-colors leading-tight">Atendimento SAC</h3>
+                  <p class="text-sm text-slate-400 mt-1 vaga-empresa">Nubank • Remoto</p>
+                </div>
+                <div class="w-12 h-12 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-2xl shadow-inner shrink-0">🎧</div>
+              </div>
+              <div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between">
+                <span class="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20">+80 XP</span>
+                <button onclick="mostrarToast('Requer Nível 3 para iniciar. Jogue outras missões antes!', 'error')" class="text-sm font-bold text-slate-400 bg-slate-950 border border-slate-800 px-5 py-2.5 rounded-xl transition-colors cursor-not-allowed flex items-center gap-2"><i class="ph ph-lock-key"></i> Bloqueada</button>
+              </div>
+            </div>
+
+            <!-- Vaga Card 3 -->
+            <div class="vaga-card bg-slate-900 border border-slate-800 rounded-3xl p-6 relative shadow-lg flex flex-col h-full hover:border-indigo-500/50 transition-colors group" data-titulo="Assistente de Logística" data-empresa="Amazon">
+              <div class="flex justify-between items-start mb-6">
+                <div>
+                  <span class="text-[9px] font-black text-purple-400 bg-purple-400/10 px-2 py-1 rounded-md border border-purple-400/20 tracking-widest uppercase">DIFÍCIL</span>
+                  <h3 class="text-xl font-bold text-white mt-3 vaga-titulo group-hover:text-indigo-300 transition-colors leading-tight">Assistente de Logística</h3>
+                  <p class="text-sm text-slate-400 mt-1 vaga-empresa">Amazon • Simões Filho, BA</p>
+                </div>
+                <div class="w-12 h-12 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-2xl shadow-inner shrink-0">📦</div>
+              </div>
+              <div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between">
+                <span class="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20">+120 XP</span>
+                <button onclick="mostrarToast('Requer Nível 5 para iniciar.', 'error')" class="text-sm font-bold text-slate-400 bg-slate-950 border border-slate-800 px-5 py-2.5 rounded-xl transition-colors cursor-not-allowed flex items-center gap-2"><i class="ph ph-lock-key"></i> Bloqueada</button>
+              </div>
+            </div>
+
+          </div>
+          
+          <div id="vagas-vazio" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-20 text-center mt-6 shadow-xl">
+            <i class="ph ph-ghost text-6xl text-slate-700 mb-6 block animate-bounce"></i>
+            <h3 class="text-2xl font-black text-white">O radar não encontrou nada.</h3>
+            <p class="text-slate-400 mt-2 font-medium">Tente buscar por outros termos ou profissões.</p>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- TELA 4: FICHA DE PERSONAGEM (O SEU CV)                         -->
+        <!-- ============================================================== -->
+        <section id="tela-ficha-personagem" class="app-screen">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+            <div>
+              <h1 class="text-4xl font-black text-white mb-2">Ficha de Personagem</h1>
+              <p class="text-slate-400 text-lg">Seu currículo vivo, atualizado pelo seu desempenho real.</p>
+            </div>
+            <div class="flex gap-3">
+              <button class="text-sm font-bold text-white bg-slate-800 border border-slate-700 px-6 py-3 rounded-xl hover:bg-slate-700 transition-colors flex items-center gap-2 shadow-lg"><i class="ph ph-download-simple text-lg"></i> Exportar PDF</button>
+              <button onclick="abrirModal('modal-editar-perfil')" class="text-sm font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/30 px-6 py-3 rounded-xl hover:bg-indigo-500/20 transition-colors flex items-center gap-2 shadow-lg"><i class="ph ph-pencil-simple text-lg"></i> Editar</button>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- COLUNA ESQUERDA: STATUS GERAL -->
+            <div class="lg:col-span-4 space-y-8">
+              <div class="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 relative overflow-hidden shadow-2xl">
+                <div class="absolute top-0 right-0 w-full h-40 bg-gradient-to-b from-indigo-600/20 to-transparent pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col items-center text-center">
+                  <div class="w-32 h-32 rounded-3xl bg-slate-800 border-4 border-indigo-500/50 flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(99,102,241,0.3)] relative">
+                     <i class="ph ph-user text-6xl text-slate-400"></i>
+                     <button class="absolute -bottom-3 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg border-2 border-slate-900 hover:bg-indigo-500 transition-colors">Trocar Foto</button>
+                  </div>
+                  <h2 class="text-3xl font-black text-white" id="ficha-nome">Visitante</h2>
+                  <p class="text-sm font-bold text-indigo-400 uppercase tracking-widest mt-2 mb-8 bg-indigo-500/10 px-4 py-1.5 rounded-full border border-indigo-500/20">Aventureiro Novato</p>
+                  
+                  <div class="w-full bg-slate-950 rounded-2xl p-5 border border-slate-800 text-left mb-6 shadow-inner relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+                    <div class="flex justify-between items-center mb-3">
+                      <span class="text-xs font-black text-slate-400 uppercase tracking-widest pl-2">Nível Atual</span>
+                      <span class="text-2xl font-black text-white" id="ficha-nivel">Lvl. 1</span>
+                    </div>
+                    <div class="w-full bg-slate-900 rounded-full h-3 border border-slate-700 overflow-hidden mb-3 shadow-inner">
+                      <div id="ficha-xp-bar" class="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 h-full w-0 transition-all duration-1000 relative">
+                        <div class="absolute right-0 top-0 bottom-0 w-4 bg-white/30 blur-[2px]"></div>
+                      </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 text-right font-bold tracking-wide" id="ficha-xp-texto">0 XP acumulados</p>
+                  </div>
+
+                  <div class="w-full space-y-3">
+                    <div class="flex items-center gap-3 text-slate-400 text-sm font-medium bg-slate-950/50 p-3 rounded-xl border border-slate-800/50"><i class="ph ph-map-pin text-indigo-400 text-lg"></i> Candeias, Bahia</div>
+                    <div class="flex items-center gap-3 text-slate-400 text-sm font-medium bg-slate-950/50 p-3 rounded-xl border border-slate-800/50"><i class="ph ph-envelope-simple text-indigo-400 text-lg"></i> contato@email.com</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Conquistas Block -->
+              <div class="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 shadow-xl">
+                <h3 class="text-lg font-black text-white mb-6 flex items-center gap-3"><i class="ph ph-medal text-yellow-500 text-2xl"></i> Conquistas Desbloqueadas</h3>
+                <div class="flex flex-wrap gap-3">
+                  <div class="w-14 h-14 rounded-xl bg-slate-950 border border-yellow-500/30 flex items-center justify-center text-2xl shadow-[0_0_15px_rgba(234,179,8,0.1)] group relative cursor-help">
+                    🔥
+                    <div class="absolute bottom-full mb-2 bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Primeiro Login</div>
+                  </div>
+                  <div class="w-14 h-14 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-2xl grayscale opacity-30 cursor-help" title="Conclua 5 missões">⚔️</div>
+                  <div class="w-14 h-14 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-2xl grayscale opacity-30 cursor-help" title="Chegue ao Nível 10">👑</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- COLUNA DIREITA: INVENTÁRIO DE SKILLS E EXPERIÊNCIAS -->
+            <div class="lg:col-span-8 space-y-8">
+              
+              <!-- Árvore de Habilidades -->
+              <div class="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 sm:p-10 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-20 -top-20 opacity-5 pointer-events-none"><i class="ph ph-tree-structure text-[200px]"></i></div>
+                <h3 class="text-2xl font-black text-white mb-2 flex items-center gap-3 relative z-10"><i class="ph ph-magic-wand text-indigo-400 text-3xl"></i> Árvore de Habilidades (Hard Skills)</h3>
+                <p class="text-slate-400 mb-8 font-medium relative z-10">Conforme você vence os testes práticos, o sistema valida essas skills automaticamente.</p>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 relative z-10" id="container-habilidades">
+                  <div class="bg-slate-950 border border-emerald-500/30 p-5 rounded-2xl text-center shadow-lg relative overflow-hidden group hover:border-emerald-500 transition-colors">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
+                    <i class="ph ph-microsoft-excel-logo text-3xl text-emerald-500/50 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <p class="text-sm font-black text-white mb-1">Pacote Office</p>
+                    <p class="text-[10px] text-emerald-400 font-black uppercase tracking-widest bg-emerald-500/10 inline-block px-2 py-0.5 rounded border border-emerald-500/20">Avançado</p>
+                  </div>
+                  <div class="bg-slate-950 border border-blue-500/30 p-5 rounded-2xl text-center shadow-lg relative overflow-hidden group hover:border-blue-500 transition-colors">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
+                    <i class="ph ph-headset text-3xl text-blue-500/50 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <p class="text-sm font-black text-white mb-1">Atendimento</p>
+                    <p class="text-[10px] text-blue-400 font-black uppercase tracking-widest bg-blue-500/10 inline-block px-2 py-0.5 rounded border border-blue-500/20">Avançado</p>
+                  </div>
+                  
                   <!-- Botão Add Habilidade -->
-                  <button onclick="abrirModal('modal-add-habilidade')" class="bg-indigo-500/5 border border-indigo-500/30 border-dashed hover:bg-indigo-500/20 p-4 rounded-xl text-center transition-colors text-indigo-400 flex flex-col items-center justify-center gap-1 group">
-                    <i class="ph ph-plus-circle text-2xl group-hover:scale-110 transition-transform"></i><span class="text-xs font-bold">Nova Habilidade</span>
+                  <button onclick="abrirModal('modal-add-habilidade')" class="bg-indigo-500/5 border-2 border-indigo-500/30 border-dashed hover:bg-indigo-500/10 hover:border-indigo-500/60 p-5 rounded-2xl text-center transition-all text-indigo-400 flex flex-col items-center justify-center gap-2 group min-h-[140px]">
+                    <div class="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center group-hover:scale-110 transition-transform"><i class="ph ph-plus text-xl font-bold"></i></div>
+                    <span class="text-xs font-black uppercase tracking-wider">Treinar Nova Skill</span>
                   </button>
                 </div>
               </div>
-              <!-- Experiências -->
-              <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2"><i class="ph ph-scroll text-yellow-500 text-xl"></i> Histórico de Missões (Experiência Real)</h3>
-                <div class="border-l-2 border-slate-800 ml-3 pl-6 space-y-8 relative" id="container-experiencias">
-                  <div class="relative">
-                    <div class="absolute -left-[33px] w-4 h-4 rounded-full bg-slate-900 border-2 border-indigo-500 ring-4 ring-slate-900"></div>
-                    <h4 class="font-bold text-white text-lg">Jovem Aprendiz (Administrativo)</h4>
-                    <p class="text-xs font-bold text-indigo-400 mb-2 mt-1 uppercase tracking-wider">Sodexo • Nov 2023 - Set 2025</p>
-                    <p class="text-sm text-slate-400 leading-relaxed">Suporte na organização de documentos, preenchimento de planilhas de controle e atendimento interno focado em resolução de problemas de rotina.</p>
+
+              <!-- Histórico de Missões (Experiência) -->
+              <div class="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 sm:p-10 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-20 bottom-0 opacity-5 pointer-events-none"><i class="ph ph-scroll text-[200px]"></i></div>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-10 gap-4 relative z-10">
+                  <div>
+                    <h3 class="text-2xl font-black text-white mb-2 flex items-center gap-3"><i class="ph ph-books text-yellow-500 text-3xl"></i> Histórico de Aventura (Experiência)</h3>
+                    <p class="text-slate-400 font-medium">As batalhas corporativas que forjaram seu nível atual.</p>
                   </div>
-                  <div class="relative">
-                    <div class="absolute -left-[33px] w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-700 ring-4 ring-slate-900"></div>
-                    <button onclick="abrirModal('modal-add-experiencia')" class="text-sm font-bold text-slate-500 hover:text-indigo-400 transition-colors flex items-center gap-2 bg-slate-950 border border-slate-800 px-4 py-2 rounded-lg"><i class="ph ph-plus"></i> Adicionar Experiência</button>
+                  <button onclick="abrirModal('modal-add-experiencia')" class="text-sm font-black text-slate-900 bg-white hover:bg-slate-200 px-5 py-3 rounded-xl transition-all shadow-lg flex items-center gap-2 shrink-0"><i class="ph ph-plus-circle text-lg"></i> Relatar Missão</button>
+                </div>
+
+                <div class="border-l-4 border-slate-800 ml-4 pl-8 space-y-10 relative z-10" id="container-experiencias">
+                  
+                  <!-- Experiência 1 -->
+                  <div class="relative group">
+                    <div class="absolute -left-[46px] w-8 h-8 rounded-full bg-slate-900 border-4 border-indigo-500 flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.5)]"><div class="w-2 h-2 bg-indigo-400 rounded-full group-hover:scale-150 transition-transform"></div></div>
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 group-hover:border-indigo-500/50 transition-colors shadow-lg">
+                      <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-black text-white text-xl">Jovem Aprendiz (Setor Administrativo)</h4>
+                        <button class="text-slate-500 hover:text-red-400 transition-colors"><i class="ph ph-trash"></i></button>
+                      </div>
+                      <p class="text-sm font-black text-indigo-400 mb-4 uppercase tracking-wider bg-indigo-500/10 inline-block px-3 py-1 rounded-lg border border-indigo-500/20">Sodexo • Nov 2023 - Set 2025</p>
+                      <p class="text-base text-slate-400 leading-relaxed font-medium">Suporte estratégico na organização de documentos operacionais, preenchimento e manutenção de planilhas de controle no Excel e atendimento interno focado na resolução rápida de problemas de rotina da equipe.</p>
+                    </div>
                   </div>
+                  
+                  <!-- Experiência 2 (Fictícia) -->
+                  <div class="relative group">
+                    <div class="absolute -left-[46px] w-8 h-8 rounded-full bg-slate-900 border-4 border-slate-700 flex items-center justify-center"><div class="w-2 h-2 bg-slate-500 rounded-full group-hover:scale-150 transition-transform"></div></div>
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 group-hover:border-slate-600 transition-colors shadow-lg opacity-80">
+                      <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-black text-white text-xl">Projeto Operacional Temporário</h4>
+                        <button class="text-slate-500 hover:text-red-400 transition-colors"><i class="ph ph-trash"></i></button>
+                      </div>
+                      <p class="text-sm font-black text-slate-400 mb-4 uppercase tracking-wider bg-slate-800/50 inline-block px-3 py-1 rounded-lg border border-slate-700">Mosaic Fertilizantes • 2025</p>
+                      <p class="text-base text-slate-400 leading-relaxed font-medium">Atuação direta em rotinas operacionais garantindo o fluxo contínuo de informações e controle logístico básico durante o pico de demanda da unidade fabril.</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- ============================================================== -->
+        <!-- TELA 5: RADAR DE TALENTOS (HOME DA EMPRESA)                    -->
+        <!-- ============================================================== -->
+        <section id="tela-home-empresa" class="app-screen hidden">
+          
+          <!-- Banner Hero Recrutador -->
+          <div class="bg-gradient-to-br from-emerald-900/40 via-slate-900 to-slate-900 border border-emerald-500/30 rounded-[2rem] p-8 sm:p-12 relative overflow-hidden shadow-2xl mb-10 group">
+            <div class="absolute right-0 top-0 w-[500px] h-[500px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none group-hover:bg-emerald-500/20 transition-colors duration-700"></div>
+            <div class="absolute -bottom-10 -right-10 opacity-5 pointer-events-none"><i class="ph ph-radar text-[250px] text-emerald-400"></i></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row gap-8 items-center md:items-start justify-between">
+              <div class="flex-1">
+                <span class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-black uppercase tracking-widest mb-6 backdrop-blur-md">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Módulo RH Ativo
+                </span>
+                <h1 class="text-4xl sm:text-5xl font-black text-white mb-6 leading-tight tracking-tight">Pare de ler currículos.<br>Comece a recrutar <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Desempenho Real.</span></h1>
+                <p class="text-emerald-100/60 max-w-2xl text-lg mb-10 font-medium leading-relaxed">Crie missões personalizadas. Deixe os candidatos resolverem problemas do dia a dia da sua empresa e receba um ranking automático dos mais preparados.</p>
+                
+                <button onclick="abrirModal('modal-nova-vaga')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-xl font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1 w-full sm:w-auto">
+                  <i class="ph ph-plus-circle text-xl"></i> Publicar Nova Missão
+                </button>
+              </div>
+              
+              <!-- Card de Estatísticas do RH -->
+              <div class="w-full md:w-72 bg-slate-950/50 border border-slate-800 rounded-3xl p-6 backdrop-blur-xl shrink-0 shadow-2xl">
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 text-center">Funil de Talentos</p>
+                <div class="space-y-4">
+                  <div class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400"><i class="ph ph-users text-xl"></i></div>
+                    <div><p class="text-xs text-slate-400 font-bold">Talentos no Radar</p><p class="text-lg font-black text-white">42</p></div>
+                  </div>
+                  <div class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400"><i class="ph ph-target text-xl"></i></div>
+                    <div><p class="text-xs text-slate-400 font-bold">Taxa de Match Média</p><p class="text-lg font-black text-white">87%</p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Coluna 1: Alertas e Atividades -->
+            <div class="lg:col-span-1 space-y-6">
+              <h2 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-bell-ringing text-emerald-500"></i> Alertas Recentes</h2>
+              
+              <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
+                <div class="space-y-5">
+                  <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0 border border-emerald-500/20"><i class="ph ph-check-circle text-xl"></i></div>
+                    <div>
+                      <p class="text-sm font-bold text-white leading-tight">Novo talento nível alto detectado!</p>
+                      <p class="text-xs text-slate-400 mt-1">Ana Silva concluiu a missão "Aux. Operações" com 100% de acerto.</p>
+                      <p class="text-[10px] text-slate-500 font-bold uppercase mt-2">Há 10 min</p>
+                    </div>
+                  </div>
+                  <div class="w-full h-px bg-slate-800"></div>
+                  <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 shrink-0 border border-indigo-500/20"><i class="ph ph-rocket-launch text-xl"></i></div>
+                    <div>
+                      <p class="text-sm font-bold text-white leading-tight">Missão em Alta</p>
+                      <p class="text-xs text-slate-400 mt-1">A vaga de SAC recebeu 15 novos jogadores hoje.</p>
+                      <p class="text-[10px] text-slate-500 font-bold uppercase mt-2">Há 2 horas</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Coluna 2: Ranking Global da Empresa -->
+            <div class="lg:col-span-2 space-y-6">
+              <div class="flex justify-between items-center">
+                <h2 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-trophy text-yellow-500"></i> Top Talentos do Mês</h2>
+                <button class="text-sm font-bold text-emerald-400 hover:text-emerald-300 transition-colors">Ver banco de talentos &rarr;</button>
+              </div>
+
+              <div class="bg-slate-900 border border-slate-800 rounded-3xl p-2 sm:p-4 shadow-xl">
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse min-w-[600px]">
+                    <thead>
+                      <tr>
+                        <th class="p-4 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800">Candidato / Nível</th>
+                        <th class="p-4 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 text-center">Missão Alvo</th>
+                        <th class="p-4 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 text-center">Match de XP</th>
+                        <th class="p-4 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 text-right">Ação</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/50">
+                      <!-- Ranking 1 -->
+                      <tr class="hover:bg-slate-800/30 transition-colors group">
+                        <td class="p-4">
+                          <div class="flex items-center gap-3">
+                            <div class="relative">
+                              <div class="w-10 h-10 rounded-xl bg-emerald-900/50 border border-emerald-500/30 flex items-center justify-center font-black text-emerald-400">1º</div>
+                              <div class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-900"></div>
+                            </div>
+                            <div>
+                              <p class="font-bold text-white text-sm">Ana Silva</p>
+                              <p class="text-xs text-emerald-400 font-bold flex items-center gap-1 mt-0.5"><i class="ph ph-star text-yellow-500"></i> Lvl 4 • 450 XP</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="p-4 text-center">
+                          <span class="inline-block bg-slate-950 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1 rounded-lg">Auxiliar de Operações</span>
+                        </td>
+                        <td class="p-4 text-center">
+                          <div class="flex flex-col items-center gap-1">
+                            <span class="text-emerald-400 font-black text-sm">98%</span>
+                            <div class="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="w-[98%] h-full bg-emerald-500"></div></div>
+                          </div>
+                        </td>
+                        <td class="p-4 text-right">
+                          <button onclick="abrirModal('modal-ver-candidato')" class="text-xs font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-lg hover:bg-emerald-500 hover:text-white transition-all shadow-sm">Ver Ficha</button>
+                        </td>
+                      </tr>
+                      <!-- Ranking 2 -->
+                      <tr class="hover:bg-slate-800/30 transition-colors group">
+                        <td class="p-4">
+                          <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-black text-slate-400">2º</div>
+                            <div>
+                              <p class="font-bold text-white text-sm">Carlos Mendes</p>
+                              <p class="text-xs text-indigo-400 font-bold flex items-center gap-1 mt-0.5"><i class="ph ph-star text-yellow-500"></i> Lvl 3 • 320 XP</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="p-4 text-center">
+                          <span class="inline-block bg-slate-950 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1 rounded-lg">Auxiliar de Operações</span>
+                        </td>
+                        <td class="p-4 text-center">
+                          <div class="flex flex-col items-center gap-1">
+                            <span class="text-indigo-400 font-black text-sm">85%</span>
+                            <div class="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="w-[85%] h-full bg-indigo-500"></div></div>
+                          </div>
+                        </td>
+                        <td class="p-4 text-right">
+                          <button class="text-xs font-black text-slate-300 bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg hover:bg-slate-700 transition-all shadow-sm">Ver Ficha</button>
+                        </td>
+                      </tr>
+                      <!-- Ranking 3 (Ricardo) -->
+                      <tr class="hover:bg-slate-800/30 transition-colors group relative">
+                        <td class="p-4 relative">
+                          <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-900/30 border border-indigo-500/30 flex items-center justify-center font-black text-indigo-400">3º</div>
+                            <div>
+                              <p class="font-bold text-white text-sm">Ricardo Lima <span class="text-[9px] bg-indigo-500 text-white px-1.5 py-0.5 rounded ml-1 uppercase">Você</span></p>
+                              <p class="text-xs text-indigo-400 font-bold flex items-center gap-1 mt-0.5"><i class="ph ph-star text-yellow-500"></i> Lvl 2 • 150 XP</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="p-4 text-center">
+                          <span class="inline-block bg-slate-950 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1 rounded-lg">Administrativo</span>
+                        </td>
+                        <td class="p-4 text-center">
+                          <div class="flex flex-col items-center gap-1">
+                            <span class="text-emerald-400 font-black text-sm">70%</span>
+                            <div class="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="w-[70%] h-full bg-emerald-500"></div></div>
+                          </div>
+                        </td>
+                        <td class="p-4 text-right">
+                          <button class="text-xs font-black text-slate-300 bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg hover:bg-slate-700 transition-all shadow-sm">Ver Ficha</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- TELA 4: DASHBOARD DA EMPRESA -->
-        <section id="tela-home-empresa" class="app-screen hidden slide-up">
-          <div class="bg-gradient-to-br from-emerald-900/40 via-slate-900 to-slate-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-12 relative overflow-hidden shadow-2xl mb-8">
-            <div class="absolute right-0 top-0 w-96 h-96 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none"></div>
-            <h1 class="text-4xl font-black text-white mb-3 relative z-10">Radar de Talentos</h1>
-            <p class="text-emerald-100/60 max-w-2xl text-lg mb-8 font-medium relative z-10">Crie missões e deixe o sistema filtrar os melhores candidatos com base no desempenho real, não em currículos mentirosos.</p>
-            <button onclick="abrirModal('modal-nova-vaga')" class="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-lg shadow-emerald-600/30 transition-all relative z-10 flex items-center gap-2">
-              <i class="ph ph-plus-circle text-xl"></i> Criar Nova Missão (Vaga)
+        <!-- ============================================================== -->
+        <!-- TELA 6: GERENCIAR MISSÕES (VAGAS DA EMPRESA)                   -->
+        <!-- ============================================================== -->
+        <section id="tela-gerenciar-vagas" class="app-screen hidden">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+            <div>
+              <h1 class="text-4xl font-black text-white mb-2">Painel de Missões</h1>
+              <p class="text-slate-400 text-lg">Controle as vagas que sua empresa publicou e o engajamento dos jogadores.</p>
+            </div>
+            <button onclick="abrirModal('modal-nova-vaga')" class="text-sm font-black text-emerald-900 bg-emerald-400 hover:bg-emerald-300 px-6 py-3.5 rounded-xl transition-all shadow-[0_0_15px_rgba(52,211,153,0.3)] flex items-center gap-2">
+              <i class="ph ph-plus-circle text-lg"></i> Criar Missão
             </button>
           </div>
 
-          <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2"><i class="ph ph-crosshair text-emerald-500"></i> Missões Abertas pela sua Empresa</h2>
-          
-          <div id="container-vagas-empresa" class="space-y-6">
-            <!-- Vaga da Empresa 1 -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 relative overflow-hidden shadow-lg">
-              <div class="flex flex-col md:flex-row justify-between md:items-center border-b border-slate-800 pb-5 mb-5 gap-4">
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-8" id="container-vagas-empresa">
+            
+            <!-- Vaga Empresa Card 1 -->
+            <div class="bg-slate-900 border border-emerald-500/30 rounded-3xl p-8 relative overflow-hidden shadow-xl group">
+              <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 blur-3xl pointer-events-none group-hover:bg-emerald-500/20 transition-all"></div>
+              
+              <div class="flex justify-between items-start mb-6">
                 <div>
-                  <h3 class="text-xl font-bold text-white">Auxiliar de Operações</h3>
-                  <p class="text-sm text-slate-400 mt-1">Publicada há 2 dias • Candeias, BA • Presencial</p>
+                  <span class="inline-block py-1 px-2.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-3">Missão Ativa</span>
+                  <h3 class="text-2xl font-black text-white leading-tight">Auxiliar de Operações</h3>
+                  <p class="text-sm text-slate-400 mt-1 font-medium"><i class="ph ph-map-pin text-emerald-500"></i> Candeias, BA • Presencial</p>
                 </div>
-                <div class="flex items-center gap-6">
-                  <div class="text-center">
-                    <p class="text-3xl font-black text-emerald-400">12</p>
-                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Jogadores</p>
-                  </div>
-                  <button class="bg-slate-800 hover:bg-slate-700 p-3 rounded-xl transition-colors border border-slate-700" title="Configurações da Vaga"><i class="ph ph-gear text-white text-xl"></i></button>
+                <button class="bg-slate-950 border border-slate-800 hover:border-slate-600 text-slate-400 hover:text-white p-3 rounded-xl transition-colors shadow-sm"><i class="ph ph-pencil-simple text-xl font-bold"></i></button>
+              </div>
+
+              <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center">
+                  <p class="text-3xl font-black text-white mb-1">12</p>
+                  <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Jogadores</p>
+                </div>
+                <div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center">
+                  <p class="text-3xl font-black text-emerald-400 mb-1">3</p>
+                  <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Matches >90%</p>
+                </div>
+                <div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center flex flex-col justify-center items-center gap-1">
+                  <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Recompensa</p>
+                  <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-3 py-1 rounded-lg font-black text-sm">+50 XP</span>
                 </div>
               </div>
-              
-              <p class="text-xs font-black text-slate-500 mb-4 uppercase tracking-widest flex items-center gap-2"><i class="ph ph-trophy text-yellow-500 text-lg"></i> Ranking de Desempenho (Top 3)</p>
-              <div class="space-y-3">
-                <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-emerald-500/30">
-                  <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-900/50 flex items-center justify-center font-black text-emerald-400">1º</div>
-                    <div><p class="text-sm font-bold text-white">Ana Silva</p><p class="text-xs text-slate-500">Lvl 4 • 100% de precisão na triagem</p></div>
-                  </div>
-                  <button onclick="abrirModal('modal-ver-candidato')" class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-4 py-2 rounded-lg hover:bg-emerald-500/20 transition-colors border border-emerald-500/20">Ver Perfil</button>
-                </div>
-                <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800">
-                  <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center font-black text-slate-400">2º</div>
-                    <div><p class="text-sm font-bold text-white">Carlos Mendes</p><p class="text-xs text-slate-500">Lvl 3 • 80% de precisão na triagem</p></div>
-                  </div>
-                  <button onclick="abrirModal('modal-ver-candidato')" class="text-xs font-bold text-slate-400 bg-slate-800 px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors">Ver Perfil</button>
-                </div>
+
+              <div class="border-t border-slate-800 pt-6">
+                <button onclick="navegarPara('tela-home-empresa')" class="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-md">Analisar Candidatos</button>
               </div>
             </div>
+
+            <!-- Vaga Empresa Card 2 -->
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 relative overflow-hidden shadow-xl group">
+              <div class="flex justify-between items-start mb-6">
+                <div>
+                  <span class="inline-block py-1 px-2.5 rounded-md bg-slate-800 border border-slate-700 text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">Rascunho</span>
+                  <h3 class="text-2xl font-black text-white leading-tight">Analista de Logística Pleno</h3>
+                  <p class="text-sm text-slate-400 mt-1 font-medium"><i class="ph ph-map-pin text-slate-500"></i> Simões Filho, BA • Híbrido</p>
+                </div>
+                <button class="bg-slate-950 border border-slate-800 hover:border-slate-600 text-slate-400 hover:text-white p-3 rounded-xl transition-colors shadow-sm"><i class="ph ph-pencil-simple text-xl font-bold"></i></button>
+              </div>
+
+              <div class="bg-slate-950 border border-slate-800 border-dashed rounded-2xl p-8 text-center mb-6">
+                <i class="ph ph-game-controller text-4xl text-slate-600 mb-2"></i>
+                <p class="text-sm font-bold text-slate-400">O Desafio Prático ainda não foi criado.</p>
+                <p class="text-xs text-slate-500 mt-1">Desenvolva a simulação para publicar a vaga.</p>
+              </div>
+
+              <div class="border-t border-slate-800 pt-6">
+                <button class="w-full py-4 bg-emerald-600/20 text-emerald-500 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-md">Criar Simulação Prática</button>
+              </div>
+            </div>
+
           </div>
         </section>
 
       </div>
     </div>
   </main>
-
   <!-- ============================================================== -->
-  <!-- MODAIS DO SISTEMA (Formulários e Popups)                       -->
+  <!-- MODAIS DO SISTEMA (POP-UPS FLUTUANTES)                         -->
   <!-- ============================================================== -->
 
   <!-- Modal: Nova Missão (Empresa) -->
   <div id="modal-nova-vaga" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
     <div class="absolute inset-0" onclick="fecharModal('modal-nova-vaga')"></div>
-    <div class="max-w-lg w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-nova-vaga">
+    <div class="max-w-lg w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-nova-vaga">
       <div class="flex justify-between items-center mb-6">
         <h3 class="text-2xl font-black text-white flex items-center gap-2"><i class="ph ph-plus-circle text-emerald-500"></i> Criar Missão</h3>
         <button onclick="fecharModal('modal-nova-vaga')" class="text-slate-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
@@ -392,11 +875,11 @@
             <input type="text" id="nv-local" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">XP Recompensa</label>
+            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">XP de Recompensa</label>
             <input type="number" id="nv-xp" value="50" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
           </div>
         </div>
-        <button type="submit" class="w-full py-4 mt-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all">Publicar Missão</button>
+        <button type="submit" class="w-full py-4 mt-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">Publicar Missão</button>
       </form>
     </div>
   </div>
@@ -404,9 +887,9 @@
   <!-- Modal: Adicionar Habilidade (Candidato) -->
   <div id="modal-add-habilidade" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
     <div class="absolute inset-0" onclick="fecharModal('modal-add-habilidade')"></div>
-    <div class="max-w-sm w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-add-hab">
+    <div class="max-w-sm w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-add-habilidade">
       <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-magic-wand text-indigo-500"></i> Nova Habilidade</h3>
+        <h3 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-magic-wand text-indigo-500"></i> Treinar Habilidade</h3>
         <button onclick="fecharModal('modal-add-habilidade')" class="text-slate-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
       </div>
       <form onsubmit="adicionarHabilidade(event)" class="space-y-4">
@@ -415,14 +898,15 @@
           <input type="text" id="ah-nome" placeholder="Ex: Gestão de Tempo" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-indigo-500 outline-none" required>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Nível</label>
+          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Nível de Proficiência</label>
           <select id="ah-nivel" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-indigo-500 outline-none">
             <option value="Básico">Básico</option>
             <option value="Intermediário">Intermediário</option>
             <option value="Avançado">Avançado</option>
+            <option value="Especialista">Especialista</option>
           </select>
         </div>
-        <button type="submit" class="w-full py-3 mt-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all">Salvar Habilidade</button>
+        <button type="submit" class="w-full py-4 mt-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)]">Adicionar à Ficha</button>
       </form>
     </div>
   </div>
@@ -430,186 +914,209 @@
   <!-- Modal: Adicionar Experiência (Candidato) -->
   <div id="modal-add-experiencia" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
     <div class="absolute inset-0" onclick="fecharModal('modal-add-experiencia')"></div>
-    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-add-exp">
+    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-add-experiencia">
       <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-scroll text-yellow-500"></i> Nova Experiência</h3>
+        <h3 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-scroll text-yellow-500"></i> Relatar Missão Antiga</h3>
         <button onclick="fecharModal('modal-add-experiencia')" class="text-slate-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
       </div>
       <form onsubmit="adicionarExperiencia(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Cargo</label>
+          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Cargo / Função</label>
           <input type="text" id="ae-cargo" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-indigo-500 outline-none" required>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Empresa</label>
+          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Empresa / Guilda</label>
           <input type="text" id="ae-empresa" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-indigo-500 outline-none" required>
         </div>
-        <button type="submit" class="w-full py-3 mt-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all">Salvar Experiência</button>
+        <button type="submit" class="w-full py-4 mt-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)]">Salvar no Histórico</button>
       </form>
     </div>
   </div>
 
-  <!-- Modal: Configurações do Sistema -->
-  <div id="modal-configuracoes" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
-    <div class="absolute inset-0" onclick="fecharModal('modal-configuracoes')"></div>
-    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-configuracoes">
-      <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
-        <h3 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-gear-six text-slate-400"></i> Configurações</h3>
-        <button onclick="fecharModal('modal-configuracoes')" class="text-slate-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
-      </div>
-      <div class="space-y-4">
-        <div class="flex justify-between items-center p-3 bg-slate-950 rounded-xl border border-slate-800">
-          <div><p class="font-bold text-white text-sm">Modo Escuro (Padrão)</p><p class="text-xs text-slate-500">Tema da interface</p></div>
-          <div class="w-10 h-6 bg-indigo-600 rounded-full relative cursor-not-allowed opacity-80"><div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div></div>
-        </div>
-        <div class="flex justify-between items-center p-3 bg-slate-950 rounded-xl border border-slate-800">
-          <div><p class="font-bold text-white text-sm">Notificações por E-mail</p><p class="text-xs text-slate-500">Alertas de novas missões</p></div>
-          <div class="w-10 h-6 bg-indigo-600 rounded-full relative cursor-pointer" onclick="this.classList.toggle('bg-slate-700'); this.classList.toggle('bg-indigo-600'); this.children[0].classList.toggle('right-1'); this.children[0].classList.toggle('left-1');"><div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full transition-all"></div></div>
-        </div>
-      </div>
-      <p class="text-center text-xs text-slate-600 mt-6 font-bold">TalentPlay Versão 1.0.0</p>
-    </div>
-  </div>
-
-  <!-- Modal: Editar Perfil -->
-  <div id="modal-editar-perfil" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
-    <div class="absolute inset-0" onclick="fecharModal('modal-editar-perfil')"></div>
-    <div class="max-w-sm w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-editar-perfil">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-user-circle text-indigo-500"></i> Editar Perfil</h3>
-        <button onclick="fecharModal('modal-editar-perfil')" class="text-slate-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
-      </div>
-      <p class="text-sm text-slate-400 mb-4">Em breve você poderá alterar seu avatar e senha diretamente por aqui!</p>
-      <button onclick="fecharModal('modal-editar-perfil')" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-all">Fechar</button>
-    </div>
-  </div>
-
-  <!-- Modal: Ver Candidato (Empresa) -->
+  <!-- Modal: Ver Candidato (Recrutador) -->
   <div id="modal-ver-candidato" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
     <div class="absolute inset-0" onclick="fecharModal('modal-ver-candidato')"></div>
-    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-ver-candidato">
+    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-ver-candidato">
       <div class="flex justify-between items-start mb-6">
         <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center"><i class="ph ph-user text-2xl text-emerald-500"></i></div>
-          <div><h3 class="text-xl font-black text-white">Ana Silva</h3><p class="text-sm font-bold text-emerald-400">Nível 4 • 400 XP</p></div>
+          <div class="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center border-2 border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]"><i class="ph ph-user text-3xl text-emerald-500"></i></div>
+          <div><h3 class="text-2xl font-black text-white">Ana Silva</h3><p class="text-sm font-bold text-emerald-400 uppercase tracking-widest mt-1">Lvl. 4 • 450 XP</p></div>
         </div>
         <button onclick="fecharModal('modal-ver-candidato')" class="text-slate-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
       </div>
-      <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 mb-4">
-        <p class="text-xs font-bold text-slate-500 uppercase mb-2">Desempenho no RPG</p>
-        <p class="text-sm text-slate-300">Respondeu com assertividade. Priorizou a comunicação clara e gestão de crise.</p>
-        <p class="text-xs font-black text-emerald-500 mt-2">100% MATCH com a cultura.</p>
+      <div class="bg-slate-950 rounded-xl p-5 border border-slate-800 mb-6 shadow-inner relative overflow-hidden">
+        <div class="absolute left-0 top-0 w-1 h-full bg-emerald-500"></div>
+        <p class="text-xs font-black text-slate-500 uppercase tracking-widest mb-2 pl-2">Laudo do Sistema (RPG)</p>
+        <p class="text-sm text-slate-300 font-medium leading-relaxed pl-2">A candidata respondeu com extrema assertividade aos desafios sob pressão. Priorizou a comunicação clara com o cliente final e manteve a organização da equipe interna.</p>
+        <p class="text-sm font-black text-emerald-500 mt-4 pl-2 bg-emerald-500/10 inline-block px-3 py-1 rounded-lg">100% MATCH CULTURAL</p>
       </div>
-      <button onclick="mostrarToast('Convite para entrevista enviado com sucesso!', 'success'); fecharModal('modal-ver-candidato');" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all">
+      <button onclick="mostrarToast('Convite oficial para entrevista enviado com sucesso!', 'success'); fecharModal('modal-ver-candidato');" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">
         Convidar para Entrevista
       </button>
     </div>
   </div>
 
-  <!-- MODAL DO RPG (Jogo) -->
-  <div id="rpg-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[150] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="max-w-2xl w-full bg-slate-900 border-2 border-indigo-500/50 rounded-2xl shadow-2xl shadow-indigo-500/20 overflow-hidden flex flex-col transform scale-95 transition-transform duration-300" id="rpg-card">
-      <div class="bg-slate-950 px-6 py-4 border-b border-slate-800 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-indigo-600/20 border border-indigo-500/50 flex items-center justify-center text-2xl shadow-inner" id="rpg-icone">🏢</div>
-        <div>
-          <h4 class="text-white font-black text-lg" id="rpg-titulo-header">Simulador</h4>
-          <p class="text-xs text-indigo-400 font-bold uppercase tracking-wider">Cena 1: Tomada de Decisão</p>
+  <!-- Modal: Editar Perfil e Configurações (Genéricos) -->
+  <div id="modal-editar-perfil" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
+    <div class="absolute inset-0" onclick="fecharModal('modal-editar-perfil')"></div>
+    <div class="max-w-sm w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-editar-perfil">
+      <h3 class="text-xl font-black text-white flex items-center gap-2 mb-4"><i class="ph ph-wrench text-indigo-500"></i> Em Construção</h3>
+      <p class="text-sm text-slate-400 font-medium mb-6">A oficina de personagens estará disponível na próxima atualização (Build 1.5).</p>
+      <button onclick="fecharModal('modal-editar-perfil')" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-all">Voltar ao Jogo</button>
+    </div>
+  </div>
+  <div id="modal-configuracoes" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
+    <div class="absolute inset-0" onclick="fecharModal('modal-configuracoes')"></div>
+    <div class="max-w-sm w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-configuracoes">
+      <h3 class="text-xl font-black text-white mb-6">Configurações do Jogo</h3>
+      <div class="space-y-4">
+        <div class="flex justify-between items-center p-4 bg-slate-950 rounded-xl border border-slate-800">
+          <div><p class="font-bold text-white text-sm">Modo Noturno</p><p class="text-xs text-slate-500">Trava da Temporada</p></div>
+          <div class="w-10 h-6 bg-indigo-600 rounded-full relative cursor-not-allowed opacity-80"><div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div></div>
         </div>
-        <button onclick="fecharRPG()" class="ml-auto text-slate-500 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors"><i class="ph ph-x font-bold"></i></button>
       </div>
-      <div class="p-8">
-        <p id="rpg-text" class="text-slate-300 text-lg leading-relaxed min-h-[120px] mb-8 font-medium"></p>
-        <div id="rpg-choices" class="space-y-3 hidden">
-          <!-- As opções são preenchidas via JS dependendo do desafio -->
+      <button onclick="fecharModal('modal-configuracoes')" class="w-full py-3 mt-6 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-all">Fechar Aba</button>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL DO MINI RPG (DESAFIO PRÁTICO GAMIFICADO)                 -->
+  <!-- ============================================================== -->
+  <div id="rpg-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[150] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+    <div class="max-w-3xl w-full bg-slate-900 border-2 border-indigo-500/50 rounded-[2rem] shadow-[0_0_50px_rgba(79,70,229,0.2)] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300" id="card-rpg-modal">
+      
+      <div class="bg-slate-950 px-8 py-5 border-b border-slate-800 flex items-center gap-5 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500"></div>
+        <div class="w-14 h-14 rounded-2xl bg-indigo-600/20 border border-indigo-500/50 flex items-center justify-center text-3xl shadow-inner shrink-0" id="rpg-icone">🏢</div>
+        <div>
+          <h4 class="text-white font-black text-xl" id="rpg-titulo-header">Simulador de Realidade</h4>
+          <p class="text-xs text-indigo-400 font-black uppercase tracking-widest mt-1">Cena 1: A Provação Matinal</p>
+        </div>
+        <button onclick="fecharRPG()" class="ml-auto text-slate-500 hover:text-white bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm"><i class="ph ph-x font-bold text-lg"></i></button>
+      </div>
+      
+      <div class="p-8 sm:p-10 relative">
+        <div class="absolute right-0 bottom-0 opacity-5 pointer-events-none"><i class="ph ph-sword text-[300px]"></i></div>
+        <p id="rpg-text" class="text-slate-300 text-xl leading-relaxed min-h-[140px] mb-8 font-medium relative z-10"></p>
+        
+        <div id="rpg-choices" class="space-y-4 hidden relative z-10">
+          <button onclick="escolherOpcao('A')" class="group w-full text-left p-6 bg-slate-950 hover:bg-indigo-900/30 border-2 border-slate-800 hover:border-indigo-500 rounded-2xl text-slate-300 text-base transition-all shadow-md flex gap-5 items-start">
+            <span class="text-indigo-500 font-black text-2xl group-hover:text-indigo-400">A)</span> 
+            <span class="mt-1 font-medium leading-relaxed">Ignoro o telefone por enquanto, imprimo o relatório apressadamente e entrego na mão do gerente para evitar bronca.</span>
+          </button>
+          <button onclick="escolherOpcao('B')" class="group w-full text-left p-6 bg-slate-950 hover:bg-indigo-900/30 border-2 border-slate-800 hover:border-indigo-500 rounded-2xl text-slate-300 text-base transition-all shadow-md flex gap-5 items-start">
+            <span class="text-indigo-500 font-black text-2xl group-hover:text-indigo-400">B)</span> 
+            <span class="mt-1 font-medium leading-relaxed">Atendo o fornecedor e tento acalmá-lo enquanto uso a outra mão no mouse para imprimir o relatório ao mesmo tempo.</span>
+          </button>
+          <button onclick="escolherOpcao('C')" class="group w-full text-left p-6 bg-slate-950 hover:bg-indigo-900/30 border-2 border-slate-800 hover:border-emerald-500 hover:text-white rounded-2xl text-slate-300 text-base transition-all shadow-md flex gap-5 items-start">
+            <span class="text-indigo-500 font-black text-2xl group-hover:text-emerald-400">C)</span> 
+            <span class="mt-1 font-medium leading-relaxed">Aviso o gerente ("Já vou imprimir!"), atendo o telefone pedindo 1 minuto de paciência ao fornecedor, e então pego a impressão.</span>
+          </button>
         </div>
       </div>
     </div>
   </div>
-  
-  <!-- MODAL DE LOGIN/AUTH/ONBOARDING (Estão no HTML base das versões anteriores e agora incorporados na estrutura unificada do JS abaixo para evitar repetição de HTML, eles ficam idênticos ao layout base já fornecido na FASE 1 e 2 originais que incluí acima). Os modais essenciais de Login e Onboarding estão ali em cima nas âncoras Z-[100] e Z-[90]. -->
 
-  <!-- MODAL DE LOGIN, CADASTRO, RECUPERAÇÃO -->
+  <!-- ============================================================== -->
+  <!-- MODAIS DE AUTENTICAÇÃO (LOGIN E CRIAÇÃO DE PERSONAGEM)         -->
+  <!-- ============================================================== -->
+  
+  <!-- Modal: Login -->
   <div id="login-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[200] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
     <div class="absolute inset-0 z-0" onclick="fecharModal('login-modal')"></div>
-    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl overflow-hidden relative z-10 transform scale-95 transition-transform" id="card-login">
-      <button onclick="fecharModal('login-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors z-20"><i class="ph ph-x font-bold"></i></button>
-      <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 blur-3xl pointer-events-none"></div>
+    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-[2rem] shadow-2xl overflow-hidden relative z-10 transform scale-95 transition-transform" id="card-login-modal">
+      <button onclick="fecharModal('login-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition-colors z-20"><i class="ph ph-x font-bold"></i></button>
+      <div class="absolute top-0 left-0 w-full h-40 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 blur-3xl pointer-events-none"></div>
+      
       <div class="p-10 relative z-10">
         <div class="text-center mb-8">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-black text-white text-3xl mx-auto mb-4 shadow-lg shadow-indigo-500/30">T</div>
-          <h3 id="auth-title" class="text-2xl font-black text-white">Acesse o Jogo</h3>
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-black text-white text-4xl mx-auto mb-4 shadow-[0_0_20px_rgba(99,102,241,0.4)] border border-indigo-400/30">T</div>
+          <h3 id="auth-title" class="text-3xl font-black text-white tracking-tight">Acesse o Jogo</h3>
         </div>
-        <div id="auth-tabs" class="flex p-1.5 bg-slate-950 rounded-xl mb-6 border border-slate-800">
-          <button id="tab-login" onclick="alternarModoAuth('login')" class="flex-1 py-2.5 bg-slate-800 text-white text-sm font-bold rounded-lg shadow-sm transition-all">Entrar</button>
-          <button id="tab-signup" onclick="alternarModoAuth('signup')" class="flex-1 py-2.5 text-slate-400 hover:text-white text-sm font-bold rounded-lg transition-all">Cadastrar</button>
+        
+        <div id="auth-tabs" class="flex p-1.5 bg-slate-950 rounded-xl mb-8 border border-slate-800 shadow-inner">
+          <button id="tab-login" onclick="alternarModoAuth('login')" class="flex-1 py-3 bg-slate-800 text-white text-sm font-black rounded-lg shadow-sm transition-all uppercase tracking-wider">Entrar</button>
+          <button id="tab-signup" onclick="alternarModoAuth('signup')" class="flex-1 py-3 text-slate-500 hover:text-slate-300 text-sm font-black rounded-lg transition-all uppercase tracking-wider">Cadastrar</button>
         </div>
-        <div id="auth-feedback" class="hidden text-xs p-4 rounded-xl mb-6 font-bold text-center transition-all"></div>
+        
         <form id="auth-form" onsubmit="executarAutenticacao(event)" class="space-y-5">
-          <div id="campo-email">
-            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">E-mail</label>
-            <div class="relative"><i class="ph ph-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl"></i><input id="auth-email" type="email" placeholder="seu@email.com" class="w-full bg-slate-950 border border-slate-700 text-white text-base rounded-xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-indigo-500 transition-colors shadow-inner"></div>
+          <div>
+            <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Seu E-mail</label>
+            <div class="relative"><i class="ph ph-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl"></i><input id="auth-email" type="email" placeholder="seu@email.com" class="w-full bg-slate-950 border border-slate-700 text-white text-base rounded-xl pl-12 pr-4 py-4 focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow shadow-inner"></div>
           </div>
-          <div id="campo-senha">
-            <div class="flex justify-between items-center mb-2"><label id="label-senha" class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Senha</label><a href="#" id="auth-forgot" onclick="recuperarSenha(event)" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Esqueceu?</a></div>
-            <div class="relative"><i class="ph ph-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl"></i><input id="auth-password" type="password" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-950 border border-slate-700 text-white text-base rounded-xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-indigo-500 transition-colors shadow-inner"></div>
+          <div>
+            <div class="flex justify-between items-center mb-2"><label class="block text-xs font-black text-slate-500 uppercase tracking-widest">Senha de Acesso</label><a href="#" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Esqueceu?</a></div>
+            <div class="relative"><i class="ph ph-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl"></i><input id="auth-password" type="password" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-950 border border-slate-700 text-white text-base rounded-xl pl-12 pr-4 py-4 focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow shadow-inner"></div>
           </div>
-          <button id="auth-submit-btn" type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] mt-2">Iniciar Sessão</button>
+          <button id="auth-submit-btn" type="submit" class="w-full py-4 mt-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-base uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transform hover:-translate-y-1">INICIAR SESSÃO</button>
         </form>
       </div>
     </div>
   </div>
 
+  <!-- Modal: Onboarding (Criação de Personagem) -->
   <div id="onboarding-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[190] hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
-    <div class="max-w-md w-full bg-slate-900 border border-indigo-500/30 rounded-3xl shadow-2xl overflow-hidden p-10 text-center relative transform scale-95 transition-transform" id="card-onboarding">
-      <div class="w-20 h-20 bg-indigo-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6"><i class="ph ph-rocket-launch text-4xl text-indigo-400"></i></div>
-      <h3 class="text-3xl font-black text-white mb-2">Criar Personagem</h3>
-      <p class="text-slate-400 mb-8 text-sm">Como você quer ser conhecido(a) no mercado?</p>
-      <form id="onboarding-form" onsubmit="salvarPerfil(event)" class="space-y-6 text-left">
+    <div class="max-w-md w-full bg-slate-900 border border-indigo-500/30 rounded-[2rem] shadow-[0_0_50px_rgba(79,70,229,0.15)] overflow-hidden p-10 text-center relative transform scale-95 transition-transform" id="card-onboarding-modal">
+      <div class="absolute top-0 right-0 w-full h-40 bg-gradient-to-b from-indigo-600/20 to-transparent pointer-events-none"></div>
+      
+      <div class="w-24 h-24 bg-indigo-500/10 border border-indigo-500/30 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-inner relative z-10">
+        <i class="ph ph-rocket-launch text-5xl text-indigo-400"></i>
+      </div>
+      
+      <h3 class="text-3xl font-black text-white mb-2 relative z-10 tracking-tight">Criar Personagem</h3>
+      <p class="text-slate-400 mb-8 text-base font-medium relative z-10">Como você quer ser conhecido(a) no mercado corporativo?</p>
+      
+      <form id="onboarding-form" onsubmit="salvarPerfil(event)" class="space-y-6 text-left relative z-10">
         <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome Completo / Empresa</label>
-          <div class="relative"><i class="ph ph-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl"></i><input id="onboarding-nome" type="text" placeholder="Seu nome" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-12 pr-4 py-4 focus:border-indigo-500 outline-none" required></div>
+          <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Seu Nome / Razão Social</label>
+          <div class="relative"><i class="ph ph-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl"></i><input id="onboarding-nome" type="text" placeholder="Digite aqui..." class="w-full bg-slate-950 border border-slate-700 text-white text-base rounded-xl pl-12 pr-4 py-4 focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow shadow-inner" required></div>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Qual é a sua Missão?</label>
+          <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Escolha sua Classe</label>
           <div class="grid grid-cols-2 gap-4">
-            <label class="cursor-pointer">
+            <label class="cursor-pointer group">
               <input type="radio" name="tipo_conta" value="candidato" class="peer sr-only" required checked>
-              <div class="text-center p-4 border-2 border-slate-800 rounded-xl peer-checked:bg-indigo-600/10 peer-checked:border-indigo-500 peer-checked:text-indigo-400 text-slate-500 hover:bg-slate-800"><i class="ph ph-sword text-3xl mb-2 block"></i><span class="text-sm font-bold">Talento</span></div>
+              <div class="text-center p-5 border-2 border-slate-800 rounded-2xl peer-checked:bg-indigo-600/10 peer-checked:border-indigo-500 peer-checked:text-indigo-400 text-slate-500 group-hover:bg-slate-800 transition-all shadow-md">
+                <i class="ph ph-sword text-4xl mb-3 block"></i><span class="text-sm font-black uppercase tracking-wider">Talento</span>
+              </div>
             </label>
-            <label class="cursor-pointer">
+            <label class="cursor-pointer group">
               <input type="radio" name="tipo_conta" value="empresa" class="peer sr-only">
-              <div class="text-center p-4 border-2 border-slate-800 rounded-xl peer-checked:bg-emerald-600/10 peer-checked:border-emerald-500 peer-checked:text-emerald-400 text-slate-500 hover:bg-slate-800"><i class="ph ph-buildings text-3xl mb-2 block"></i><span class="text-sm font-bold">Empresa</span></div>
+              <div class="text-center p-5 border-2 border-slate-800 rounded-2xl peer-checked:bg-emerald-600/10 peer-checked:border-emerald-500 peer-checked:text-emerald-400 text-slate-500 group-hover:bg-slate-800 transition-all shadow-md">
+                <i class="ph ph-buildings text-4xl mb-3 block"></i><span class="text-sm font-black uppercase tracking-wider">Empresa</span>
+              </div>
             </label>
           </div>
         </div>
-        <button type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black uppercase transition-all">Iniciar Jornada</button>
+        <button type="submit" class="w-full py-4 mt-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-base uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] transform hover:-translate-y-1">COMEÇAR AVENTURA</button>
       </form>
     </div>
   </div>
 
   <!-- ========================================================
-       O CÉREBRO: JAVASCRIPT MASTER
+       O CÉREBRO: JAVASCRIPT MASTER (LOGIC & DB)
        ======================================================== -->
   <script>
-    // TOAST NOTIFICATIONS
+    // ----------------------------------------------------
+    // UI CORE: TOASTS & MODALS
+    // ----------------------------------------------------
     window.mostrarToast = function(mensagem, tipo = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `toast ${tipo}`;
-      toast.innerHTML = tipo === 'success' ? `<i class="ph ph-check-circle text-xl"></i> ${mensagem}` : `<i class="ph ph-info text-xl"></i> ${mensagem}`;
+      let icone = tipo === 'success' ? 'check-circle' : (tipo === 'error' ? 'warning-circle' : 'info');
+      toast.innerHTML = `<i class="ph ph-${icone} text-2xl"></i> <span>${mensagem}</span>`;
       container.appendChild(toast);
-      setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 3000);
+      setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 4000);
     }
 
-    // GESTÃO DE MODAIS UNIVERSAL
     window.abrirModal = function(idModal) {
       const modal = document.getElementById(idModal);
       if(!modal) return;
       modal.classList.remove('hidden');
       setTimeout(() => {
         modal.classList.remove('opacity-0');
-        // Anima o card de dentro se existir (id começa com card-)
-        const card = Array.from(modal.children).find(el => el.id && el.id.startsWith('card-'));
+        const card = document.getElementById('card-' + idModal);
         if(card) card.classList.remove('scale-95');
       }, 10);
       modal.classList.add('flex');
@@ -619,179 +1126,71 @@
       const modal = document.getElementById(idModal);
       if(!modal) return;
       modal.classList.add('opacity-0');
-      const card = Array.from(modal.children).find(el => el.id && el.id.startsWith('card-'));
+      const card = document.getElementById('card-' + idModal);
       if(card) card.classList.add('scale-95');
       setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
     }
 
     // ----------------------------------------------------
-    // SUPABASE SETUP (COLOQUE SUA CHAVE AQUI 👇)
+    // SPA ROUTER (Navegação Instantânea)
     // ----------------------------------------------------
-    const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45'; // <--- COLE SUA CHAVE AQUI
-    
-    // Fallback Mock se a chave não estiver preenchida (Para a interface rodar mesmo assim)
-    let supabaseClient = null;
-    let modoOffline = false;
-    
-    if (SUPABASE_KEY.includes('SUA_CHAVE_AQUI')) {
-      console.warn("Rodando em Modo de Simulação Front-end. Coloque sua chave Supabase para ativar o Banco de Dados.");
-      modoOffline = true;
-    } else {
-      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    }
-
-    // VARIÁVEIS GLOBAIS
-    let usuarioLogado = null;
-    let perfilAtual = null;
-
-    // SISTEMA SPA (Navegação sem recarregar)
     window.navegarPara = function(idTela) {
       document.querySelectorAll('.app-screen').forEach(tela => {
-        tela.classList.add('hidden');
-        tela.classList.remove('slide-up');
+        tela.classList.add('hidden'); tela.classList.remove('active');
       });
       const telaAlvo = document.getElementById(idTela);
       if (telaAlvo) {
         telaAlvo.classList.remove('hidden');
         void telaAlvo.offsetWidth; 
-        telaAlvo.classList.add('slide-up');
+        telaAlvo.classList.add('active');
       }
       
       document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-indigo-500/10', 'text-indigo-400', 'border-indigo-500/20', 'bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+        btn.classList.add('text-slate-400');
+        
         if (btn.dataset.target === idTela) {
-          if(idTela.includes('empresa')) {
-            btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 bg-emerald-500/10 text-emerald-400 rounded-xl font-bold border border-emerald-500/20 text-sm transition-all';
-          } else {
-            btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 bg-indigo-500/10 text-indigo-400 rounded-xl font-bold border border-indigo-500/20 text-sm transition-all';
-          }
-        } else {
-          btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-all text-sm';
+          btn.classList.add('active');
+          btn.classList.remove('text-slate-400');
+          if(idTela.includes('empresa')) btn.classList.add('bg-emerald-500/10', 'text-emerald-400');
+          else btn.classList.add('bg-indigo-500/10', 'text-indigo-400');
         }
       });
+      // Scroll to top upon navigation
+      const container = document.getElementById('app-content-area');
+      if(container) container.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // LÓGICA DE BUSCA DE VAGAS
-    window.filtrarVagas = function() {
-      const input = document.getElementById('busca-vagas-input').value.toLowerCase();
-      const vagas = document.querySelectorAll('.vaga-card');
-      const containerVazio = document.getElementById('vagas-vazio');
-      let encontrou = false;
-
-      vagas.forEach(vaga => {
-        const titulo = vaga.getAttribute('data-titulo').toLowerCase();
-        const empresa = vaga.getAttribute('data-empresa').toLowerCase();
-        if (titulo.includes(input) || empresa.includes(input)) {
-          vaga.style.display = 'block';
-          encontrou = true;
-        } else {
-          vaga.style.display = 'none';
-        }
-      });
-
-      if (!encontrou) { containerVazio.classList.remove('hidden'); containerVazio.classList.add('block'); } 
-      else { containerVazio.classList.add('hidden'); containerVazio.classList.remove('block'); }
+    // ----------------------------------------------------
+    // SUPABASE DATABASE & AUTH MOCK FALLBACK
+    // ----------------------------------------------------
+    const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
+    const SUPABASE_KEY = 'b_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45'; // <--- INSIRA SUA CHAVE
+    
+    let supabaseClient = null;
+    let modoOffline = false;
+    let usuarioLogado = null;
+    let perfilAtual = null;
+    
+    if (SUPABASE_KEY.includes('SUA_CHAVE_AQUI')) {
+      console.warn("⚠️ MODO SIMULAÇÃO: Conecte sua chave Supabase para salvar no banco real.");
+      modoOffline = true;
+    } else {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     }
 
-    // FORMULÁRIOS DINÂMICOS (Adicionar Skills, Exp, Vagas na interface)
-    window.adicionarHabilidade = function(e) {
-      e.preventDefault();
-      const nome = document.getElementById('ah-nome').value;
-      const nivel = document.getElementById('ah-nivel').value;
-      const container = document.getElementById('container-habilidades');
-      
-      const novaHab = document.createElement('div');
-      novaHab.className = "bg-slate-950 border border-slate-800 p-4 rounded-xl text-center slide-up";
-      novaHab.innerHTML = `<p class="text-sm font-bold text-slate-300">${nome}</p><p class="text-[10px] text-emerald-400 font-black mt-1 uppercase tracking-wider">${nivel}</p>`;
-      
-      container.insertBefore(novaHab, container.lastElementChild); // Insere antes do botão "Nova"
-      fecharModal('modal-add-habilidade');
-      mostrarToast('Habilidade treinada com sucesso!', 'success');
-      document.getElementById('ah-nome').value = '';
-    }
-
-    window.adicionarExperiencia = function(e) {
-      e.preventDefault();
-      const cargo = document.getElementById('ae-cargo').value;
-      const empresa = document.getElementById('ae-empresa').value;
-      const container = document.getElementById('container-experiencias');
-      
-      const novaExp = document.createElement('div');
-      novaExp.className = "relative slide-up";
-      novaExp.innerHTML = `
-        <div class="absolute -left-[33px] w-4 h-4 rounded-full bg-slate-900 border-2 border-indigo-500 ring-4 ring-slate-900"></div>
-        <h4 class="font-bold text-white text-lg">${cargo}</h4>
-        <p class="text-xs font-bold text-indigo-400 mb-2 mt-1 uppercase tracking-wider">${empresa} • Missão Concluída</p>
-      `;
-      
-      container.insertBefore(novaExp, container.lastElementChild);
-      fecharModal('modal-add-experiencia');
-      mostrarToast('Histórico atualizado!', 'success');
-      document.getElementById('ae-cargo').value = '';
-      document.getElementById('ae-empresa').value = '';
-    }
-
-    window.criarNovaVaga = function(e) {
-      e.preventDefault();
-      const titulo = document.getElementById('nv-titulo').value;
-      const local = document.getElementById('nv-local').value;
-      const xp = document.getElementById('nv-xp').value;
-      
-      const containerGeral = document.getElementById('container-todas-vagas'); // Mural Candidato
-      const containerEmpresa = document.getElementById('container-vagas-empresa'); // Mural Empresa
-      const contador = document.getElementById('contador-vagas-sidebar');
-      
-      // Cria pro mural de todos
-      if(containerGeral) {
-        const novaVagaGeral = document.createElement('div');
-        novaVagaGeral.className = "vaga-card bg-slate-900 border border-slate-800 rounded-2xl p-6 relative shadow-lg slide-up";
-        novaVagaGeral.setAttribute('data-titulo', titulo);
-        novaVagaGeral.setAttribute('data-empresa', perfilAtual ? perfilAtual.nome : 'Empresa Parceira');
-        novaVagaGeral.innerHTML = `
-          <div class="flex justify-between items-start mb-6">
-            <div>
-              <span class="text-[10px] font-black text-indigo-400 bg-indigo-400/10 px-2 py-1 rounded-md border border-indigo-400/20">NOVA MISSÃO</span>
-              <h3 class="text-xl font-bold text-white mt-2 vaga-titulo">${titulo}</h3>
-              <p class="text-sm text-slate-400 mt-1 vaga-empresa">${perfilAtual ? perfilAtual.nome : 'Sua Empresa'} • ${local}</p>
-            </div>
-          </div>
-          <button onclick="iniciarRPG('${titulo}', '${perfilAtual ? perfilAtual.nome : 'Empresa'}')" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/20">Iniciar Desafio (+${xp} XP)</button>
-        `;
-        containerGeral.prepend(novaVagaGeral);
-      }
-
-      // Cria pro painel da empresa
-      if(containerEmpresa) {
-        const novaVagaEmpresa = document.createElement('div');
-        novaVagaEmpresa.className = "bg-slate-900 border border-emerald-500/30 rounded-2xl p-6 relative overflow-hidden shadow-lg slide-up";
-        novaVagaEmpresa.innerHTML = `
-          <div class="flex justify-between items-center pb-2 gap-4">
-            <div><h3 class="text-xl font-bold text-white">${titulo}</h3><p class="text-sm text-slate-400 mt-1">Publicada agora • ${local}</p></div>
-            <div class="text-center"><p class="text-3xl font-black text-slate-600">0</p><p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Jogadores</p></div>
-          </div>
-        `;
-        containerEmpresa.prepend(novaVagaEmpresa);
-        if(contador) contador.innerText = parseInt(contador.innerText) + 1;
-      }
-
-      fecharModal('modal-nova-vaga');
-      mostrarToast('Missão publicada com sucesso no mercado!', 'success');
-      document.getElementById('nv-titulo').value = '';
-      document.getElementById('nv-local').value = '';
-    }
-
-    // --- AUTH E LOGIN (Mock ou Supabase) ---
+    // LÓGICA DE LOGIN
     let modoAutenticacao = 'login';
     window.alternarModoAuth = function(modo) {
       modoAutenticacao = modo;
       const btn = document.getElementById('auth-submit-btn');
       if (modo === 'signup') {
-        document.getElementById('tab-signup').className = 'flex-1 py-2.5 bg-slate-800 text-white text-sm font-bold rounded-lg shadow-sm transition-all';
-        document.getElementById('tab-login').className = 'flex-1 py-2.5 text-slate-400 hover:text-white text-sm font-bold rounded-lg transition-all';
+        document.getElementById('tab-signup').className = 'flex-1 py-3 bg-slate-800 text-white text-sm font-black rounded-lg shadow-sm transition-all uppercase tracking-wider';
+        document.getElementById('tab-login').className = 'flex-1 py-3 text-slate-500 hover:text-slate-300 text-sm font-black rounded-lg transition-all uppercase tracking-wider';
         btn.innerText = 'CRIAR CONTA';
       } else {
-        document.getElementById('tab-login').className = 'flex-1 py-2.5 bg-slate-800 text-white text-sm font-bold rounded-lg shadow-sm transition-all';
-        document.getElementById('tab-signup').className = 'flex-1 py-2.5 text-slate-400 hover:text-white text-sm font-bold rounded-lg transition-all';
+        document.getElementById('tab-login').className = 'flex-1 py-3 bg-slate-800 text-white text-sm font-black rounded-lg shadow-sm transition-all uppercase tracking-wider';
+        document.getElementById('tab-signup').className = 'flex-1 py-3 text-slate-500 hover:text-slate-300 text-sm font-black rounded-lg transition-all uppercase tracking-wider';
         btn.innerText = 'INICIAR SESSÃO';
       }
     }
@@ -800,30 +1199,28 @@
       e.preventDefault();
       const email = document.getElementById('auth-email').value;
       const pass = document.getElementById('auth-password').value;
+      const btn = document.getElementById('auth-submit-btn');
       
       if(modoOffline) {
-        // SIMULAÇÃO FRONTEND
         fecharModal('login-modal');
-        usuarioLogado = { id: 'simulado123', email: email };
+        usuarioLogado = { id: 'usr_fake_123', email: email };
         abrirModal('onboarding-modal');
         return;
       }
 
-      // SUPABASE REAL
-      const btn = document.getElementById('auth-submit-btn');
-      btn.disabled = true; btn.innerText = 'PROCESSANDO...';
+      btn.disabled = true; btn.innerText = 'CARREGANDO...';
       try {
         if (modoAutenticacao === 'signup') {
           const { error } = await supabaseClient.auth.signUp({ email, password: pass });
           if (error) throw error;
-          mostrarToast('Conta criada! Pode fazer login.', 'success');
+          mostrarToast('Conta criada com sucesso! Entre agora.', 'success');
           setTimeout(() => alternarModoAuth('login'), 1500);
         } else {
           const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
           if (error) throw error;
           fecharModal('login-modal');
         }
-      } catch (err) { alert('Erro: ' + err.message); } 
+      } catch (err) { mostrarToast('Erro: ' + err.message, 'error'); } 
       finally { btn.disabled = false; btn.innerText = modoAutenticacao === 'signup' ? 'CRIAR CONTA' : 'INICIAR SESSÃO'; }
     }
 
@@ -832,22 +1229,27 @@
       const nome = document.getElementById('onboarding-nome').value;
       const tipo = document.querySelector('input[name="tipo_conta"]:checked').value;
       
-      let dadosPerfil = { id: usuarioLogado ? usuarioLogado.id : 'sim', nome, tipo_conta: tipo, xp: 0, nivel: 1 };
+      let dadosPerfil = { id: usuarioLogado ? usuarioLogado.id : 'fake_id', nome, tipo_conta: tipo, xp: 0, nivel: 1 };
       
       if(modoOffline) {
         perfilAtual = dadosPerfil;
         fecharModal('onboarding-modal');
         atualizarInfoTela(perfilAtual);
-        mostrarToast('Perfil criado com sucesso!', 'success');
+        mostrarToast('Personagem forjado com sucesso!', 'success');
         return;
       }
 
-      // SUPABASE REAL
+      const btn = document.getElementById('onboarding-submit-btn');
+      btn.disabled = true; btn.innerText = 'FORJANDO...';
       const { error } = await supabaseClient.from('perfis').insert([dadosPerfil]);
       if (!error) {
         fecharModal('onboarding-modal');
         verificarPerfil(usuarioLogado);
-      } else { alert('Erro ao salvar: ' + error.message); }
+        mostrarToast('Bem-vindo(a) ao TalentPlay!', 'success');
+      } else { 
+        mostrarToast('Erro ao criar: ' + error.message, 'error'); 
+        btn.disabled = false; btn.innerText = 'COMEÇAR AVENTURA';
+      }
     }
 
     window.fazerLogout = async function() {
@@ -855,6 +1257,7 @@
       window.location.reload();
     }
 
+    // ATUALIZAÇÃO VISUAL DA INTERFACE
     function atualizarInterfaceAuth(logado) {
       const btnEntrar = document.getElementById('btn-entrar-header');
       const userMenu = document.getElementById('user-menu-header');
@@ -864,8 +1267,10 @@
       } else {
         if(btnEntrar) btnEntrar.classList.remove('hidden');
         if(userMenu) { userMenu.classList.add('hidden'); userMenu.classList.remove('flex'); }
+        // Reset para Visitante
         document.getElementById('sidebar-name').innerText = "Visitante";
         document.getElementById('sidebar-role').innerText = "Faça Login";
+        document.getElementById('sidebar-role').className = "text-[11px] font-semibold text-slate-500 uppercase tracking-wide mt-0.5";
         document.getElementById('sidebar-level-badge').classList.add('hidden');
         document.getElementById('sidebar-xp-container').classList.add('hidden');
         document.getElementById('menu-candidato').classList.remove('hidden');
@@ -873,14 +1278,15 @@
       }
     }
 
-    async function atualizarInfoTela(data) {
+    function atualizarInfoTela(data) {
       document.getElementById('sidebar-name').innerText = data.nome;
       
       if (data.tipo_conta === 'candidato') {
         document.getElementById('sidebar-role').innerText = "Candidato";
-        document.getElementById('sidebar-role').className = "text-[11px] font-semibold text-indigo-400 uppercase tracking-wide truncate mt-0.5";
+        document.getElementById('sidebar-role').className = "text-[11px] font-bold text-indigo-400 uppercase tracking-widest mt-0.5";
         document.getElementById('sidebar-level-badge').classList.remove('hidden');
         document.getElementById('sidebar-level-badge').innerText = `Lvl.${data.nivel}`;
+        document.getElementById('sidebar-avatar-icon').className = "ph ph-user text-2xl text-indigo-400";
         document.getElementById('sidebar-xp-container').classList.remove('hidden');
         
         let progressoBarra = data.xp % 100;
@@ -890,7 +1296,7 @@
         document.getElementById('menu-candidato').classList.remove('hidden');
         document.getElementById('menu-empresa').classList.add('hidden');
         
-        // Ficha
+        // Atualiza Ficha (CV)
         document.getElementById('ficha-nome').innerText = data.nome;
         document.getElementById('ficha-nivel').innerText = `Lvl. ${data.nivel}`;
         document.getElementById('ficha-xp-bar').style.width = `${progressoBarra}%`;
@@ -898,10 +1304,15 @@
         
         navegarPara('tela-home-candidato');
       } else {
+        // Modo Empresa
         document.getElementById('sidebar-role').innerText = "Recrutador";
-        document.getElementById('sidebar-role').className = "text-[11px] font-semibold text-emerald-400 uppercase tracking-wide truncate mt-0.5";
+        document.getElementById('sidebar-role').className = "text-[11px] font-bold text-emerald-400 uppercase tracking-widest mt-0.5";
         document.getElementById('sidebar-level-badge').classList.add('hidden');
         document.getElementById('sidebar-xp-container').classList.add('hidden');
+        document.getElementById('sidebar-avatar-icon').className = "ph ph-buildings text-2xl text-emerald-400";
+        
+        // Troca as cores base do menu superior
+        document.getElementById('sidebar-avatar-icon').parentElement.className = "w-14 h-14 rounded-2xl bg-slate-800 border-2 border-emerald-500/50 flex items-center justify-center overflow-hidden shadow-lg shadow-emerald-500/20";
         
         document.getElementById('menu-candidato').classList.add('hidden');
         document.getElementById('menu-empresa').classList.remove('hidden');
@@ -917,14 +1328,96 @@
       else { perfilAtual = data; atualizarInfoTela(data); }
     }
 
-    // --- MOTOR RPG ---
-    window.iniciarRPG = function(vagaTitulo = 'Missão', empresa = 'Empresa') {
-      if(!perfilAtual) return mostrarToast("Você precisa entrar no jogo primeiro!", "erro");
-      if(perfilAtual.tipo_conta === 'empresa') return mostrarToast("Recrutadores não podem jogar missões.", "erro");
+    // ----------------------------------------------------
+    // FUNÇÕES DO DOM DINÂMICO (Adicionar Itens na Tela)
+    // ----------------------------------------------------
+    window.filtrarVagas = function() {
+      const input = document.getElementById('busca-vagas-input').value.toLowerCase();
+      const vagas = document.querySelectorAll('.vaga-card');
+      const containerVazio = document.getElementById('vagas-vazio');
+      let encontrou = false;
+
+      vagas.forEach(vaga => {
+        const titulo = vaga.getAttribute('data-titulo').toLowerCase();
+        const empresa = vaga.getAttribute('data-empresa').toLowerCase();
+        if (titulo.includes(input) || empresa.includes(input)) {
+          vaga.style.display = 'flex'; encontrou = true;
+        } else { vaga.style.display = 'none'; }
+      });
+      if (!encontrou) { containerVazio.classList.remove('hidden'); containerVazio.classList.add('block'); } 
+      else { containerVazio.classList.add('hidden'); containerVazio.classList.remove('block'); }
+    }
+
+    window.adicionarHabilidade = function(e) {
+      e.preventDefault();
+      const nome = document.getElementById('ah-nome').value;
+      const nivel = document.getElementById('ah-nivel').value;
+      const c = document.getElementById('container-habilidades');
       
-      document.getElementById('rpg-titulo-header').innerText = `Simulador: ${vagaTitulo}`;
+      const el = document.createElement('div');
+      el.className = "bg-slate-950 border border-purple-500/30 p-5 rounded-2xl text-center shadow-lg relative overflow-hidden group hover:border-purple-500 transition-colors";
+      el.innerHTML = `<div class="absolute top-0 left-0 w-full h-1 bg-purple-500"></div><i class="ph ph-lightning text-3xl text-purple-500/50 mb-2 group-hover:scale-110 transition-transform"></i><p class="text-sm font-black text-white mb-1">${nome}</p><p class="text-[10px] text-purple-400 font-black uppercase tracking-widest bg-purple-500/10 inline-block px-2 py-0.5 rounded border border-purple-500/20">${nivel}</p>`;
       
-      document.getElementById('rpg-text').innerHTML = `Você está no seu primeiro dia na <strong>${empresa}</strong>. O telefone toca sem parar. O gerente de operações passa correndo e grita: <span class='text-white font-bold'>"Preciso do relatório de estoque de ontem na minha mesa agora!"</span> Ao mesmo tempo, um fornecedor importante liga no seu ramal exigindo falar com alguém. Como você reage?`;
+      c.insertBefore(el, c.lastElementChild);
+      fecharModal('modal-add-habilidade');
+      mostrarToast('Nova habilidade ativada na sua árvore!', 'success');
+      document.getElementById('ah-nome').value = '';
+    }
+
+    window.adicionarExperiencia = function(e) {
+      e.preventDefault();
+      const cargo = document.getElementById('ae-cargo').value;
+      const empresa = document.getElementById('ae-empresa').value;
+      const c = document.getElementById('container-experiencias');
+      
+      const el = document.createElement('div');
+      el.className = "relative group mb-10";
+      el.innerHTML = `<div class="absolute -left-[46px] w-8 h-8 rounded-full bg-slate-900 border-4 border-indigo-500 flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.5)]"><div class="w-2 h-2 bg-indigo-400 rounded-full group-hover:scale-150 transition-transform"></div></div><div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 group-hover:border-indigo-500/50 transition-colors shadow-lg"><h4 class="font-black text-white text-xl mb-2">${cargo}</h4><p class="text-sm font-black text-indigo-400 uppercase tracking-wider bg-indigo-500/10 inline-block px-3 py-1 rounded-lg border border-indigo-500/20">${empresa} • Missão Concluída</p></div>`;
+      
+      c.insertBefore(el, c.lastElementChild);
+      fecharModal('modal-add-experiencia');
+      mostrarToast('O Tomo da Experiência foi atualizado!', 'success');
+      document.getElementById('ae-cargo').value = ''; document.getElementById('ae-empresa').value = '';
+    }
+
+    window.criarNovaVaga = function(e) {
+      e.preventDefault();
+      const titulo = document.getElementById('nv-titulo').value;
+      const local = document.getElementById('nv-local').value;
+      const xp = document.getElementById('nv-xp').value;
+      
+      const cGeral = document.getElementById('container-todas-vagas');
+      const cEmpresa = document.getElementById('container-vagas-empresa');
+      
+      if(cGeral) {
+        const el = document.createElement('div');
+        el.className = "vaga-card bg-slate-900 border border-emerald-500/50 rounded-3xl p-6 relative shadow-[0_0_20px_rgba(16,185,129,0.1)] flex flex-col h-full hover:border-emerald-400 transition-colors group";
+        el.setAttribute('data-titulo', titulo); el.setAttribute('data-empresa', perfilAtual ? perfilAtual.nome : 'Empresa Parceira');
+        el.innerHTML = `<div class="flex justify-between items-start mb-6"><div><span class="text-[9px] font-black text-white bg-emerald-500 px-2 py-1 rounded-md tracking-widest uppercase shadow-md animate-pulse">NOVA</span><h3 class="text-xl font-bold text-white mt-3 vaga-titulo group-hover:text-emerald-400 transition-colors leading-tight">${titulo}</h3><p class="text-sm text-slate-400 mt-1 vaga-empresa">${perfilAtual ? perfilAtual.nome : 'Empresa'} • ${local}</p></div><div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-center text-2xl text-emerald-500 shadow-inner shrink-0">🏢</div></div><div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between"><span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">+${xp} XP</span><button onclick="iniciarRPG('${titulo}', '${perfilAtual ? perfilAtual.nome : 'Empresa'}')" class="text-sm font-bold text-slate-900 bg-emerald-500 hover:bg-emerald-400 px-5 py-2.5 rounded-xl transition-colors shadow-lg">Jogar Missão</button></div>`;
+        cGeral.prepend(el);
+      }
+
+      if(cEmpresa) {
+        const el = document.createElement('div');
+        el.className = "bg-slate-900 border border-slate-800 rounded-3xl p-8 relative overflow-hidden shadow-xl";
+        el.innerHTML = `<div class="flex justify-between items-start mb-6"><div><span class="inline-block py-1 px-2.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-3">Ativa Agora</span><h3 class="text-2xl font-black text-white leading-tight">${titulo}</h3><p class="text-sm text-slate-400 mt-1 font-medium"><i class="ph ph-map-pin text-emerald-500"></i> ${local}</p></div><button class="text-slate-400 hover:text-white p-3 rounded-xl transition-colors"><i class="ph ph-dots-three text-2xl font-bold"></i></button></div><div class="grid grid-cols-3 gap-4 mb-2"><div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center"><p class="text-3xl font-black text-white mb-1">0</p><p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Jogadores</p></div><div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center"><p class="text-3xl font-black text-emerald-400 mb-1">0</p><p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Matches</p></div><div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center flex flex-col justify-center items-center gap-1"><p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Recompensa</p><span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-3 py-1 rounded-lg font-black text-sm">+${xp} XP</span></div></div>`;
+        cEmpresa.prepend(el);
+      }
+
+      fecharModal('modal-nova-vaga');
+      mostrarToast('Missão lançada no radar de talentos!', 'success');
+      document.getElementById('nv-titulo').value = ''; document.getElementById('nv-local').value = '';
+    }
+
+    // ----------------------------------------------------
+    // MOTOR DO RPG (SIMULADOR DE VAGAS)
+    // ----------------------------------------------------
+    window.iniciarRPG = function(vagaTitulo = 'Missão Padrão', empresa = 'Nossa Empresa') {
+      if(!perfilAtual) return abrirModal('login-modal');
+      if(perfilAtual.tipo_conta === 'empresa') return mostrarToast("Você está como RH. Crie vagas ao invés de jogá-las.", "error");
+      
+      document.getElementById('rpg-titulo-header').innerText = `${vagaTitulo}`;
+      document.getElementById('rpg-text').innerHTML = `Você está no meio do expediente na <strong>${empresa}</strong>. O telefone toca sem parar. O gerente de operações passa correndo, bate na sua mesa e grita: <br><br><span class='text-white font-bold italic text-2xl border-l-4 border-indigo-500 pl-4 block bg-slate-800/50 p-4 rounded-r-xl'>"Preciso daquele relatório de estoque de ontem impresso na minha mesa AGORA!"</span><br>Ao mesmo tempo, um fornecedor Premium liga no seu ramal exigindo falar com alguém da equipe financeira urgentemente. <br><br><span class='text-indigo-400 font-black'>Qual é a sua ação imediata?</span>`;
       
       document.getElementById('rpg-choices').classList.remove('hidden');
       abrirModal('rpg-modal');
@@ -935,19 +1428,21 @@
     window.escolherOpcao = async function(opcao) {
       const rpgText = document.getElementById('rpg-text');
       document.getElementById('rpg-choices').classList.add('hidden');
-      let xpGanho = (opcao === 'C') ? 50 : 10;
+      let xpGanho = (opcao === 'C') ? 100 : 25;
       
       if(opcao === 'C') {
-        rpgText.innerHTML = `<span class='text-emerald-400 font-black text-2xl mb-2 block'>VITÓRIA!</span> Você demonstrou controle emocional e comunicação assertiva.<br><br><span class='inline-block bg-indigo-500/20 text-indigo-400 border border-indigo-500/50 px-4 py-2 rounded-lg font-black text-xl shadow-lg'>+${xpGanho} XP</span>`;
+        rpgText.innerHTML = `<div class='bg-emerald-500/10 border border-emerald-500/30 p-6 rounded-2xl mb-6 shadow-[0_0_30px_rgba(16,185,129,0.1)]'><span class='text-emerald-400 font-black text-3xl mb-2 flex items-center gap-3'><i class="ph ph-check-circle"></i> SUCESSO CRÍTICO!</span> <p class='text-slate-300 font-medium'>Você demonstrou controle emocional impecável e comunicação assertiva de sênior. O gerente ficou satisfeito e o fornecedor se sentiu respeitado.</p></div><span class='inline-block bg-indigo-500 text-white px-6 py-3 rounded-xl font-black text-2xl shadow-[0_0_20px_rgba(79,70,229,0.4)] transform hover:scale-105 transition-transform'>+${xpGanho} XP GANHOS</span>`;
       } else {
-        rpgText.innerHTML = `<span class='text-yellow-400 font-black text-2xl mb-2 block'>QUASE LÁ!</span> A intenção foi boa, mas priorizar uma tarefa e esquecer a outra quebra a dinâmica da equipe.<br><br><span class='inline-block bg-indigo-500/20 text-indigo-400 border border-indigo-500/50 px-4 py-2 rounded-lg font-black text-xl shadow-lg'>+${xpGanho} XP</span>`;
+        rpgText.innerHTML = `<div class='bg-yellow-500/10 border border-yellow-500/30 p-6 rounded-2xl mb-6 shadow-[0_0_30px_rgba(234,179,8,0.1)]'><span class='text-yellow-400 font-black text-3xl mb-2 flex items-center gap-3'><i class="ph ph-warning-circle"></i> QUASE LÁ!</span> <p class='text-slate-300 font-medium'>A intenção de resolver rápido foi boa, mas priorizar uma tarefa e abandonar o relacionamento com o fornecedor quebra a dinâmica da equipe.</p></div><span class='inline-block bg-indigo-500 text-white px-6 py-3 rounded-xl font-black text-2xl shadow-[0_0_20px_rgba(79,70,229,0.4)]'>+${xpGanho} XP GANHOS</span>`;
       }
 
-      let btnConcluir = `<button onclick="fecharRPG()" class='mt-8 w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition-all shadow-lg'>COLETAR RECOMPENSA</button>`;
+      let btnConcluir = `<button onclick="fecharRPG()" class='mt-8 w-full py-5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-lg rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)]'>COLETAR RECOMPENSA E SAIR</button>`;
       
       if(modoOffline) {
         perfilAtual.xp += xpGanho;
-        perfilAtual.nivel = Math.floor(perfilAtual.xp / 100) + 1;
+        let novoNivel = Math.floor(perfilAtual.xp / 100) + 1;
+        if(novoNivel > perfilAtual.nivel) rpgText.innerHTML += `<div class='mt-6 bg-purple-500/20 border border-purple-500/50 p-4 rounded-xl text-center animate-bounce'><span class='text-purple-400 font-black text-2xl'>🎉 LEVEL UP! VOCÊ ATINGIU O NÍVEL ${novoNivel}!</span></div>`;
+        perfilAtual.nivel = novoNivel;
         atualizarInfoTela(perfilAtual);
         rpgText.innerHTML += btnConcluir;
         return;
@@ -962,25 +1457,29 @@
         if (!error) {
           perfilAtual.xp = novoXp; perfilAtual.nivel = novoNivel;
           atualizarInfoTela(perfilAtual);
-          if(nivelSubiu) rpgText.innerHTML += `<br><span class='text-emerald-400 font-black mt-4 block animate-bounce'>🎉 LEVEL UP! NÍVEL ${novoNivel}!</span>`;
+          if(nivelSubiu) rpgText.innerHTML += `<div class='mt-6 bg-purple-500/20 border border-purple-500/50 p-4 rounded-xl text-center animate-bounce'><span class='text-purple-400 font-black text-2xl'>🎉 LEVEL UP! VOCÊ ATINGIU O NÍVEL ${novoNivel}!</span></div>`;
           rpgText.innerHTML += btnConcluir;
         }
       } catch (err) { console.error(err); }
     }
 
-    // INICIA O SISTEMA
-    if(!modoOffline) {
-      supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' && session) verificarPerfil(session.user);
-        if (event === 'SIGNED_OUT') atualizarInterfaceAuth(false);
-      });
-      supabaseClient.auth.getSession().then(({ data: { session } }) => {
-        if (session) verificarPerfil(session.user);
-        else atualizarInterfaceAuth(false);
-      });
-    } else {
-      atualizarInterfaceAuth(false); // Inicia como visitante no modo offline
-    }
+    // ----------------------------------------------------
+    // STARTUP DO SISTEMA
+    // ----------------------------------------------------
+    window.onload = function() {
+      if(!modoOffline) {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+          if (event === 'SIGNED_IN' && session) verificarPerfil(session.user);
+          if (event === 'SIGNED_OUT') atualizarInterfaceAuth(false);
+        });
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+          if (session) verificarPerfil(session.user);
+          else atualizarInterfaceAuth(false);
+        });
+      } else {
+        atualizarInterfaceAuth(false);
+      }
+    };
   </script>
 </body>
 </html>
