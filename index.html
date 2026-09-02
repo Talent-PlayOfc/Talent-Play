@@ -1165,14 +1165,14 @@
     // SUPABASE DATABASE & AUTH MOCK FALLBACK
     // ----------------------------------------------------
     const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
-    const SUPABASE_KEY = 'b_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45'; // <--- INSIRA SUA CHAVE
+    const SUPABASE_KEY = 'sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45'; // <--- INSIRA SUA CHAVE
     
     let supabaseClient = null;
     let modoOffline = false;
     let usuarioLogado = null;
     let perfilAtual = null;
     
-    if (SUPABASE_KEY.includes('SUA_CHAVE_AQUI')) {
+    if (SUPABASE_KEY.includes('sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45')) {
       console.warn("⚠️ MODO SIMULAÇÃO: Conecte sua chave Supabase para salvar no banco real.");
       modoOffline = true;
     } else {
