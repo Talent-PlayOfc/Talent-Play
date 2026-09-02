@@ -415,19 +415,20 @@
 
   <script>
     // ========================================================
-    // INTEGRAÇÃO COM SUPABASE (NÍVEL PROFISSIONAL)
+    // ========================================================
+    // INTEGRAÇÃO COM SUPABASE E RPG (CÓDIGO MESTRE)
     // ========================================================
     const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
     
-    // ⚠️ ATENÇÃO: COLE SUA CHAVE sb_publishable... AQUI ENTRE AS ASPAS!
+    // ⚠️ NÃO ESQUEÇA DE COLAR SUA CHAVE AQUI NOVAMENTE:
     const SUPABASE_KEY = 'sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45';
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // --- 1. CONTROLE DO MODAL DE LOGIN ---
     const loginModal = document.getElementById('login-modal');
-    let modoAutenticacao = 'login'; // login, signup, ou recovery
+    let modoAutenticacao = 'login';
 
-    // Tornamos as funções globais para o botão X nunca falhar
     window.abrirLogin = function() {
       loginModal.classList.remove('hidden');
       setTimeout(() => loginModal.classList.remove('opacity-0'), 50);
@@ -457,7 +458,6 @@
       
       document.getElementById('auth-feedback').classList.add('hidden');
 
-      // Reset visual padrão
       socialSection.classList.remove('hidden');
       authTabs.classList.remove('hidden');
       campoEmail.classList.remove('hidden');
@@ -472,10 +472,9 @@
         forgotLink.classList.add('hidden');
         labelSenha.innerText = 'Crie uma Senha';
       } else if (modo === 'recovery') {
-        // MODO REDEFINIR SENHA (Esconde abas e redes sociais)
         socialSection.classList.add('hidden');
         authTabs.classList.add('hidden');
-        campoEmail.classList.add('hidden'); // Esconde o e-mail, pede só a nova senha
+        campoEmail.classList.add('hidden'); 
         submitBtn.innerText = 'Salvar Nova Senha';
         authTitle.innerText = 'Redefinir Senha';
         authDesc.innerText = 'Digite uma nova senha segura para sua conta';
@@ -495,7 +494,6 @@
     function mostrarFeedback(mensagem, tipo) {
       const feedback = document.getElementById('auth-feedback');
       feedback.classList.remove('hidden', 'bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20', 'bg-red-500/10', 'text-red-400', 'border-red-500/20');
-      
       if (tipo === 'sucesso') {
         feedback.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20', 'block');
       } else {
@@ -504,18 +502,12 @@
       feedback.innerText = mensagem;
     }
 
-    // Login com Google ou LinkedIn
+    // --- 2. LÓGICA DE LOGIN, CADASTRO E RECUPERAÇÃO ---
     window.loginComProvedor = async function(provider) {
-      const { data, error } = await supabaseClient.auth.signInWithOAuth({
-        provider: provider,
-        options: {
-          redirectTo: window.location.origin + window.location.pathname
-        }
-      });
+      const { data, error } = await supabaseClient.auth.signInWithOAuth({ provider: provider, options: { redirectTo: window.location.origin + window.location.pathname } });
       if (error) mostrarFeedback('Erro ao conectar provedor.', 'erro');
     }
 
-    // Processamento do Formulário (Login / Cadastro / Nova Senha)
     window.executarAutenticacao = async function(e) {
       e.preventDefault();
       const email = document.getElementById('auth-email').value;
@@ -533,40 +525,22 @@
         if (modoAutenticacao === 'signup') {
           const { data, error } = await supabaseClient.auth.signUp({ email, password });
           if (error) throw error;
-          
-          // O pulo do gato: Se o Supabase retornar sem identidades, o e-mail já existe!
-          if (data.user && data.user.identities && data.user.identities.length === 0) {
-            throw new Error('Este e-mail já está cadastrado. Vá para a aba Entrar.');
-          }
+          if (data.user && data.user.identities && data.user.identities.length === 0) throw new Error('Este e-mail já está cadastrado. Vá para a aba Entrar.');
           
           mostrarFeedback('Conta criada! Você já pode entrar.', 'sucesso');
           document.getElementById('auth-password').value = '';
           setTimeout(() => alternarModoAuth('login'), 1500);
-          
         } else if (modoAutenticacao === 'recovery') {
-          // O usuário está gravando a NOVA senha após clicar no e-mail
           const { error } = await supabaseClient.auth.updateUser({ password: password });
           if (error) throw error;
-
           mostrarFeedback('Senha atualizada com sucesso! Preparando...', 'sucesso');
-          // Limpa o link de segurança gigante da URL do navegador
           window.history.replaceState(null, '', window.location.pathname);
-          setTimeout(() => {
-            document.getElementById('auth-password').value = '';
-            alternarModoAuth('login');
-          }, 2000);
-
+          setTimeout(() => { document.getElementById('auth-password').value = ''; alternarModoAuth('login'); }, 2000);
         } else {
-          // Login Normal
           const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
           if (error) throw error;
-          
           mostrarFeedback('Login realizado com sucesso!', 'sucesso');
-          setTimeout(() => {
-            fecharLogin();
-            const userEmailEl = document.querySelector('aside p.text-xs');
-            if (userEmailEl) userEmailEl.innerText = data.user.email;
-          }, 1200);
+          setTimeout(() => { fecharLogin(); }, 1200);
         }
       } catch (err) {
         let msg = err.message;
@@ -580,204 +554,112 @@
       }
     }
 
-    // Dispara e-mail de recuperação
     window.recuperarSenha = async function(e) {
       e.preventDefault();
       const emailInput = document.getElementById('auth-email').value;
-
-      if (!emailInput) {
-        return mostrarFeedback('Digite seu e-mail corporativo/pessoal acima antes de clicar em Esqueci.', 'erro');
-      }
+      if (!emailInput) return mostrarFeedback('Digite seu e-mail corporativo/pessoal acima antes de clicar em Esqueci.', 'erro');
       mostrarFeedback('Enviando link de recuperação...', 'sucesso');
-
       try {
-        const { error } = await supabaseClient.auth.resetPasswordForEmail(emailInput, {
-          redirectTo: window.location.origin + window.location.pathname, 
-        });
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(emailInput, { redirectTo: window.location.origin + window.location.pathname });
         if (error) throw error;
         mostrarFeedback('Link enviado! Verifique sua caixa de entrada e a pasta spam.', 'sucesso');
-      } catch (err) {
-        mostrarFeedback('Erro ao enviar e-mail. Tente novamente.', 'erro');
-      }
+      } catch (err) { mostrarFeedback('Erro ao enviar e-mail. Tente novamente.', 'erro'); }
     }
 
-    // LISTENER INTELIGENTE: Detecta quando a pessoa volta do e-mail
-    supabaseClient.auth.onAuthStateChange(async (event, session) => {
-      // Atualiza o topo do site automaticamente no Login e Logout
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-        atualizarInterfaceAuth(session);
-      }
+    // --- 3. SESSÃO E PERFIL (O SISTEMA DE RPG) ---
+    let usuarioLogado = null;
 
-      if (event === 'PASSWORD_RECOVERY') {
-        // Abre o modal automaticamente e coloca no modo de recuperação
-        abrirLogin();
-        alternarModoAuth('recovery');
-      }
-    });
-    // ========================================================
-    // GESTÃO DE SESSÃO (MANTER LOGADO) E LOGOUT
-    // ========================================================
-
-    // 1. Atualiza o visual do Header baseado no status do usuário
     function atualizarInterfaceAuth(session) {
       const btnEntrar = document.getElementById('btn-entrar-header');
       const userMenu = document.getElementById('user-menu-header');
-      const emailDisplay = document.getElementById('user-email-display');
-
       if (session && session.user) {
-        // MODO LOGADO: Esconde o "Entrar", mostra o "Perfil"
         if (btnEntrar) btnEntrar.classList.add('hidden');
-        if (userMenu) {
-          userMenu.classList.remove('hidden');
-          userMenu.classList.add('flex');
-        }
-        if (emailDisplay) emailDisplay.innerText = session.user.email;
+        if (userMenu) { userMenu.classList.remove('hidden'); userMenu.classList.add('flex'); }
       } else {
-        // MODO DESLOGADO: Mostra o "Entrar", esconde o "Perfil"
         if (btnEntrar) btnEntrar.classList.remove('hidden');
-        if (userMenu) {
-          userMenu.classList.add('hidden');
-          userMenu.classList.remove('flex');
-        }
+        if (userMenu) { userMenu.classList.add('hidden'); userMenu.classList.remove('flex'); }
       }
     }
-
-    // 2. Verifica se está logado e busca o Perfil no Banco
-    async function verificarSessao() {
-      const { data: { session }, error } = await supabaseClient.auth.getSession();
-      atualizarInterfaceAuth(session);
-      
-      // Se a pessoa estiver logada, vamos checar se ela já tem ficha criada
-      if (session && session.user) {
-        verificarPerfil(session.user);
-      }
-    }
-
-    // 4. Lógica do Perfil de Personagem (RPG)
-    let usuarioLogado = null;
 
     async function verificarPerfil(user) {
       usuarioLogado = user;
-      
-      // Procura na tabela 'perfis' alguém com esse ID
       const { data, error } = await supabaseClient
         .from('perfis')
         .select('*')
         .eq('id', user.id)
-        .single(); // Garante que pega apenas 1 resultado
+        .single();
 
       if (!data) {
-        // Se NÃO ACHOU perfil, abre a tela de Onboarding
+        // Abre onboarding
         const modalOnboarding = document.getElementById('onboarding-modal');
-        modalOnboarding.classList.remove('hidden');
-        setTimeout(() => modalOnboarding.classList.remove('opacity-0'), 50);
-        modalOnboarding.classList.add('flex');
-      } else {
-        // SE ACHOU o perfil, atualiza o Cabeçalho com as informações reais
-        const emailDisplay = document.getElementById('user-email-display');
-        const infosDisplay = emailDisplay.nextElementSibling; // O texto abaixo do nome
-        
-        emailDisplay.innerText = data.nome;
-        
-        if (data.tipo_conta === 'candidato') {
-          infosDisplay.innerText = `Nível ${data.nivel} • ${data.xp} XP`;
-          infosDisplay.className = "text-xs text-indigo-400 font-medium";
+        if(modalOnboarding) {
+          modalOnboarding.classList.remove('hidden');
+          setTimeout(() => modalOnboarding.classList.remove('opacity-0'), 50);
+          modalOnboarding.classList.add('flex');
         } else {
-          infosDisplay.innerText = `Recrutador (Empresa)`;
-          infosDisplay.className = "text-xs text-emerald-400 font-medium";
+          console.error("Modal de onboarding não encontrado no HTML!");
+        }
+      } else {
+        // Atualiza cabeçalho
+        const emailDisplay = document.getElementById('user-email-display');
+        if(emailDisplay) {
+          const infosDisplay = emailDisplay.nextElementSibling;
+          emailDisplay.innerText = data.nome;
+          if (data.tipo_conta === 'candidato') {
+            infosDisplay.innerText = `Nível ${data.nivel} • ${data.xp} XP`;
+            infosDisplay.className = "text-xs text-indigo-400 font-medium";
+          } else {
+            infosDisplay.innerText = `Recrutador (Empresa)`;
+            infosDisplay.className = "text-xs text-emerald-400 font-medium";
+          }
         }
       }
     }
 
-    // 5. Salva o perfil novo no banco de dados
+    async function verificarSessao() {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      atualizarInterfaceAuth(session);
+      if (session && session.user) verificarPerfil(session.user);
+    }
+
     window.salvarPerfil = async function(e) {
       e.preventDefault();
       const nome = document.getElementById('onboarding-nome').value;
       const tipoConta = document.querySelector('input[name="tipo_conta"]:checked').value;
       const btn = document.getElementById('onboarding-submit-btn');
-
+      
       btn.disabled = true;
       btn.innerText = 'Salvando dados...';
 
-      // Salva na tabela que acabamos de criar
-      const { error } = await supabaseClient
-        .from('perfis')
-        .insert([
-          { 
-            id: usuarioLogado.id, 
-            nome: nome, 
-            tipo_conta: tipoConta 
-            // xp e nivel o banco já coloca 0 e 1 automático!
-          }
-        ]);
+      const { error } = await supabaseClient.from('perfis').insert([{ id: usuarioLogado.id, nome: nome, tipo_conta: tipoConta }]);
 
       if (error) {
         alert("Erro ao salvar perfil: " + error.message);
         btn.disabled = false;
         btn.innerText = 'Salvar e Entrar';
       } else {
-        // Sucesso! Fecha o modal e atualiza a tela
         const modalOnboarding = document.getElementById('onboarding-modal');
         modalOnboarding.classList.add('opacity-0');
         setTimeout(() => {
           modalOnboarding.classList.add('hidden');
           modalOnboarding.classList.remove('flex');
-          // Recarrega o perfil para atualizar o cabeçalho
           verificarPerfil(usuarioLogado);
         }, 300);
       }
     }
-    
-    <!-- ==========================================
-       MODAL DE ONBOARDING (BOAS-VINDAS)
-       ========================================== -->
-  <div id="onboarding-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[70] hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
-    <div class="max-w-md w-full bg-slate-900 border border-indigo-500/30 rounded-2xl shadow-2xl overflow-hidden p-8 text-center relative">
-      
-      <div class="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-        <i class="ph ph-rocket-launch text-3xl text-indigo-400"></i>
-      </div>
-      
-      <h3 class="text-2xl font-extrabold text-white mb-2">Bem-vindo(a) ao Jogo!</h3>
-      <p class="text-slate-400 mb-6 text-sm">Para configurar seu painel, precisamos de duas informações rápidas.</p>
 
-      <form id="onboarding-form" onsubmit="salvarPerfil(event)" class="space-y-5 text-left">
-        <!-- Nome -->
-        <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Como devemos te chamar?</label>
-          <div class="relative">
-            <i class="ph ph-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
-            <input id="onboarding-nome" type="text" placeholder="Seu nome ou apelido" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors" required>
-          </div>
-        </div>
+    window.fazerLogout = async function() {
+      const { error } = await supabaseClient.auth.signOut();
+      if (!error) { atualizarInterfaceAuth(null); window.location.reload(); }
+    }
 
-        <!-- Tipo de Conta (Radio Buttons Estilizados) -->
-        <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qual é o seu objetivo aqui?</label>
-          <div class="grid grid-cols-2 gap-3">
-            <label class="cursor-pointer">
-              <input type="radio" name="tipo_conta" value="candidato" class="peer sr-only" required>
-              <div class="text-center p-3 border border-slate-700 rounded-lg peer-checked:bg-indigo-600/20 peer-checked:border-indigo-500 peer-checked:text-indigo-400 text-slate-400 hover:bg-slate-800 transition-all">
-                <i class="ph ph-sword text-2xl mb-1 block"></i>
-                <span class="text-xs font-bold">Sou Talento</span>
-              </div>
-            </label>
-            <label class="cursor-pointer">
-              <input type="radio" name="tipo_conta" value="empresa" class="peer sr-only">
-              <div class="text-center p-3 border border-slate-700 rounded-lg peer-checked:bg-emerald-600/20 peer-checked:border-emerald-500 peer-checked:text-emerald-400 text-slate-400 hover:bg-slate-800 transition-all">
-                <i class="ph ph-buildings text-2xl mb-1 block"></i>
-                <span class="text-xs font-bold">Sou Empresa</span>
-              </div>
-            </label>
-          </div>
-        </div>
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') atualizarInterfaceAuth(session);
+      if (event === 'PASSWORD_RECOVERY') { abrirLogin(); alternarModoAuth('recovery'); }
+    });
 
-        <button id="onboarding-submit-btn" type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold text-sm transition-colors shadow-lg shadow-indigo-600/20 mt-4">
-          Salvar e Entrar
-        </button>
-      </form>
-    </div>
-  </div>
+    // Inicia tudo
+    verificarSessao();
   </script>
 </body>
 </html>
