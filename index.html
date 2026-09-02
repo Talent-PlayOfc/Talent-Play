@@ -307,13 +307,16 @@
     </div>
   </div>
   <!-- ==========================================
-       MODAL DE LOGIN E CADASTRO
+       MODAL DE LOGIN, CADASTRO E RECUPERAÇÃO
        ========================================== -->
   <div id="login-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-[60] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden relative">
+    <!-- Clicar fora do modal também fecha -->
+    <div class="absolute inset-0 z-0" onclick="fecharLogin()"></div>
+
+    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden relative z-10">
       
       <!-- Botão Fechar -->
-      <button onclick="fecharLogin()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors z-10">
+      <button onclick="fecharLogin()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors z-20 cursor-pointer">
         <i class="ph ph-x"></i>
       </button>
 
@@ -326,36 +329,55 @@
         <div class="text-center mb-6">
           <div class="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white text-2xl mx-auto mb-3 shadow-lg shadow-indigo-500/30">T</div>
           <h3 id="auth-title" class="text-2xl font-extrabold text-white">Acesse o TalentPlay</h3>
-          <p id="auth-desc" class="text-sm text-slate-400 mt-1">Faça login para gerenciar sua carreira</p>
+          <p id="auth-desc" class="text-sm text-slate-400 mt-1">Conecte-se para recrutar ou evoluir sua carreira</p>
         </div>
 
-        <!-- Abas Login / Cadastro -->
-        <div class="flex p-1 bg-slate-950 rounded-lg mb-6">
+        <!-- Abas Login / Cadastro (Escondidas na recuperação de senha) -->
+        <div id="auth-tabs" class="flex p-1 bg-slate-950 rounded-lg mb-6">
           <button id="tab-login" onclick="alternarModoAuth('login')" class="flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors">Entrar</button>
           <button id="tab-signup" onclick="alternarModoAuth('signup')" class="flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors">Cadastrar</button>
         </div>
 
-        <!-- Mensagem de Feedback (Erros e Sucesso) -->
-        <div id="auth-feedback" class="hidden text-xs p-3 rounded-lg mb-4 font-medium"></div>
+        <!-- Login Social (Google / LinkedIn) -->
+        <div id="social-login-section">
+          <div class="grid grid-cols-2 gap-3 mb-5">
+            <button onclick="loginComProvedor('google')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white py-2.5 rounded-lg text-sm font-medium transition-colors">
+              <i class="ph ph-google-logo text-lg text-red-400"></i> Google
+            </button>
+            <button onclick="loginComProvedor('linkedin_oidc')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white py-2.5 rounded-lg text-sm font-medium transition-colors">
+              <i class="ph ph-linkedin-logo text-lg text-blue-500"></i> LinkedIn
+            </button>
+          </div>
+          
+          <div class="flex items-center gap-3 mb-5 text-xs text-slate-500 font-medium uppercase tracking-wider">
+            <div class="h-px bg-slate-800 flex-1"></div>
+            <span>Ou use seu E-mail</span>
+            <div class="h-px bg-slate-800 flex-1"></div>
+          </div>
+        </div>
 
-        <!-- Formulário Funcional (Conectado ao JS) -->
+        <!-- Mensagem de Feedback -->
+        <div id="auth-feedback" class="hidden text-xs p-3 rounded-lg mb-4 font-medium transition-all"></div>
+
+        <!-- Formulário Funcional -->
         <form id="auth-form" onsubmit="executarAutenticacao(event)" class="space-y-4">
-          <div>
-            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">E-mail</label>
+          
+          <div id="campo-email">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">E-mail Corporativo ou Pessoal</label>
             <div class="relative">
               <i class="ph ph-envelope absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
-              <input id="auth-email" type="email" placeholder="seu@email.com" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors" required>
+              <input id="auth-email" type="email" placeholder="seu@email.com" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors">
             </div>
           </div>
           
-          <div>
+          <div id="campo-senha">
             <div class="flex justify-between items-center mb-1.5">
-              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Senha</label>
+              <label id="label-senha" class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Senha</label>
               <a href="#" id="auth-forgot" onclick="recuperarSenha(event)" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium transition-colors">Esqueceu?</a>
             </div>
             <div class="relative">
               <i class="ph ph-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
-              <input id="auth-password" type="password" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors" required minlength="6">
+              <input id="auth-password" type="password" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors">
             </div>
           </div>
 
@@ -369,28 +391,27 @@
   </div>
 
   <script>
-   // ========================================================
-    // INTEGRAÇÃO COM SUPABASE (COMPLETA E FINAL)
+    // ========================================================
+    // INTEGRAÇÃO COM SUPABASE (NÍVEL PROFISSIONAL)
     // ========================================================
     const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
     
-    // ⚠️ COLE SUA CHAVE PUBLISHABLE COMPLETA AQUI DE NOVO:
+    // ⚠️ ATENÇÃO: COLE SUA CHAVE sb_publishable... AQUI ENTRE AS ASPAS!
     const SUPABASE_KEY = 'sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45';
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Controle do Modal de Autenticação
     const loginModal = document.getElementById('login-modal');
-    let modoAutenticacao = 'login'; // 'login' ou 'signup'
+    let modoAutenticacao = 'login'; // login, signup, ou recovery
 
-    // Função de fechar no X (Já ativada)
-    function abrirLogin() {
+    // Tornamos as funções globais para o botão X nunca falhar
+    window.abrirLogin = function() {
       loginModal.classList.remove('hidden');
       setTimeout(() => loginModal.classList.remove('opacity-0'), 50);
       loginModal.classList.add('flex');
     }
 
-    function fecharLogin() {
+    window.fecharLogin = function() {
       loginModal.classList.add('opacity-0');
       setTimeout(() => {
         loginModal.classList.add('hidden');
@@ -398,8 +419,7 @@
       }, 300);
     }
 
-    // Alternar abas
-    function alternarModoAuth(modo) {
+    window.alternarModoAuth = function(modo) {
       modoAutenticacao = modo;
       const tabLogin = document.getElementById('tab-login');
       const tabSignup = document.getElementById('tab-signup');
@@ -407,27 +427,48 @@
       const authTitle = document.getElementById('auth-title');
       const authDesc = document.getElementById('auth-desc');
       const forgotLink = document.getElementById('auth-forgot');
+      const socialSection = document.getElementById('social-login-section');
+      const authTabs = document.getElementById('auth-tabs');
+      const campoEmail = document.getElementById('campo-email');
+      const labelSenha = document.getElementById('label-senha');
       
       document.getElementById('auth-feedback').classList.add('hidden');
+
+      // Reset visual padrão
+      socialSection.classList.remove('hidden');
+      authTabs.classList.remove('hidden');
+      campoEmail.classList.remove('hidden');
+      document.getElementById('auth-password').placeholder = 'Mínimo 6 caracteres';
 
       if (modo === 'signup') {
         tabSignup.className = 'flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors';
         tabLogin.className = 'flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors';
-        submitBtn.innerText = 'Criar Minha Conta';
-        authTitle.innerText = 'Crie Sua Conta';
-        authDesc.innerText = 'Cadastre-se para acessar';
+        submitBtn.innerText = 'Criar Conta';
+        authTitle.innerText = 'Comece no TalentPlay';
+        authDesc.innerText = 'Talentos e Empresas convergem aqui';
         forgotLink.classList.add('hidden');
+        labelSenha.innerText = 'Crie uma Senha';
+      } else if (modo === 'recovery') {
+        // MODO REDEFINIR SENHA (Esconde abas e redes sociais)
+        socialSection.classList.add('hidden');
+        authTabs.classList.add('hidden');
+        campoEmail.classList.add('hidden'); // Esconde o e-mail, pede só a nova senha
+        submitBtn.innerText = 'Salvar Nova Senha';
+        authTitle.innerText = 'Redefinir Senha';
+        authDesc.innerText = 'Digite uma nova senha segura para sua conta';
+        forgotLink.classList.add('hidden');
+        labelSenha.innerText = 'Nova Senha';
       } else {
         tabLogin.className = 'flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors';
         tabSignup.className = 'flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors';
         submitBtn.innerText = 'Entrar no Sistema';
         authTitle.innerText = 'Acesse o TalentPlay';
-        authDesc.innerText = 'Faça login para começar';
+        authDesc.innerText = 'Conecte-se para recrutar ou evoluir sua carreira';
         forgotLink.classList.remove('hidden');
+        labelSenha.innerText = 'Senha';
       }
     }
 
-    // Função Auxiliar de Mensagens Visuais
     function mostrarFeedback(mensagem, tipo) {
       const feedback = document.getElementById('auth-feedback');
       feedback.classList.remove('hidden', 'bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20', 'bg-red-500/10', 'text-red-400', 'border-red-500/20');
@@ -440,12 +481,26 @@
       feedback.innerText = mensagem;
     }
 
-    // Processamento de Login e Cadastro
-    async function executarAutenticacao(e) {
+    // Login com Google ou LinkedIn
+    window.loginComProvedor = async function(provider) {
+      const { data, error } = await supabaseClient.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: window.location.origin + window.location.pathname
+        }
+      });
+      if (error) mostrarFeedback('Erro ao conectar provedor.', 'erro');
+    }
+
+    // Processamento do Formulário (Login / Cadastro / Nova Senha)
+    window.executarAutenticacao = async function(e) {
       e.preventDefault();
       const email = document.getElementById('auth-email').value;
       const password = document.getElementById('auth-password').value;
       const submitBtn = document.getElementById('auth-submit-btn');
+
+      if (modoAutenticacao !== 'recovery' && !email) return mostrarFeedback('Preencha o e-mail.', 'erro');
+      if (!password || password.length < 6) return mostrarFeedback('A senha deve ter no mínimo 6 caracteres.', 'erro');
 
       submitBtn.disabled = true;
       submitBtn.innerText = 'Processando...';
@@ -453,29 +508,39 @@
 
       try {
         if (modoAutenticacao === 'signup') {
-          const { data, error } = await supabaseClient.auth.signUp({
-            email: email,
-            password: password,
-          });
+          const { data, error } = await supabaseClient.auth.signUp({ email, password });
           if (error) throw error;
           
-          mostrarFeedback('Conta criada com sucesso! Você já pode entrar.', 'sucesso');
-          // Limpa a senha e muda pra tela de login automaticamente
+          // O pulo do gato: Se o Supabase retornar sem identidades, o e-mail já existe!
+          if (data.user && data.user.identities && data.user.identities.length === 0) {
+            throw new Error('Este e-mail já está cadastrado. Vá para a aba Entrar.');
+          }
+          
+          mostrarFeedback('Conta criada! Você já pode entrar.', 'sucesso');
           document.getElementById('auth-password').value = '';
-          alternarModoAuth('login'); 
+          setTimeout(() => alternarModoAuth('login'), 1500);
           
+        } else if (modoAutenticacao === 'recovery') {
+          // O usuário está gravando a NOVA senha após clicar no e-mail
+          const { error } = await supabaseClient.auth.updateUser({ password: password });
+          if (error) throw error;
+
+          mostrarFeedback('Senha atualizada com sucesso! Preparando...', 'sucesso');
+          // Limpa o link de segurança gigante da URL do navegador
+          window.history.replaceState(null, '', window.location.pathname);
+          setTimeout(() => {
+            document.getElementById('auth-password').value = '';
+            alternarModoAuth('login');
+          }, 2000);
+
         } else {
-          const { data, error } = await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password,
-          });
+          // Login Normal
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
           if (error) throw error;
           
-          mostrarFeedback('Login realizado com sucesso! Preparando sistema...', 'sucesso');
-          
+          mostrarFeedback('Login realizado com sucesso!', 'sucesso');
           setTimeout(() => {
             fecharLogin();
-            // Atualiza e-mail visualmente na lateral do site
             const userEmailEl = document.querySelector('aside p.text-xs');
             if (userEmailEl) userEmailEl.innerText = data.user.email;
           }, 1200);
@@ -483,56 +548,42 @@
       } catch (err) {
         let msg = err.message;
         if (msg.includes('Invalid login credentials')) msg = 'E-mail ou senha incorretos.';
-        if (msg.includes('already registered')) msg = 'Este e-mail já está cadastrado.';
         mostrarFeedback(msg, 'erro');
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerText = modoAutenticacao === 'signup' ? 'Criar Minha Conta' : 'Entrar no Sistema';
+        if (modoAutenticacao === 'signup') submitBtn.innerText = 'Criar Conta';
+        else if (modoAutenticacao === 'recovery') submitBtn.innerText = 'Salvar Nova Senha';
+        else submitBtn.innerText = 'Entrar no Sistema';
       }
     }
 
-    // NOVA FUNÇÃO: Dispara e-mail de recuperação
-    async function recuperarSenha(e) {
+    // Dispara e-mail de recuperação
+    window.recuperarSenha = async function(e) {
       e.preventDefault();
       const emailInput = document.getElementById('auth-email').value;
 
       if (!emailInput) {
-        mostrarFeedback('Por favor, digite seu e-mail no campo acima antes de clicar em Esqueci.', 'erro');
-        return;
+        return mostrarFeedback('Digite seu e-mail corporativo/pessoal acima antes de clicar em Esqueci.', 'erro');
       }
-
-      mostrarFeedback('Enviando e-mail de recuperação...', 'sucesso');
+      mostrarFeedback('Enviando link de recuperação...', 'sucesso');
 
       try {
         const { error } = await supabaseClient.auth.resetPasswordForEmail(emailInput, {
-          // Garante que o usuário volte exatamente para o seu site no GitHub Pages ou Localhost
           redirectTo: window.location.origin + window.location.pathname, 
         });
-        
         if (error) throw error;
         mostrarFeedback('Link enviado! Verifique sua caixa de entrada e a pasta spam.', 'sucesso');
       } catch (err) {
-        mostrarFeedback('Erro ao enviar e-mail. Verifique se digitou corretamente.', 'erro');
+        mostrarFeedback('Erro ao enviar e-mail. Tente novamente.', 'erro');
       }
     }
 
-    // LISTENER DE REDEFINIÇÃO: Captura o usuário quando ele clica no link do e-mail
+    // LISTENER INTELIGENTE: Detecta quando a pessoa volta do e-mail
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
-        const novaSenha = prompt('🔐 Recuperação TalentPlay:\n\nDigite sua nova senha (mínimo 6 caracteres):');
-        
-        if (novaSenha && novaSenha.length >= 6) {
-          const { error } = await supabaseClient.auth.updateUser({ password: novaSenha });
-          if (error) {
-            alert('Erro ao atualizar senha. Tente enviar o link novamente.');
-          } else {
-            alert('✅ Senha atualizada com sucesso! Você já pode fazer login no TalentPlay.');
-            // Limpa a URL do navegador para remover o token gigante de segurança
-            window.history.replaceState(null, '', window.location.pathname);
-          }
-        } else if (novaSenha) {
-          alert('❌ A senha deve ter pelo menos 6 caracteres. Atualize a página e clique no link do e-mail novamente.');
-        }
+        // Abre o modal automaticamente e coloca no modo de recuperação
+        abrirLogin();
+        alternarModoAuth('recovery');
       }
     });
   </script>
