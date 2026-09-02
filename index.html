@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TalentPlay | Play na Sua Carreira!</title>
-  <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+  <title>TalentPlay | A Revolução do Recrutamento</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,394 +12,446 @@
     .menu-scroll::-webkit-scrollbar { width: 4px; }
     .menu-scroll::-webkit-scrollbar-track { background: transparent; }
     .menu-scroll::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; }
-    .menu-scroll:hover::-webkit-scrollbar-thumb { background: #334155; }
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    .glass-panel { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); }
+    .fade-in { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
-  <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-950 text-slate-200 h-screen flex overflow-hidden selection:bg-indigo-500 selection:text-white">
 
   <!-- ==========================================
-       BARRA LATERAL (SIDEBAR) CANDIDATO
+       SIDEBAR UNIVERSAL (Controlada por JS)
        ========================================== -->
-  <aside class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col hidden md:flex z-20 shrink-0 shadow-2xl">
-    <!-- Player Card -->
-    <div class="p-5 border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm relative overflow-hidden group">
-      <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
-      <div class="flex items-center gap-3 relative z-10">
+  <aside class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col hidden md:flex z-20 shadow-2xl relative">
+    <div class="absolute top-0 right-0 w-full h-40 bg-gradient-to-b from-indigo-900/20 to-transparent pointer-events-none"></div>
+    
+    <!-- Player Card / Profile Widget -->
+    <div class="p-6 border-b border-slate-800 relative z-10">
+      <div class="flex items-center gap-4">
         <div class="relative">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ricardo" alt="Avatar" class="w-12 h-12 rounded-xl bg-slate-800 border-2 border-indigo-500/50 p-0.5 object-cover">
+          <div class="w-14 h-14 rounded-2xl bg-slate-800 border-2 border-indigo-500/50 flex items-center justify-center overflow-hidden shadow-lg shadow-indigo-500/20">
+             <i id="sidebar-avatar-icon" class="ph ph-user text-2xl text-slate-400"></i>
+          </div>
+          <div id="sidebar-level-badge" class="absolute -bottom-2 -right-2 bg-indigo-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-lg border-2 border-slate-900 hidden">Lvl.1</div>
         </div>
         <div class="flex-1 overflow-hidden">
-          <div class="flex items-center justify-between">
-            <h2 class="text-white font-bold text-sm truncate">Ricardo Lima</h2>
-            <button class="text-slate-400 hover:text-white bg-slate-800/50 hover:bg-indigo-500/50 p-1.5 rounded-md transition-colors" title="Editar Perfil">
-              <i class="ph ph-pencil-simple text-sm"></i>
+          <h2 id="sidebar-name" class="text-white font-bold text-base truncate">Visitante</h2>
+          <p id="sidebar-role" class="text-[11px] font-semibold text-indigo-400 uppercase tracking-wide truncate mt-0.5">Faça Login</p>
+        </div>
+      </div>
+      
+      <!-- XP Bar (Só aparece para candidatos) -->
+      <div id="sidebar-xp-container" class="mt-5 hidden">
+        <div class="flex justify-between items-end mb-1.5">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Progresso</span>
+          <span id="sidebar-xp-text" class="text-xs font-bold text-indigo-400">0 / 100 XP</span>
+        </div>
+        <div class="w-full bg-slate-950 rounded-full h-2 border border-slate-800 overflow-hidden">
+          <div id="sidebar-xp-bar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full relative w-0 transition-all duration-1000"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navegação (Menus trocam dependendo do tipo de conta) -->
+    <div class="flex-1 overflow-y-auto menu-scroll py-6 px-4">
+      
+      <!-- MENU DO CANDIDATO -->
+      <div id="menu-candidato" class="space-y-6">
+        <div>
+          <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Sua Jornada</p>
+          <div class="space-y-1">
+            <button onclick="navegarPara('tela-home-candidato')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 bg-indigo-500/10 text-indigo-400 rounded-xl font-bold border border-indigo-500/20 text-sm transition-all" data-target="tela-home-candidato">
+              <i class="ph ph-house text-xl"></i> Painel de Missões
+            </button>
+            <button onclick="navegarPara('tela-vagas')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-all text-sm" data-target="tela-vagas">
+              <i class="ph ph-briefcase text-xl"></i> Explorar Oportunidades
+            </button>
+            <button onclick="navegarPara('tela-ficha-personagem')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-all text-sm" data-target="tela-ficha-personagem">
+              <i class="ph ph-sword text-xl"></i> Ficha de Personagem (CV)
             </button>
           </div>
-          <p class="text-[10px] text-slate-400 truncate">@ricardo.lima</p>
-          <p class="text-[11px] font-semibold text-indigo-400 mt-1 uppercase tracking-wide truncate">Auxiliar Administrativo</p>
         </div>
       </div>
-      <!-- Progresso CV -->
-      <div class="mt-4 relative z-10">
-        <div class="flex justify-between items-end mb-1.5">
-          <span class="text-xs font-medium text-slate-300">Força do Currículo</span>
-          <span class="text-xs font-bold text-indigo-400">80%</span>
-        </div>
-        <div class="w-full bg-slate-950 rounded-full h-1.5 border border-slate-800">
-          <div class="bg-gradient-to-r from-blue-500 to-indigo-500 h-1.5 rounded-full relative" style="width: 80%">
-            <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-[0_0_5px_rgba(255,255,255,0.8)]"></div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Navegação Organizada por Categorias -->
-    <div class="flex-1 overflow-y-auto menu-scroll py-4 flex flex-col justify-between">
-      <div class="flex flex-col gap-6 pb-4">
-        <!-- Categoria: Página Inicial -->
+      <!-- MENU DA EMPRESA (Escondido por padrão) -->
+      <div id="menu-empresa" class="space-y-6 hidden">
         <div>
-          <p class="px-5 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-2">Página Inicial</p>
-          <div class="space-y-1 px-3">
-            <a href="#" class="flex items-center gap-3 px-4 py-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl font-bold border border-indigo-500/20 text-sm shadow-sm transition-all">
-              <i class="ph ph-house text-xl"></i> Início
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-colors text-sm">
-              <i class="ph ph-paper-plane-tilt text-xl"></i> Minhas Candidaturas
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 rounded-xl font-medium transition-colors text-sm">
-              <i class="ph ph-briefcase text-xl"></i> Oportunidades
-            </a>
-          </div>
-        </div>
-
-        <!-- Categoria: Sua Jornada -->
-        <div>
-          <p class="px-5 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-2">Sua Jornada</p>
-          <div class="space-y-1 px-3">
-            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-colors text-sm">
-              <i class="ph ph-user-circle-gear text-xl"></i> Meu Personagem & CV
-            </a>
-            <a href="#" class="flex items-center justify-between px-4 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-colors text-sm">
-              <div class="flex items-center gap-3"><i class="ph ph-sword text-xl"></i> Testes e Missões</div>
-              <span class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-[10px] font-bold px-2 py-0.5 rounded-md">1 Ativa</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-colors text-sm">
-              <i class="ph ph-trophy text-xl text-yellow-500"></i> Conquistas e Ranking
-            </a>
-          </div>
-        </div>
-
-        <!-- Categoria: Outros -->
-        <div>
-          <p class="px-5 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-2">Outros</p>
-          <div class="space-y-1 px-3">
-            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-colors text-sm">
-              <i class="ph ph-buildings text-xl"></i> Empresas Parceiras
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-colors text-sm">
-              <i class="ph ph-users-three text-xl"></i> Mentorias
-            </a>
+          <p class="px-2 text-[10px] font-extrabold text-emerald-600/70 uppercase tracking-widest mb-3">Recrutamento Inteligente</p>
+          <div class="space-y-1">
+            <button onclick="navegarPara('tela-home-empresa')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 bg-emerald-500/10 text-emerald-400 rounded-xl font-bold border border-emerald-500/20 text-sm transition-all" data-target="tela-home-empresa">
+              <i class="ph ph-radar text-xl"></i> Radar de Talentos
+            </button>
+            <button class="w-full flex items-center justify-between px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-all text-sm">
+              <div class="flex items-center gap-3"><i class="ph ph-scroll text-xl"></i> Minhas Vagas</div>
+              <span class="bg-slate-800 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded-md">3</span>
+            </button>
+            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-all text-sm">
+              <i class="ph ph-chart-bar text-xl"></i> Relatório de XP
+            </button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Rodapé Inovador e Compacto -->
-    <div class="px-2 py-3 border-t border-slate-800 bg-slate-950/80 backdrop-blur-md flex items-center justify-between">
-      <button class="flex flex-col items-center gap-1 text-slate-500 hover:text-indigo-400 group transition-all flex-1" title="Configurações">
-        <i class="ph ph-gear-six text-xl group-hover:rotate-90 transition-transform duration-500"></i>
-        <span class="text-[9px] font-bold uppercase tracking-wider">Ajustes</span>
-      </button>
-      <button class="flex flex-col items-center gap-1 text-slate-500 hover:text-blue-400 group transition-all flex-1" title="Idioma (PT-BR)">
-        <i class="ph ph-globe-hemisphere-west text-xl group-hover:scale-110 transition-transform"></i>
-        <span class="text-[9px] font-bold uppercase tracking-wider">Idioma</span>
-      </button>
-      <button class="flex flex-col items-center gap-1 text-slate-500 hover:text-emerald-400 group transition-all flex-1" title="Privacidade e Termos">
-        <i class="ph ph-shield-check text-xl group-hover:scale-110 transition-transform"></i>
-        <span class="text-[8px] font-bold uppercase tracking-wider">Privacidade</span>
-      </button>
-      <button class="flex flex-col items-center gap-1 text-slate-500 hover:text-yellow-400 group transition-all flex-1" title="Central de Ajuda">
-        <i class="ph ph-lifebuoy text-xl group-hover:animate-pulse"></i>
-        <span class="text-[9px] font-bold uppercase tracking-wider">Ajuda</span>
-      </button>
     </div>
   </aside>
   
   <!-- ==========================================
-       ÁREA PRINCIPAL
+       ÁREA PRINCIPAL & HEADER
        ========================================== -->
-  <main class="flex-1 flex flex-col h-full relative">
+  <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-950">
     
-    <!-- Navbar Superior -->
-    <header class="h-16 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 z-10">
-      
-      <!-- Logo Mobile -->
-      <div class="flex items-center gap-3 md:hidden">
-        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white">T</div>
-        <span class="font-bold text-lg text-white">TalentPlay</span>
+    <!-- Background Decorativo Global -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+    <header class="h-20 border-b border-slate-800/60 glass-panel flex items-center justify-between px-6 z-10 sticky top-0">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-black text-white text-xl shadow-lg shadow-indigo-500/30">T</div>
+        <span class="font-extrabold text-xl text-white tracking-tight">TalentPlay</span>
       </div>
       
-      <!-- Ações Rápidas (Busca) -->
-      <div class="hidden md:flex items-center gap-3">
-        <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-lg text-sm font-bold transition-all shadow-[0_0_12px_rgba(147,51,234,0.3)] hover:shadow-[0_0_18px_rgba(147,51,234,0.5)] border border-purple-400/30 transform hover:-translate-y-0.5">
-          <i class="ph ph-magnifying-glass text-lg font-bold"></i> Buscar Vagas
+      <div id="auth-container" class="flex items-center gap-4">
+        <button id="btn-entrar-header" onclick="abrirLogin()" class="bg-white hover:bg-slate-100 text-slate-900 px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-white/10 hover:scale-105">
+          Acessar o Jogo
         </button>
-      </div>
-
-      <!-- Ações do Lado Direito -->
-      <div class="flex items-center gap-4 ml-auto">
-        <!-- Botão Área do Recrutador -->
-        <a href="#" class="hidden lg:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-lg text-sm font-bold transition-all shadow-[0_0_10px_rgba(124,58,237,0.2)] hover:shadow-[0_0_15px_rgba(124,58,237,0.4)] border border-violet-400/30 transform hover:-translate-y-0.5">
-          <i class="ph ph-briefcase"></i> Área do Recrutador
-        </a>
-
-        <!-- CONTROLE DE USUÁRIO (HEADER) -->
-        <div id="auth-container" class="flex items-center gap-4">
-          <button id="btn-entrar-header" onclick="abrirLogin()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-bold text-sm transition-colors shadow-lg shadow-indigo-600/20">
-            Entrar
-          </button>
-
-          <!-- Menu do Jogador (Aparece quando logado) -->
-          <div id="user-menu-header" class="hidden items-center gap-3">
-             <div class="text-right hidden sm:block">
-               <p id="user-email-display" class="text-sm font-bold text-white">carregando...</p>
-               <p class="text-xs text-indigo-400 font-medium">Nível 1 • Novato</p>
-             </div>
-             <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-600 flex items-center justify-center text-slate-300">
-               <i class="ph ph-user text-lg"></i>
-             </div>
-             <button onclick="fazerLogout()" class="text-slate-500 hover:text-red-400 transition-colors ml-1 p-2 bg-slate-900 hover:bg-slate-800 rounded-lg border border-transparent hover:border-red-500/30" title="Desconectar">
-               <i class="ph ph-sign-out text-xl"></i>
-             </button>
-          </div>
-        </div>
-
-        <!-- Linha Divisória -->
-        <div class="hidden sm:block w-px h-6 bg-slate-700 mx-1"></div>
-
-        <!-- Mensagens e Notificações -->
-        <div class="flex items-center gap-5">
-          <button class="relative text-slate-400 hover:text-white transition-colors">
-            <i class="ph ph-chat-circle-dots text-2xl"></i>
-            <span class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-[9px] font-bold text-white border-2 border-slate-900">2</span>
-          </button>
-          <button class="relative text-slate-400 hover:text-white transition-colors">
-            <i class="ph ph-bell text-2xl"></i>
-            <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900"></span>
-          </button>
+        <div id="user-menu-header" class="hidden items-center gap-3">
+           <button class="relative text-slate-400 hover:text-white transition-colors p-2">
+             <i class="ph ph-bell text-2xl"></i>
+             <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900"></span>
+           </button>
+           <div class="w-px h-6 bg-slate-700 mx-2"></div>
+           <button onclick="fazerLogout()" class="text-slate-400 hover:text-red-400 transition-colors flex items-center gap-2 text-sm font-bold bg-slate-900 hover:bg-red-500/10 px-3 py-2 rounded-lg border border-slate-800 hover:border-red-500/30">
+             Sair <i class="ph ph-sign-out text-lg"></i>
+           </button>
         </div>
       </div>
     </header>
 
-    <!-- CONTEÚDO -->
-    <div class="flex-1 overflow-y-auto p-4 sm:p-8">
-      <div class="max-w-5xl mx-auto space-y-8">
+    <!-- CONTAINER DE TELAS (Onde a mágica do SPA acontece) -->
+    <div class="flex-1 overflow-y-auto p-4 sm:p-8 relative z-0">
+      <div class="max-w-6xl mx-auto">
         
-        <!-- Header da Página -->
-        <div class="bg-gradient-to-br from-indigo-900/40 via-slate-900 to-slate-900 border border-indigo-500/20 rounded-3xl p-6 sm:p-10 relative overflow-hidden shadow-xl">
-          <div class="absolute right-0 top-0 w-72 h-72 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none"></div>
-          <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-3 relative z-10">Qual será sua próxima vaga?</h1>
-          <p class="text-slate-400 max-w-xl text-lg mb-8 relative z-10">Encontre vagas que dão match com seu perfil, complete os testes práticos e fuja do vácuo corporativo.</p>
+        <!-- ============================================================== -->
+        <!-- TELA 1: HOME DO CANDIDATO (Painel de Missões)                  -->
+        <!-- ============================================================== -->
+        <section id="tela-home-candidato" class="app-screen fade-in">
           
-          <div class="relative z-10 flex flex-col sm:flex-row items-center bg-slate-950 border border-slate-700/50 rounded-2xl p-2 shadow-2xl shadow-black/50 gap-2">
-            <div class="flex-1 flex items-center gap-3 px-4 py-2 w-full">
-              <i class="ph ph-magnifying-glass text-indigo-400 text-2xl"></i>
-              <input type="text" placeholder="Cargo, habilidade ou empresa..." class="bg-transparent border-none outline-none text-slate-200 w-full placeholder-slate-500 font-medium">
-            </div>
-            <div class="hidden sm:block w-px h-8 bg-slate-800"></div>
-            <div class="flex-1 flex items-center gap-3 px-4 py-2 w-full border-t border-slate-800 sm:border-none">
-              <i class="ph ph-map-pin text-indigo-400 text-2xl"></i>
-              <input type="text" placeholder="Cidade ou 'Remoto'" value="Candeias, BA" class="bg-transparent border-none outline-none text-slate-200 w-full placeholder-slate-500 font-medium">
-            </div>
-            <button class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-xl transition-colors shadow-lg shadow-indigo-600/20">
-              Buscar
-            </button>
-          </div>
-        </div>
-
-        <!-- Abas -->
-        <div class="border-b border-slate-800 flex gap-6 overflow-x-auto">
-          <button class="px-1 py-3 border-b-2 border-indigo-500 text-indigo-400 font-semibold text-sm whitespace-nowrap">Vagas Recomendadas</button>
-          <button class="px-1 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-300 font-medium text-sm transition-colors whitespace-nowrap">Em Andamento (1)</button>
-          <button class="px-1 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-300 font-medium text-sm transition-colors whitespace-nowrap">Finalizadas</button>
-        </div>
-
-        <!-- Grid de Vagas -->
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
-          <!-- Card de Vaga 1 -->
-          <div class="bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-xl p-5 transition-all group relative shadow-lg">
-            <div class="flex justify-between items-start mb-4">
-              <div>
-                <span class="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded border border-emerald-400/20 tracking-wider">FÁCIL</span>
-                <h3 class="text-lg font-bold text-white mt-2">Auxiliar de Operações</h3>
-                <p class="text-sm text-slate-400 flex items-center gap-1 mt-1"><i class="ph ph-map-pin"></i> Candeias, BA • Híbrido</p>
+          <div class="bg-gradient-to-br from-indigo-900/40 via-slate-900 to-slate-900 border border-indigo-500/30 rounded-3xl p-8 sm:p-12 relative overflow-hidden shadow-2xl mb-8">
+            <div class="absolute right-0 top-0 w-96 h-96 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+            <span class="inline-block py-1 px-3 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-bold uppercase tracking-widest mb-4">Temporada Atual</span>
+            <h1 class="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight">Sua Carreira não é um PDF.<br>É uma <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Jornada Épica.</span></h1>
+            <p class="text-slate-400 max-w-2xl text-lg mb-8 font-medium">Complete desafios práticos reais elaborados pelas empresas. Ganhe XP, suba de nível e seja contratado pelas suas habilidades, não pelo seu currículo.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
+              <div class="glass-panel p-5 rounded-2xl flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-2xl"><i class="ph ph-sword"></i></div>
+                <div><p class="text-slate-400 text-xs font-bold uppercase">Missões Abertas</p><p class="text-2xl font-black text-white">12</p></div>
               </div>
-              <div class="w-12 h-12 bg-slate-950 rounded-lg border border-slate-800 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner">🏢</div>
+              <div class="glass-panel p-5 rounded-2xl flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-2xl"><i class="ph ph-buildings"></i></div>
+                <div><p class="text-slate-400 text-xs font-bold uppercase">Empresas Contratando</p><p class="text-2xl font-black text-white">4</p></div>
+              </div>
             </div>
-            <div class="flex flex-wrap gap-2 mb-6">
-              <span class="text-xs font-medium text-slate-400 bg-slate-950 border border-slate-800 px-2.5 py-1 rounded-md flex items-center gap-1"><i class="ph ph-tag"></i> Administrativo</span>
-              <span class="text-xs font-bold text-indigo-400 bg-indigo-900/30 border border-indigo-800 px-2.5 py-1 rounded-md flex items-center gap-1"><i class="ph ph-sparkle"></i> +50 XP</span>
+          </div>
+
+          <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2"><i class="ph ph-fire text-orange-500"></i> Missões Recomendadas para o seu Nível</h2>
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <!-- Vaga Card (Gamificada) -->
+            <div class="bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-2xl p-6 transition-all group relative shadow-lg">
+              <div class="flex justify-between items-start mb-6">
+                <div>
+                  <div class="flex gap-2 mb-3">
+                    <span class="text-[10px] font-black text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-md border border-emerald-400/20 tracking-widest uppercase">Nível 1+</span>
+                    <span class="text-[10px] font-black text-indigo-400 bg-indigo-400/10 px-2.5 py-1 rounded-md border border-indigo-400/20 tracking-widest uppercase">Administrativo</span>
+                  </div>
+                  <h3 class="text-2xl font-bold text-white group-hover:text-indigo-300 transition-colors">Auxiliar de Operações</h3>
+                  <p class="text-sm text-slate-400 flex items-center gap-1 mt-1"><i class="ph ph-map-pin"></i> Candeias, BA • Empresa: Mosaic</p>
+                </div>
+                <div class="w-16 h-16 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-inner">🏢</div>
+              </div>
+              <div class="bg-slate-950 rounded-xl p-4 mb-6 border border-slate-800/50 flex justify-between items-center">
+                <div>
+                  <p class="text-xs text-slate-500 font-bold uppercase mb-1">Recompensa da Missão</p>
+                  <p class="text-lg font-black text-indigo-400 flex items-center gap-2"><i class="ph ph-sparkle"></i> +50 XP</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs text-slate-500 font-bold uppercase mb-1">Salário Estimado</p>
+                  <p class="text-lg font-black text-emerald-400">R$ 1.800</p>
+                </div>
+              </div>
+              <button onclick="iniciarRPG()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transform group-hover:-translate-y-1">
+                Iniciar Desafio Prático
+              </button>
             </div>
-            <button onclick="iniciarRPG()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
-              <i class="ph ph-play-circle text-lg"></i> Iniciar Desafio Prático
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- TELA 2: EXPLORAR VAGAS (Filtros e Busca)                       -->
+        <!-- ============================================================== -->
+        <section id="tela-vagas" class="app-screen hidden fade-in">
+          <div class="flex justify-between items-end mb-8">
+            <div>
+              <h1 class="text-3xl font-black text-white">Quadro de Missões</h1>
+              <p class="text-slate-400 mt-2">Explore todas as oportunidades do reino corporativo.</p>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" placeholder="Buscar cargo..." class="bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-2 focus:border-indigo-500 outline-none w-64">
+              <button class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold"><i class="ph ph-magnifying-glass"></i></button>
+            </div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-3xl p-20 text-center">
+            <i class="ph ph-ghost text-6xl text-slate-600 mb-4 block"></i>
+            <h3 class="text-xl font-bold text-white">Nenhuma outra missão disponível.</h3>
+            <p class="text-slate-400 mt-2">As empresas estão preparando novos desafios. Volte em breve!</p>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- TELA 3: FICHA DE PERSONAGEM (CV Gamificado)                    -->
+        <!-- ============================================================== -->
+        <section id="tela-ficha-personagem" class="app-screen hidden fade-in">
+          <h1 class="text-3xl font-black text-white mb-8">Ficha do Personagem</h1>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Status Card -->
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 relative overflow-hidden h-fit">
+              <div class="absolute top-0 right-0 w-full h-32 bg-gradient-to-b from-indigo-600/20 to-transparent pointer-events-none"></div>
+              <div class="relative z-10 flex flex-col items-center text-center">
+                <div class="w-24 h-24 rounded-3xl bg-slate-800 border-4 border-indigo-500/50 flex items-center justify-center mb-4 shadow-xl shadow-indigo-500/20">
+                   <i class="ph ph-user text-5xl text-slate-400"></i>
+                </div>
+                <h2 class="text-2xl font-black text-white" id="ficha-nome">Carregando...</h2>
+                <p class="text-sm font-bold text-indigo-400 uppercase tracking-widest mt-1 mb-6">Explorador Corporativo</p>
+                
+                <div class="w-full bg-slate-950 rounded-2xl p-4 border border-slate-800 text-left mb-6">
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-black text-slate-400 uppercase">Nível de Carreira</span>
+                    <span class="text-xl font-black text-white" id="ficha-nivel">Lvl. 1</span>
+                  </div>
+                  <div class="w-full bg-slate-900 rounded-full h-3 border border-slate-700 overflow-hidden mb-2">
+                    <div id="ficha-xp-bar" class="bg-indigo-500 h-full w-0 transition-all duration-1000"></div>
+                  </div>
+                  <p class="text-[10px] text-slate-500 text-right" id="ficha-xp-texto">0 XP para o próximo nível</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Atributos e Inventário (O CV em si) -->
+            <div class="lg:col-span-2 space-y-6">
+              <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2"><i class="ph ph-magic-wand text-indigo-400 text-xl"></i> Árvore de Habilidades (Hard Skills)</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center"><p class="text-sm font-bold text-slate-300">Pacote Office</p><p class="text-xs text-emerald-400 font-bold mt-1">Nível Alto</p></div>
+                  <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center"><p class="text-sm font-bold text-slate-300">Atendimento</p><p class="text-xs text-emerald-400 font-bold mt-1">Nível Alto</p></div>
+                  <button class="bg-indigo-500/10 border border-indigo-500/30 border-dashed hover:bg-indigo-500/20 p-3 rounded-xl text-center transition-colors text-indigo-400 flex flex-col items-center justify-center gap-1">
+                    <i class="ph ph-plus-circle text-xl"></i><span class="text-xs font-bold">Nova Habilidade</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2"><i class="ph ph-scroll text-yellow-500 text-xl"></i> Histórico de Missões (Experiência)</h3>
+                <div class="border-l-2 border-slate-800 ml-3 pl-6 space-y-6 relative">
+                  <div class="relative">
+                    <div class="absolute -left-[31px] w-4 h-4 rounded-full bg-slate-800 border-2 border-indigo-500"></div>
+                    <h4 class="font-bold text-white">Jovem Aprendiz (Setor Administrativo)</h4>
+                    <p class="text-xs font-bold text-indigo-400 mb-2">Sodexo • Nov 2023 - Set 2025</p>
+                    <p class="text-sm text-slate-400 leading-relaxed">Suporte na organização de documentos, planilhas e atendimento básico.</p>
+                  </div>
+                  <div class="relative">
+                    <div class="absolute -left-[31px] w-4 h-4 rounded-full bg-slate-800 border-2 border-slate-600"></div>
+                    <button class="text-sm font-bold text-slate-500 hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="ph ph-plus-circle"></i> Adicionar Experiência</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- TELA 4: DASHBOARD DA EMPRESA (Oculta para candidatos)          -->
+        <!-- ============================================================== -->
+        <section id="tela-home-empresa" class="app-screen hidden fade-in">
+          <div class="bg-gradient-to-br from-emerald-900/40 via-slate-900 to-slate-900 border border-emerald-500/30 rounded-3xl p-8 relative overflow-hidden shadow-2xl mb-8">
+            <div class="absolute right-0 top-0 w-96 h-96 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+            <h1 class="text-3xl font-black text-white mb-2 relative z-10">Radar de Talentos</h1>
+            <p class="text-emerald-100/60 max-w-2xl text-base mb-6 font-medium relative z-10">Crie missões personalizadas e deixe o sistema filtrar os melhores candidatos com base no desempenho real, não em PDFs mentirosos.</p>
+            <button class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-lg shadow-emerald-600/20 transition-colors relative z-10 flex items-center gap-2">
+              <i class="ph ph-plus"></i> Criar Nova Missão (Vaga)
             </button>
           </div>
 
-          <!-- Card de Vaga 2 -->
-          <div class="bg-slate-900 border border-slate-800 hover:border-yellow-500/50 rounded-xl p-5 transition-all group relative shadow-lg">
-            <div class="flex justify-between items-start mb-4">
+          <h2 class="text-xl font-bold text-white mb-6">Missões Ativas (Visão do Recrutador)</h2>
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 relative overflow-hidden">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-4">
               <div>
-                <span class="text-[10px] font-bold text-yellow-400 bg-yellow-400/10 px-2 py-1 rounded border border-yellow-400/20 tracking-wider">MÉDIO</span>
-                <h3 class="text-lg font-bold text-white mt-2">Atendimento de SAC</h3>
-                <p class="text-sm text-slate-400 flex items-center gap-1 mt-1"><i class="ph ph-map-pin"></i> Remoto Brasil</p>
+                <h3 class="text-lg font-bold text-white">Auxiliar de Operações</h3>
+                <p class="text-sm text-slate-400">Publicada há 2 dias • Candeias, BA</p>
               </div>
-              <div class="w-12 h-12 bg-slate-950 rounded-lg border border-slate-800 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner">🎧</div>
+              <div class="text-right">
+                <p class="text-2xl font-black text-emerald-400">12</p>
+                <p class="text-xs text-slate-500 font-bold uppercase">Talentos Jogando</p>
+              </div>
             </div>
-            <div class="flex flex-wrap gap-2 mb-6">
-              <span class="text-xs font-medium text-slate-400 bg-slate-950 border border-slate-800 px-2.5 py-1 rounded-md flex items-center gap-1"><i class="ph ph-tag"></i> Suporte</span>
-              <span class="text-xs font-bold text-yellow-500 bg-yellow-900/30 border border-yellow-800 px-2.5 py-1 rounded-md flex items-center gap-1"><i class="ph ph-sparkle"></i> +80 XP</span>
+            
+            <p class="text-sm font-bold text-slate-400 mb-4 uppercase tracking-wider">Ranking de Desempenho (Top 3)</p>
+            <div class="space-y-3">
+              <!-- Jogador 1 -->
+              <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-emerald-500/30">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-emerald-900/50 flex items-center justify-center font-bold text-emerald-400">1º</div>
+                  <div><p class="text-sm font-bold text-white">Ana Silva</p><p class="text-xs text-slate-500">Nível 4 • Acertou 100% da triagem</p></div>
+                </div>
+                <button class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg hover:bg-emerald-500/20">Ver Ficha</button>
+              </div>
+              <!-- Jogador 2 -->
+              <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center font-bold text-slate-400">2º</div>
+                  <div><p class="text-sm font-bold text-white">Carlos Mendes</p><p class="text-xs text-slate-500">Nível 3 • Acertou 80% da triagem</p></div>
+                </div>
+                <button class="text-xs font-bold text-slate-400 bg-slate-800 px-3 py-1.5 rounded-lg hover:bg-slate-700">Ver Ficha</button>
+              </div>
+              <!-- Ricardo (Exemplo dinâmico) -->
+              <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-indigo-500/30 relative overflow-hidden">
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div>
+                <div class="flex items-center gap-3 pl-2">
+                  <div class="w-8 h-8 rounded-lg bg-indigo-900/50 flex items-center justify-center font-bold text-indigo-400">3º</div>
+                  <div><p class="text-sm font-bold text-white">Ricardo Lima</p><p class="text-xs text-indigo-400">Nível 2 • Jogando agora...</p></div>
+                </div>
+                <button class="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-lg hover:bg-indigo-500/20">Ver Ficha</button>
+              </div>
             </div>
-            <button class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold text-sm transition-colors border border-slate-700 flex items-center justify-center gap-2">
-              <i class="ph ph-lock-key text-lg"></i> Nível Insuficiente
-            </button>
           </div>
-        </div>
+        </section>
+
       </div>
     </div>
   </main>
-
-  <!-- ==========================================
-       MODAL DO MINI RPG
-       ========================================== -->
-  <div id="rpg-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-[80] hidden flex flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="max-w-2xl w-full bg-slate-900 border-2 border-indigo-500/50 rounded-xl shadow-2xl shadow-indigo-500/20 overflow-hidden flex flex-col">
-      <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-indigo-600 border border-indigo-400 flex items-center justify-center text-xl">👨‍💼</div>
+  <!-- ============================================================== -->
+  <!-- MODAL DO MINI RPG (DESAFIO PRÁTICO)                            -->
+  <!-- ============================================================== -->
+  <div id="rpg-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[80] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+    <div class="max-w-2xl w-full bg-slate-900 border-2 border-indigo-500/50 rounded-2xl shadow-2xl shadow-indigo-500/20 overflow-hidden flex flex-col transform scale-95 transition-transform duration-300" id="rpg-card">
+      <div class="bg-slate-950 px-6 py-4 border-b border-slate-800 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-indigo-600/20 border border-indigo-500/50 flex items-center justify-center text-2xl shadow-inner">🏢</div>
         <div>
-          <h4 class="text-white font-bold text-sm">Sistema de Triagem</h4>
-          <p class="text-xs text-indigo-400">Cena 1: O Caos Matinal</p>
+          <h4 class="text-white font-black text-lg">Simulador de Operações</h4>
+          <p class="text-xs text-indigo-400 font-bold uppercase tracking-wider">Cena 1: O Caos Matinal</p>
         </div>
-        <button onclick="document.getElementById('rpg-modal').classList.add('hidden')" class="ml-auto text-slate-400 hover:text-white">
-          <i class="ph ph-x text-xl"></i>
+        <button onclick="fecharRPG()" class="ml-auto text-slate-500 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+          <i class="ph ph-x font-bold"></i>
         </button>
       </div>
-      <div class="p-6">
-        <p id="rpg-text" class="text-slate-300 text-lg leading-relaxed min-h-[100px] mb-6 font-medium"></p>
+      <div class="p-8">
+        <p id="rpg-text" class="text-slate-300 text-lg leading-relaxed min-h-[120px] mb-8 font-medium"></p>
         <div id="rpg-choices" class="space-y-3 hidden">
-          <button onclick="escolherOpcao('A')" class="w-full text-left p-4 bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-400 rounded-lg text-slate-200 text-sm transition-all shadow-md"><strong class="text-indigo-400 mr-2 group-hover:text-white">A)</strong> Ignoro o telefone por enquanto, imprimo o relatório e entrego na mão do gerente.</button>
-          <button onclick="escolherOpcao('B')" class="w-full text-left p-4 bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-400 rounded-lg text-slate-200 text-sm transition-all shadow-md"><strong class="text-indigo-400 mr-2 group-hover:text-white">B)</strong> Atendo o fornecedor e tento acalmá-lo enquanto uso a outra mão no mouse para imprimir o relatório.</button>
-          <button onclick="escolherOpcao('C')" class="w-full text-left p-4 bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-400 rounded-lg text-slate-200 text-sm transition-all shadow-md"><strong class="text-indigo-400 mr-2 group-hover:text-white">C)</strong> Aviso o gerente ("Já vou imprimir!"), atendo o telefone pedindo 1 minuto ao fornecedor e pego a impressão.</button>
+          <button onclick="escolherOpcao('A')" class="group w-full text-left p-5 bg-slate-950 hover:bg-indigo-600/20 border border-slate-800 hover:border-indigo-500 rounded-xl text-slate-300 text-sm transition-all shadow-md flex gap-4 items-start">
+            <span class="text-indigo-500 font-black text-lg group-hover:text-indigo-400">A)</span> 
+            <span class="mt-0.5">Ignoro o telefone por enquanto, imprimo o relatório e entrego na mão do gerente.</span>
+          </button>
+          <button onclick="escolherOpcao('B')" class="group w-full text-left p-5 bg-slate-950 hover:bg-indigo-600/20 border border-slate-800 hover:border-indigo-500 rounded-xl text-slate-300 text-sm transition-all shadow-md flex gap-4 items-start">
+            <span class="text-indigo-500 font-black text-lg group-hover:text-indigo-400">B)</span> 
+            <span class="mt-0.5">Atendo o fornecedor e tento acalmá-lo enquanto uso a outra mão no mouse para imprimir o relatório.</span>
+          </button>
+          <button onclick="escolherOpcao('C')" class="group w-full text-left p-5 bg-slate-950 hover:bg-indigo-600/20 border border-slate-800 hover:border-indigo-500 rounded-xl text-slate-300 text-sm transition-all shadow-md flex gap-4 items-start">
+            <span class="text-indigo-500 font-black text-lg group-hover:text-indigo-400">C)</span> 
+            <span class="mt-0.5">Aviso o gerente ("Já vou imprimir!"), atendo o telefone pedindo 1 minuto ao fornecedor e pego a impressão.</span>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ==========================================
-       MODAL DE ONBOARDING (BOAS-VINDAS)
-       ========================================== -->
-  <div id="onboarding-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[70] hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
-    <div class="max-w-md w-full bg-slate-900 border border-indigo-500/30 rounded-2xl shadow-2xl overflow-hidden p-8 text-center relative">
-      <div class="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-        <i class="ph ph-rocket-launch text-3xl text-indigo-400"></i>
+  <!-- ============================================================== -->
+  <!-- MODAL DE ONBOARDING (BOAS-VINDAS)                              -->
+  <!-- ============================================================== -->
+  <div id="onboarding-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[90] hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+    <div class="max-w-md w-full bg-slate-900 border border-indigo-500/30 rounded-3xl shadow-2xl overflow-hidden p-10 text-center relative">
+      <div class="absolute top-0 right-0 w-full h-32 bg-gradient-to-b from-indigo-600/20 to-transparent pointer-events-none"></div>
+      <div class="w-20 h-20 bg-indigo-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20 relative z-10 border border-indigo-500/30">
+        <i class="ph ph-rocket-launch text-4xl text-indigo-400"></i>
       </div>
-      <h3 class="text-2xl font-extrabold text-white mb-2">Bem-vindo(a) ao Jogo!</h3>
-      <p class="text-slate-400 mb-6 text-sm">Para configurar seu painel, precisamos de duas informações rápidas.</p>
-      <form id="onboarding-form" onsubmit="salvarPerfil(event)" class="space-y-5 text-left">
+      <h3 class="text-3xl font-black text-white mb-2 relative z-10">Criar Personagem</h3>
+      <p class="text-slate-400 mb-8 text-sm relative z-10">Como você quer ser conhecido(a) no mercado?</p>
+      <form id="onboarding-form" onsubmit="salvarPerfil(event)" class="space-y-6 text-left relative z-10">
         <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Como devemos te chamar?</label>
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome Completo</label>
           <div class="relative">
-            <i class="ph ph-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
-            <input id="onboarding-nome" type="text" placeholder="Seu nome ou apelido" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors" required>
+            <i class="ph ph-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl"></i>
+            <input id="onboarding-nome" type="text" placeholder="Como te chamam?" class="w-full bg-slate-950 border border-slate-700 text-white text-base rounded-xl pl-12 pr-4 py-4 focus:outline-none focus:border-indigo-500 transition-colors shadow-inner" required>
           </div>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qual é o seu objetivo aqui?</label>
-          <div class="grid grid-cols-2 gap-3">
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Qual é a sua Missão?</label>
+          <div class="grid grid-cols-2 gap-4">
             <label class="cursor-pointer">
-              <input type="radio" name="tipo_conta" value="candidato" class="peer sr-only" required>
-              <div class="text-center p-3 border border-slate-700 rounded-lg peer-checked:bg-indigo-600/20 peer-checked:border-indigo-500 peer-checked:text-indigo-400 text-slate-400 hover:bg-slate-800 transition-all">
-                <i class="ph ph-sword text-2xl mb-1 block"></i>
-                <span class="text-xs font-bold">Sou Talento</span>
+              <input type="radio" name="tipo_conta" value="candidato" class="peer sr-only" required checked>
+              <div class="text-center p-4 border-2 border-slate-800 rounded-xl peer-checked:bg-indigo-600/10 peer-checked:border-indigo-500 peer-checked:text-indigo-400 text-slate-500 hover:bg-slate-800 transition-all">
+                <i class="ph ph-sword text-3xl mb-2 block"></i>
+                <span class="text-sm font-bold">Sou Talento</span>
               </div>
             </label>
             <label class="cursor-pointer">
               <input type="radio" name="tipo_conta" value="empresa" class="peer sr-only">
-              <div class="text-center p-3 border border-slate-700 rounded-lg peer-checked:bg-emerald-600/20 peer-checked:border-emerald-500 peer-checked:text-emerald-400 text-slate-400 hover:bg-slate-800 transition-all">
-                <i class="ph ph-buildings text-2xl mb-1 block"></i>
-                <span class="text-xs font-bold">Sou Empresa</span>
+              <div class="text-center p-4 border-2 border-slate-800 rounded-xl peer-checked:bg-emerald-600/10 peer-checked:border-emerald-500 peer-checked:text-emerald-400 text-slate-500 hover:bg-slate-800 transition-all">
+                <i class="ph ph-buildings text-3xl mb-2 block"></i>
+                <span class="text-sm font-bold">Sou Empresa</span>
               </div>
             </label>
           </div>
         </div>
-        <button id="onboarding-submit-btn" type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold text-sm transition-colors shadow-lg shadow-indigo-600/20 mt-4">
-          Salvar e Entrar
+        <button id="onboarding-submit-btn" type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] mt-2">
+          Iniciar Jornada
         </button>
       </form>
     </div>
   </div>
 
-  <!-- ==========================================
-       MODAL DE LOGIN, CADASTRO E RECUPERAÇÃO
-       ========================================== -->
-  <div id="login-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-[60] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+  <!-- ============================================================== -->
+  <!-- MODAL DE LOGIN                                                 -->
+  <!-- ============================================================== -->
+  <div id="login-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
     <div class="absolute inset-0 z-0" onclick="fecharLogin()"></div>
-    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden relative z-10">
-      <button onclick="fecharLogin()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors z-20 cursor-pointer">
-        <i class="ph ph-x"></i>
+    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl overflow-hidden relative z-10">
+      <button onclick="fecharLogin()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors z-20">
+        <i class="ph ph-x font-bold"></i>
       </button>
-      <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 blur-2xl pointer-events-none"></div>
-      <div class="p-8 relative z-10">
-        <div class="text-center mb-6">
-          <div class="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white text-2xl mx-auto mb-3 shadow-lg shadow-indigo-500/30">T</div>
-          <h3 id="auth-title" class="text-2xl font-extrabold text-white">Acesse o TalentPlay</h3>
-          <p id="auth-desc" class="text-sm text-slate-400 mt-1">Conecte-se para recrutar ou evoluir sua carreira</p>
+      <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 blur-3xl pointer-events-none"></div>
+      <div class="p-10 relative z-10">
+        <div class="text-center mb-8">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-black text-white text-3xl mx-auto mb-4 shadow-lg shadow-indigo-500/30">T</div>
+          <h3 id="auth-title" class="text-2xl font-black text-white">Acesse o Jogo</h3>
         </div>
-        <div id="auth-tabs" class="flex p-1 bg-slate-950 rounded-lg mb-6">
-          <button id="tab-login" onclick="alternarModoAuth('login')" class="flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors">Entrar</button>
-          <button id="tab-signup" onclick="alternarModoAuth('signup')" class="flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors">Cadastrar</button>
+        <div id="auth-tabs" class="flex p-1.5 bg-slate-950 rounded-xl mb-6 border border-slate-800">
+          <button id="tab-login" onclick="alternarModoAuth('login')" class="flex-1 py-2.5 bg-slate-800 text-white text-sm font-bold rounded-lg shadow-sm transition-all">Entrar</button>
+          <button id="tab-signup" onclick="alternarModoAuth('signup')" class="flex-1 py-2.5 text-slate-400 hover:text-white text-sm font-bold rounded-lg transition-all">Cadastrar</button>
         </div>
-        <div id="social-login-section">
-          <div class="grid grid-cols-2 gap-3 mb-5">
-            <button onclick="loginComProvedor('google')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white py-2.5 rounded-lg text-sm font-medium transition-colors">
-              <i class="ph ph-google-logo text-lg text-red-400"></i> Google
-            </button>
-            <button onclick="loginComProvedor('linkedin_oidc')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white py-2.5 rounded-lg text-sm font-medium transition-colors">
-              <i class="ph ph-linkedin-logo text-lg text-blue-500"></i> LinkedIn
-            </button>
-          </div>
-          <div class="flex items-center gap-3 mb-5 text-xs text-slate-500 font-medium uppercase tracking-wider">
-            <div class="h-px bg-slate-800 flex-1"></div>
-            <span>Ou use seu E-mail</span>
-            <div class="h-px bg-slate-800 flex-1"></div>
-          </div>
-        </div>
-        <div id="auth-feedback" class="hidden text-xs p-3 rounded-lg mb-4 font-medium transition-all"></div>
-        <form id="auth-form" onsubmit="executarAutenticacao(event)" class="space-y-4">
+        <div id="auth-feedback" class="hidden text-xs p-4 rounded-xl mb-6 font-bold text-center transition-all"></div>
+        <form id="auth-form" onsubmit="executarAutenticacao(event)" class="space-y-5">
           <div id="campo-email">
-            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">E-mail Corporativo ou Pessoal</label>
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">E-mail</label>
             <div class="relative">
-              <i class="ph ph-envelope absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
-              <input id="auth-email" type="email" placeholder="seu@email.com" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors">
+              <i class="ph ph-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl"></i>
+              <input id="auth-email" type="email" placeholder="seu@email.com" class="w-full bg-slate-950 border border-slate-700 text-white text-base rounded-xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-indigo-500 transition-colors shadow-inner">
             </div>
           </div>
           <div id="campo-senha">
-            <div class="flex justify-between items-center mb-1.5">
+            <div class="flex justify-between items-center mb-2">
               <label id="label-senha" class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Senha</label>
-              <a href="#" id="auth-forgot" onclick="recuperarSenha(event)" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium transition-colors">Esqueceu?</a>
+              <a href="#" id="auth-forgot" onclick="recuperarSenha(event)" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Esqueceu?</a>
             </div>
             <div class="relative">
-              <i class="ph ph-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
-              <input id="auth-password" type="password" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors">
+              <i class="ph ph-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl"></i>
+              <input id="auth-password" type="password" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-950 border border-slate-700 text-white text-base rounded-xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-indigo-500 transition-colors shadow-inner">
             </div>
           </div>
-          <button id="auth-submit-btn" type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold text-sm transition-colors shadow-lg shadow-indigo-600/20 mt-2">
-            Entrar no Sistema
+          <button id="auth-submit-btn" type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] mt-2">
+            Iniciar Sessão
           </button>
         </form>
       </div>
@@ -409,269 +460,290 @@
 
   <script>
     // ========================================================
-    // INTEGRAÇÃO COM SUPABASE, PERFIS E RPG (CÓDIGO MESTRE)
+    // O CÉREBRO: SUPABASE, SPA, RPG E PERFIS
     // ========================================================
     const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
     
-    // ⚠️ SUBSTITUA 'chave' PELA SUA CHAVE REAL (Mantenha as aspas simples!)
+    // ⚠️ SUBSTITUA PELA SUA CHAVE AQUI 
     const SUPABASE_KEY = 'sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45';
-
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- 1. CONTROLE DO MODAL DE LOGIN ---
-    const loginModal = document.getElementById('login-modal');
-    let modoAutenticacao = 'login';
+    let usuarioLogado = null;
+    let perfilAtual = null;
 
+    // --- SISTEMA DE NAVEGAÇÃO SPA (Single Page Application) ---
+    window.navegarPara = function(idTela) {
+      // 1. Esconde todas as telas
+      document.querySelectorAll('.app-screen').forEach(tela => {
+        tela.classList.add('hidden');
+        tela.classList.remove('fade-in');
+      });
+      // 2. Mostra a tela alvo
+      const telaAlvo = document.getElementById(idTela);
+      if (telaAlvo) {
+        telaAlvo.classList.remove('hidden');
+        // Força um reflow para a animação rodar
+        void telaAlvo.offsetWidth; 
+        telaAlvo.classList.add('fade-in');
+      }
+      
+      // 3. Atualiza o visual dos botões do menu lateral
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.dataset.target === idTela) {
+          // Botão Ativo (Indigo)
+          btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 bg-indigo-500/10 text-indigo-400 rounded-xl font-bold border border-indigo-500/20 text-sm transition-all';
+        } else {
+          // Botão Inativo (Cinza)
+          btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-xl font-medium transition-all text-sm';
+        }
+      });
+    }
+
+    // --- CONTROLE DE LOGIN MODAL ---
     window.abrirLogin = function() {
-      loginModal.classList.remove('hidden');
-      setTimeout(() => loginModal.classList.remove('opacity-0'), 50);
-      loginModal.classList.add('flex');
+      const modal = document.getElementById('login-modal');
+      modal.classList.remove('hidden');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      modal.classList.add('flex');
     }
 
     window.fecharLogin = function() {
-      loginModal.classList.add('opacity-0');
-      setTimeout(() => {
-        loginModal.classList.add('hidden');
-        loginModal.classList.remove('flex');
-      }, 300);
+      const modal = document.getElementById('login-modal');
+      modal.classList.add('opacity-0');
+      setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
     }
 
+    let modoAutenticacao = 'login';
     window.alternarModoAuth = function(modo) {
       modoAutenticacao = modo;
-      const tabLogin = document.getElementById('tab-login');
-      const tabSignup = document.getElementById('tab-signup');
-      const submitBtn = document.getElementById('auth-submit-btn');
-      const authTitle = document.getElementById('auth-title');
-      const authDesc = document.getElementById('auth-desc');
-      const forgotLink = document.getElementById('auth-forgot');
-      const socialSection = document.getElementById('social-login-section');
-      const authTabs = document.getElementById('auth-tabs');
-      const campoEmail = document.getElementById('campo-email');
-      const labelSenha = document.getElementById('label-senha');
+      const tLogin = document.getElementById('tab-login');
+      const tSignup = document.getElementById('tab-signup');
+      const btn = document.getElementById('auth-submit-btn');
       
       document.getElementById('auth-feedback').classList.add('hidden');
 
-      socialSection.classList.remove('hidden');
-      authTabs.classList.remove('hidden');
-      campoEmail.classList.remove('hidden');
-      document.getElementById('auth-password').placeholder = 'Mínimo 6 caracteres';
-
       if (modo === 'signup') {
-        tabSignup.className = 'flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors';
-        tabLogin.className = 'flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors';
-        submitBtn.innerText = 'Criar Conta';
-        authTitle.innerText = 'Comece no TalentPlay';
-        authDesc.innerText = 'Talentos e Empresas convergem aqui';
-        forgotLink.classList.add('hidden');
-        labelSenha.innerText = 'Crie uma Senha';
-      } else if (modo === 'recovery') {
-        socialSection.classList.add('hidden');
-        authTabs.classList.add('hidden');
-        campoEmail.classList.add('hidden'); 
-        submitBtn.innerText = 'Salvar Nova Senha';
-        authTitle.innerText = 'Redefinir Senha';
-        authDesc.innerText = 'Digite uma nova senha segura para sua conta';
-        forgotLink.classList.add('hidden');
-        labelSenha.innerText = 'Nova Senha';
+        tSignup.className = 'flex-1 py-2.5 bg-slate-800 text-white text-sm font-bold rounded-lg shadow-sm transition-all';
+        tLogin.className = 'flex-1 py-2.5 text-slate-400 hover:text-white text-sm font-bold rounded-lg transition-all';
+        btn.innerText = 'CRIAR CONTA';
       } else {
-        tabLogin.className = 'flex-1 py-2 bg-slate-800 text-white text-sm font-bold rounded-md shadow-sm transition-colors';
-        tabSignup.className = 'flex-1 py-2 text-slate-400 hover:text-white text-sm font-bold rounded-md transition-colors';
-        submitBtn.innerText = 'Entrar no Sistema';
-        authTitle.innerText = 'Acesse o TalentPlay';
-        authDesc.innerText = 'Conecte-se para recrutar ou evoluir sua carreira';
-        forgotLink.classList.remove('hidden');
-        labelSenha.innerText = 'Senha';
+        tLogin.className = 'flex-1 py-2.5 bg-slate-800 text-white text-sm font-bold rounded-lg shadow-sm transition-all';
+        tSignup.className = 'flex-1 py-2.5 text-slate-400 hover:text-white text-sm font-bold rounded-lg transition-all';
+        btn.innerText = 'INICIAR SESSÃO';
       }
     }
 
-    function mostrarFeedback(mensagem, tipo) {
-      const feedback = document.getElementById('auth-feedback');
-      feedback.classList.remove('hidden', 'bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20', 'bg-red-500/10', 'text-red-400', 'border-red-500/20');
-      if (tipo === 'sucesso') {
-        feedback.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20', 'block');
-      } else {
-        feedback.classList.add('bg-red-500/10', 'text-red-400', 'border', 'border-red-500/20', 'block');
-      }
-      feedback.innerText = mensagem;
-    }
-
-    // --- 2. LÓGICA DE LOGIN, CADASTRO E RECUPERAÇÃO ---
-    window.loginComProvedor = async function(provider) {
-      const { data, error } = await supabaseClient.auth.signInWithOAuth({ provider: provider, options: { redirectTo: window.location.origin + window.location.pathname } });
-      if (error) mostrarFeedback('Erro ao conectar provedor.', 'erro');
+    function mostrarFeedbackAuth(msg, tipo) {
+      const fb = document.getElementById('auth-feedback');
+      fb.classList.remove('hidden', 'bg-emerald-500/10', 'text-emerald-400', 'bg-red-500/10', 'text-red-400');
+      if (tipo === 'sucesso') fb.classList.add('bg-emerald-500/10', 'text-emerald-400', 'block');
+      else fb.classList.add('bg-red-500/10', 'text-red-400', 'block');
+      fb.innerText = msg;
     }
 
     window.executarAutenticacao = async function(e) {
       e.preventDefault();
       const email = document.getElementById('auth-email').value;
-      const password = document.getElementById('auth-password').value;
-      const submitBtn = document.getElementById('auth-submit-btn');
+      const pass = document.getElementById('auth-password').value;
+      const btn = document.getElementById('auth-submit-btn');
 
-      if (modoAutenticacao !== 'recovery' && !email) return mostrarFeedback('Preencha o e-mail.', 'erro');
-      if (!password || password.length < 6) return mostrarFeedback('A senha deve ter no mínimo 6 caracteres.', 'erro');
-
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'Processando...';
-      document.getElementById('auth-feedback').classList.add('hidden');
+      if (!email || pass.length < 6) return mostrarFeedbackAuth('Preencha os dados corretamente (Senha min. 6 chars)', 'erro');
+      btn.disabled = true; btn.innerText = 'PROCESSANDO...';
 
       try {
         if (modoAutenticacao === 'signup') {
-          const { data, error } = await supabaseClient.auth.signUp({ email, password });
+          const { data, error } = await supabaseClient.auth.signUp({ email, password: pass });
           if (error) throw error;
-          if (data.user && data.user.identities && data.user.identities.length === 0) throw new Error('Este e-mail já está cadastrado. Vá para a aba Entrar.');
-          
-          mostrarFeedback('Conta criada! Você já pode entrar.', 'sucesso');
-          document.getElementById('auth-password').value = '';
+          mostrarFeedbackAuth('Sucesso! Pode fazer login.', 'sucesso');
           setTimeout(() => alternarModoAuth('login'), 1500);
-        } else if (modoAutenticacao === 'recovery') {
-          const { error } = await supabaseClient.auth.updateUser({ password: password });
-          if (error) throw error;
-          mostrarFeedback('Senha atualizada com sucesso! Preparando...', 'sucesso');
-          window.history.replaceState(null, '', window.location.pathname);
-          setTimeout(() => { document.getElementById('auth-password').value = ''; alternarModoAuth('login'); }, 2000);
         } else {
-          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
           if (error) throw error;
-          mostrarFeedback('Login realizado com sucesso!', 'sucesso');
-          setTimeout(() => { fecharLogin(); }, 1200);
+          fecharLogin();
         }
       } catch (err) {
-        let msg = err.message;
-        if (msg.includes('Invalid login credentials')) msg = 'E-mail ou senha incorretos.';
-        mostrarFeedback(msg, 'erro');
+        mostrarFeedbackAuth('Erro: ' + err.message, 'erro');
       } finally {
-        submitBtn.disabled = false;
-        if (modoAutenticacao === 'signup') submitBtn.innerText = 'Criar Conta';
-        else if (modoAutenticacao === 'recovery') submitBtn.innerText = 'Salvar Nova Senha';
-        else submitBtn.innerText = 'Entrar no Sistema';
+        btn.disabled = false; btn.innerText = modoAutenticacao === 'signup' ? 'CRIAR CONTA' : 'INICIAR SESSÃO';
       }
     }
 
-    window.recuperarSenha = async function(e) {
-      e.preventDefault();
-      const emailInput = document.getElementById('auth-email').value;
-      if (!emailInput) return mostrarFeedback('Digite seu e-mail corporativo/pessoal acima antes de clicar em Esqueci.', 'erro');
-      mostrarFeedback('Enviando link de recuperação...', 'sucesso');
-      try {
-        const { error } = await supabaseClient.auth.resetPasswordForEmail(emailInput, { redirectTo: window.location.origin + window.location.pathname });
-        if (error) throw error;
-        mostrarFeedback('Link enviado! Verifique sua caixa de entrada e a pasta spam.', 'sucesso');
-      } catch (err) { mostrarFeedback('Erro ao enviar e-mail. Tente novamente.', 'erro'); }
-    }
-
-    // --- 3. SESSÃO E PERFIL ---
-    let usuarioLogado = null;
-
+    // --- GESTÃO DE SESSÃO E PERFIS ---
     function atualizarInterfaceAuth(session) {
       const btnEntrar = document.getElementById('btn-entrar-header');
       const userMenu = document.getElementById('user-menu-header');
-      if (session && session.user) {
+      if (session) {
         if (btnEntrar) btnEntrar.classList.add('hidden');
         if (userMenu) { userMenu.classList.remove('hidden'); userMenu.classList.add('flex'); }
       } else {
         if (btnEntrar) btnEntrar.classList.remove('hidden');
         if (userMenu) { userMenu.classList.add('hidden'); userMenu.classList.remove('flex'); }
+        // Reseta menus ao deslogar
+        document.getElementById('menu-candidato').classList.remove('hidden');
+        document.getElementById('menu-empresa').classList.add('hidden');
+        navegarPara('tela-home-candidato');
+      }
+    }
+
+    async function atualizarInfoTela(data) {
+      // 1. Atualiza a Sidebar Universal
+      document.getElementById('sidebar-name').innerText = data.nome;
+      document.getElementById('sidebar-level-badge').classList.remove('hidden');
+      document.getElementById('sidebar-level-badge').innerText = `Lvl.${data.nivel}`;
+
+      if (data.tipo_conta === 'candidato') {
+        document.getElementById('sidebar-role').innerText = "Candidato";
+        document.getElementById('sidebar-role').className = "text-[11px] font-semibold text-indigo-400 uppercase tracking-wide truncate mt-0.5";
+        document.getElementById('sidebar-xp-container').classList.remove('hidden');
+        
+        let xpGeral = data.xp;
+        let progressoBarra = xpGeral % 100; // Resto da divisão por 100 para a barra visual
+        
+        document.getElementById('sidebar-xp-text').innerText = `${xpGeral} XP`;
+        document.getElementById('sidebar-xp-bar').style.width = `${progressoBarra}%`;
+        
+        document.getElementById('menu-candidato').classList.remove('hidden');
+        document.getElementById('menu-empresa').classList.add('hidden');
+        navegarPara('tela-home-candidato');
+
+        // Atualiza a Ficha de Personagem (Tela 3)
+        const fNome = document.getElementById('ficha-nome');
+        const fNivel = document.getElementById('ficha-nivel');
+        const fXpBar = document.getElementById('ficha-xp-bar');
+        const fXpText = document.getElementById('ficha-xp-texto');
+        
+        if (fNome) fNome.innerText = data.nome;
+        if (fNivel) fNivel.innerText = `Lvl. ${data.nivel}`;
+        if (fXpBar) fXpBar.style.width = `${progressoBarra}%`;
+        let xpFaltante = 100 - progressoBarra;
+        if (fXpText) fXpText.innerText = `${xpFaltante} XP para o Lvl. ${data.nivel + 1}`;
+
+      } else {
+        // Empresa
+        document.getElementById('sidebar-role').innerText = "Recrutador";
+        document.getElementById('sidebar-role').className = "text-[11px] font-semibold text-emerald-400 uppercase tracking-wide truncate mt-0.5";
+        document.getElementById('sidebar-xp-container').classList.add('hidden');
+        document.getElementById('sidebar-level-badge').classList.add('hidden');
+        
+        document.getElementById('menu-candidato').classList.add('hidden');
+        document.getElementById('menu-empresa').classList.remove('hidden');
+        navegarPara('tela-home-empresa');
       }
     }
 
     async function verificarPerfil(user) {
       usuarioLogado = user;
-      const { data, error } = await supabaseClient
-        .from('perfis')
-        .select('*')
-        .eq('id', user.id)
-        .single();
+      const { data, error } = await supabaseClient.from('perfis').select('*').eq('id', user.id).single();
 
       if (!data) {
-        const modalOnboarding = document.getElementById('onboarding-modal');
-        if(modalOnboarding) {
-          modalOnboarding.classList.remove('hidden');
-          setTimeout(() => modalOnboarding.classList.remove('opacity-0'), 50);
-          modalOnboarding.classList.add('flex');
-        }
+        // Sem ficha, abre Onboarding
+        const modal = document.getElementById('onboarding-modal');
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        modal.classList.add('flex');
       } else {
-        const emailDisplay = document.getElementById('user-email-display');
-        if(emailDisplay) {
-          const infosDisplay = emailDisplay.nextElementSibling;
-          emailDisplay.innerText = data.nome;
-          if (data.tipo_conta === 'candidato') {
-            infosDisplay.innerText = `Nível ${data.nivel} • ${data.xp} XP`;
-            infosDisplay.className = "text-xs text-indigo-400 font-medium";
-          } else {
-            infosDisplay.innerText = `Recrutador (Empresa)`;
-            infosDisplay.className = "text-xs text-emerald-400 font-medium";
-          }
-        }
+        perfilAtual = data;
+        atualizarInfoTela(data);
       }
-    }
-
-    async function verificarSessao() {
-      const { data: { session }, error } = await supabaseClient.auth.getSession();
-      atualizarInterfaceAuth(session);
-      if (session && session.user) verificarPerfil(session.user);
     }
 
     window.salvarPerfil = async function(e) {
       e.preventDefault();
       const nome = document.getElementById('onboarding-nome').value;
-      const tipoConta = document.querySelector('input[name="tipo_conta"]:checked').value;
+      const tipo = document.querySelector('input[name="tipo_conta"]:checked').value;
       const btn = document.getElementById('onboarding-submit-btn');
       
-      btn.disabled = true;
-      btn.innerText = 'Salvando dados...';
-
-      const { error } = await supabaseClient.from('perfis').insert([{ id: usuarioLogado.id, nome: nome, tipo_conta: tipoConta }]);
-
-      if (error) {
-        alert("Erro ao salvar perfil: " + error.message);
-        btn.disabled = false;
-        btn.innerText = 'Salvar e Entrar';
-      } else {
-        const modalOnboarding = document.getElementById('onboarding-modal');
-        modalOnboarding.classList.add('opacity-0');
+      btn.disabled = true; btn.innerText = 'SALVANDO...';
+      const { error } = await supabaseClient.from('perfis').insert([{ id: usuarioLogado.id, nome, tipo_conta: tipo }]);
+      
+      if (!error) {
+        document.getElementById('onboarding-modal').classList.add('opacity-0');
         setTimeout(() => {
-          modalOnboarding.classList.add('hidden');
-          modalOnboarding.classList.remove('flex');
+          document.getElementById('onboarding-modal').classList.add('hidden');
           verificarPerfil(usuarioLogado);
         }, 300);
+      } else {
+        alert('Erro: ' + error.message);
+        btn.disabled = false; btn.innerText = 'INICIAR JORNADA';
       }
     }
 
     window.fazerLogout = async function() {
-      const { error } = await supabaseClient.auth.signOut();
-      if (!error) { atualizarInterfaceAuth(null); window.location.reload(); }
+      await supabaseClient.auth.signOut();
+      window.location.reload();
     }
 
-    // --- 4. FUNÇÕES DO RPG (Previne erro no botão Iniciar Desafio Prático) ---
+    // --- MOTOR DO RPG (XP E LEVEL UP) ---
     window.iniciarRPG = function() {
-      const rpgModal = document.getElementById('rpg-modal');
-      rpgModal.classList.remove('hidden');
-      setTimeout(() => rpgModal.classList.remove('opacity-0'), 50);
+      if(!perfilAtual) return alert("Você precisa estar logado para jogar.");
       
-      document.getElementById('rpg-text').innerText = "O telefone toca sem parar. O gerente de operações passa correndo e grita: 'Preciso do relatório de estoque de ontem na minha mesa agora!' Ao mesmo tempo, um fornecedor importante liga no seu ramal exigindo falar com alguém. Como você reage?";
+      const modal = document.getElementById('rpg-modal');
+      const card = document.getElementById('rpg-card');
+      modal.classList.remove('hidden');
+      
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        card.classList.remove('scale-95');
+      }, 10);
+      
+      document.getElementById('rpg-text').innerHTML = "O telefone toca sem parar. O gerente de operações passa correndo e grita: <span class='text-white font-bold'>'Preciso do relatório de estoque de ontem na minha mesa agora!'</span> Ao mesmo tempo, um fornecedor importante liga no seu ramal exigindo falar com alguém. Como você reage?";
       document.getElementById('rpg-choices').classList.remove('hidden');
     }
 
-    window.escolherOpcao = function(opcao) {
+    window.fecharRPG = function() {
+      const modal = document.getElementById('rpg-modal');
+      const card = document.getElementById('rpg-card');
+      modal.classList.add('opacity-0');
+      card.classList.add('scale-95');
+      setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+    }
+
+    window.escolherOpcao = async function(opcao) {
       const rpgText = document.getElementById('rpg-text');
       const rpgChoices = document.getElementById('rpg-choices');
       
       rpgChoices.classList.add('hidden');
+      let xpGanho = (opcao === 'C') ? 50 : 10;
+      
       if(opcao === 'C') {
-        rpgText.innerHTML = "<span class='text-emerald-400 font-bold'>SUCESSO!</span> Você demonstrou controle sob pressão e comunicação clara. <br><br><strong>+50 XP ganhos!</strong>";
+        rpgText.innerHTML = `<span class='text-emerald-400 font-black text-2xl mb-2 block'>VITÓRIA!</span> Você demonstrou controle emocional e comunicação assertiva.<br><br><span class='inline-block bg-indigo-500/20 text-indigo-400 border border-indigo-500/50 px-4 py-2 rounded-lg font-black text-xl'>+${xpGanho} XP</span><br><br><span class='text-xs text-slate-500 uppercase tracking-widest mt-4 block animate-pulse'>Sincronizando com servidor...</span>`;
       } else {
-        rpgText.innerHTML = "<span class='text-yellow-400 font-bold'>QUASE LÁ!</span> A intenção foi boa, mas faltou um pouco de alinhamento. <br><br><strong>+10 XP ganhos!</strong>";
+        rpgText.innerHTML = `<span class='text-yellow-400 font-black text-2xl mb-2 block'>QUASE LÁ!</span> A intenção foi boa, mas priorizar uma tarefa e esquecer a outra quebra a dinâmica da equipe.<br><br><span class='inline-block bg-indigo-500/20 text-indigo-400 border border-indigo-500/50 px-4 py-2 rounded-lg font-black text-xl'>+${xpGanho} XP</span><br><br><span class='text-xs text-slate-500 uppercase tracking-widest mt-4 block animate-pulse'>Sincronizando com servidor...</span>`;
       }
+
+      try {
+        let novoXp = perfilAtual.xp + xpGanho;
+        let novoNivel = Math.floor(novoXp / 100) + 1; // Level Up System
+        let nivelSubiu = novoNivel > perfilAtual.nivel;
+
+        const { error } = await supabaseClient.from('perfis').update({ xp: novoXp, nivel: novoNivel }).eq('id', usuarioLogado.id);
+        
+        if (!error) {
+          perfilAtual.xp = novoXp;
+          perfilAtual.nivel = novoNivel;
+          atualizarInfoTela(perfilAtual); // Atualiza barras e textos do site instantaneamente
+          
+          let btnConcluir = `<button onclick="fecharRPG()" class='mt-6 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl border border-slate-700 transition-all'>Concluir Missão</button>`;
+          let msgLevelUp = nivelSubiu ? `<br><span class='text-emerald-400 font-black mt-2 block'>🎉 PARABÉNS! VOCÊ SUBIU PARA O NÍVEL ${novoNivel}!</span>` : '';
+          
+          rpgText.innerHTML = rpgText.innerHTML.replace(
+            "<span class='text-xs text-slate-500 uppercase tracking-widest mt-4 block animate-pulse'>Sincronizando com servidor...</span>", 
+            `<span class='text-emerald-500 font-black text-sm uppercase'>✓ Dados Salvos</span> ${msgLevelUp} ${btnConcluir}`
+          );
+        }
+      } catch (err) { console.error(err); }
     }
 
-    supabaseClient.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') atualizarInterfaceAuth(session);
+    // --- INICIALIZAÇÃO ---
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      atualizarInterfaceAuth(session);
       if (event === 'SIGNED_IN' && session) verificarPerfil(session.user);
-      if (event === 'PASSWORD_RECOVERY') { abrirLogin(); alternarModoAuth('recovery'); }
     });
 
-    // Inicia tudo
-    verificarSessao();
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      atualizarInterfaceAuth(session);
+      if (session) verificarPerfil(session.user);
+    });
   </script>
 </body>
 </html>
