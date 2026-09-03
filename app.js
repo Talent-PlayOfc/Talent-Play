@@ -65,7 +65,7 @@ window.navegarPara = function(idTela) {
 // SUPABASE DATABASE & AUTH MOCK FALLBACK
 // ----------------------------------------------------
 const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45'; // <--- INSIRA SUA CHAVE AQUI
+const SUPABASE_KEY = 'chave'; // <--- INSIRA SUA CHAVE AQUI
 
 let supabaseClient = null;
 let modoOffline = false;
