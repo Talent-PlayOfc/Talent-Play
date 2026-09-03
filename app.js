@@ -68,7 +68,7 @@ window.navegarPara = function(idTela) {
 // SUPABASE DATABASE & CONFIGURAÇÃO
 // ----------------------------------------------------
 const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
-const SUPABASE_KEY = 'chave'; // <-- COLOQUE SUA CHAVE REAL AQUI
+const SUPABASE_KEY = 'sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45'; // <-- COLOQUE SUA CHAVE REAL AQUI
 
 let supabaseClient = null;
 let modoOffline = false;
