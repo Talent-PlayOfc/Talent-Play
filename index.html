@@ -30,9 +30,13 @@
     <div class="p-6 border-b border-slate-800 relative z-10">
       <div class="flex items-center gap-4">
         <div class="relative group cursor-pointer" onclick="abrirModal('modal-editar-perfil')">
-          <div class="w-14 h-14 rounded-2xl bg-slate-800 border-2 border-indigo-500/50 flex items-center justify-center overflow-hidden shadow-lg shadow-indigo-500/20 group-hover:border-indigo-400 transition-all">
-             <i id="sidebar-avatar-icon" class="ph ph-user text-2xl text-slate-400 group-hover:text-indigo-400"></i>
-          </div>
+          <div id="sidebar-avatar-box" onclick="abrirModal('modal-foto-perfil')" class="w-14 h-14 rounded-2xl bg-slate-800 border-2 border-indigo-500/50 flex items-center justify-center overflow-hidden shadow-lg cursor-pointer hover:opacity-80 transition-opacity shrink-0 relative group">
+  <img id="sidebar-avatar-img" class="w-full h-full object-cover hidden" alt="Avatar">
+  <i id="sidebar-avatar-icon" class="ph ph-user text-2xl text-indigo-400"></i>
+  <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+    <i class="ph ph-camera text-white text-base"></i>
+  </div>
+</div>
           <div class="absolute inset-0 bg-slate-900/60 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><i class="ph ph-pencil-simple text-white font-bold"></i></div>
           <div id="sidebar-level-badge" class="absolute -bottom-2 -right-2 bg-indigo-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-lg border-2 border-slate-950 hidden">Lvl.1</div>
         </div>
@@ -977,5 +981,36 @@
 
   <!-- Chamando o seu novo arquivo de JavaScript (O Cérebro) -->
   <script src="app.js"></script>
+  <!-- Modal: Alterar Foto de Perfil -->
+<div id="modal-foto-perfil" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
+  <div class="absolute inset-0" onclick="fecharModal('modal-foto-perfil')"></div>
+  <div class="max-w-sm w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-foto-perfil">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl font-black text-white">Foto de Perfil</h3>
+      <button onclick="fecharModal('modal-foto-perfil')" class="text-slate-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Carregar arquivo do dispositivo</label>
+        <input type="file" id="input-foto-arquivo" accept="image/*" class="w-full text-xs text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 cursor-pointer bg-slate-950 p-2 rounded-xl border border-slate-800">
+      </div>
+
+      <div class="flex items-center gap-2 my-2">
+        <div class="h-px bg-slate-800 flex-1"></div>
+        <span class="text-[10px] text-slate-500 uppercase font-black">ou cole a url</span>
+        <div class="h-px bg-slate-800 flex-1"></div>
+      </div>
+
+      <div>
+        <input type="url" id="input-foto-url" placeholder="https://exemplo.com/foto.jpg" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 outline-none">
+      </div>
+
+      <button onclick="salvarFotoPerfil()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20">
+        Salvar Nova Foto
+      </button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
