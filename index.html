@@ -240,47 +240,51 @@
             </div>
           </div>
 
-          <!-- Seção de Vagas em Destaque -->
+          <!-- Seção de Oportunidades em Destaque -->
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-briefcase text-indigo-400"></i> Oportunidades Recomendadas</h2>
-            <button onclick="navegarPara('tela-vagas')" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Ver quadro completo &rarr;</button>
+            <h2 class="text-2xl font-black text-white flex items-center gap-3"><i class="ph ph-fire text-orange-500 text-3xl animate-pulse"></i> Oportunidades em Destaque</h2>
+            <button onclick="navegarPara('tela-vagas')" class="text-sm font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Ver quadro completo &rarr;</button>
           </div>
           
           <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="lista-recomendadas">
-            <!-- Vaga Card Dinâmico -->
-            <div class="bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-7 transition-all duration-300 group relative shadow-lg flex flex-col justify-between">
-              <div>
-                <div class="flex justify-between items-start mb-6">
-                  <div>
-                    <div class="flex flex-wrap gap-2 mb-3">
-                      <span class="text-[9px] font-black text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-md border border-emerald-400/20 tracking-widest uppercase">Nível: Júnior</span>
-                      <span class="text-[9px] font-black text-indigo-400 bg-indigo-400/10 px-2.5 py-1 rounded-md border border-indigo-400/20 tracking-widest uppercase">Setor Administrativo</span>
-                    </div>
-                    <h3 class="text-2xl font-black text-white group-hover:text-indigo-300 transition-colors">Auxiliar de Operações</h3>
-                    <p class="text-sm text-slate-400 font-medium flex items-center gap-1.5 mt-2"><i class="ph ph-map-pin text-indigo-400"></i> Candeias, BA • Mosaic Fertilizantes</p>
+            <!-- Vaga Card Dinâmico com Listra de Destaque -->
+            <div class="bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-7 transition-all duration-300 group relative shadow-lg hover:shadow-[0_10px_40px_rgba(79,70,229,0.15)] flex flex-col h-full overflow-hidden">
+              <div class="absolute top-0 left-0 w-1.5 h-full bg-indigo-500"></div>
+              
+              <div class="flex justify-between items-start mb-6">
+                <div>
+                  <div class="flex flex-wrap gap-2 mb-3">
+                    <span class="text-[9px] font-black text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-md border border-emerald-400/20 tracking-widest uppercase">Nível: Júnior</span>
+                    <span class="text-[9px] font-black text-indigo-400 bg-indigo-400/10 px-2.5 py-1 rounded-md border border-indigo-400/20 tracking-widest uppercase">Setor Administrativo</span>
                   </div>
-                  <div class="w-14 h-14 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-2xl shrink-0 shadow-inner">🏢</div>
+                  <h3 class="text-2xl font-black text-white group-hover:text-indigo-300 transition-colors">Auxiliar de Operações</h3>
+                  <p class="text-sm text-slate-400 font-medium flex items-center gap-1.5 mt-2"><i class="ph ph-map-pin text-indigo-400"></i> Candeias, BA • Mosaic Fertilizantes</p>
                 </div>
-                
-                <div class="bg-slate-950 rounded-2xl p-4 mb-6 border border-slate-800/50 flex justify-between items-center">
-                  <div>
-                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">Validação Prática</p>
+                <div class="w-14 h-14 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-2xl shrink-0 shadow-inner">🏢</div>
+              </div>
+              
+              <div class="mt-auto">
+                <div class="bg-slate-950 rounded-2xl p-4 mb-6 border border-slate-800/50 flex justify-between items-center relative overflow-hidden">
+                  <div class="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+                  <div class="pl-2">
+                    <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-0.5">Validação Prática</p>
                     <p class="text-sm font-bold text-indigo-300">Logística & Rotinas de Escritório</p>
                   </div>
                   <div class="text-right">
-                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">Pontuação Alvo</p>
+                    <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-0.5">Pontuação Alvo</p>
                     <p class="text-sm font-bold text-emerald-400">+50 XP</p>
                   </div>
                 </div>
-              </div>
 
-              <button onclick="iniciarRPG('Auxiliar de Operações', 'Mosaic')" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2">
-                <i class="ph ph-play-circle text-lg"></i> Iniciar Simulação Prática
-              </button>
+                <button onclick="iniciarRPG('Auxiliar de Operações', 'Mosaic')" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2">
+                  <i class="ph ph-play-circle text-lg"></i> Iniciar Simulação Prática
+                </button>
+              </div>
             </div>
 
             <!-- Vaga Card Bloqueado -->
-            <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-3xl p-7 transition-all duration-300 relative shadow-lg flex flex-col justify-between opacity-80">
+            <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-3xl p-7 transition-all duration-300 relative shadow-lg flex flex-col justify-between opacity-80 overflow-hidden">
+              <div class="absolute top-0 left-0 w-1.5 h-full bg-slate-700"></div>
               <div class="absolute inset-0 bg-slate-950/50 rounded-3xl z-10 flex flex-col items-center justify-center backdrop-blur-[2px]">
                 <div class="bg-slate-900 border border-slate-700 p-3 rounded-full mb-2 shadow-2xl"><i class="ph ph-lock-key text-2xl text-slate-400"></i></div>
                 <p class="font-bold text-white text-sm">Requer Nível 3 de Validação</p>
