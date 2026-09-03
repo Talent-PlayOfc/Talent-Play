@@ -52,7 +52,7 @@ window.fecharModal = function(idModal) {
 // 2. SUPABASE SETUP (MODO DE SIMULAÇÃO INTELIGENTE)
 // ----------------------------------------------------
 const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
-const SUPABASE_KEY = 'SUA_CHAVE_AQUI'; // <--- INSIRA SUA CHAVE AQUI SE DESEJAR USAR O BANCO REAL
+const SUPABASE_KEY = 'sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45'; // <--- INSIRA SUA CHAVE AQUI SE DESEJAR USAR O BANCO REAL
 
 let supabaseClient = null;
 let modoOffline = false;
