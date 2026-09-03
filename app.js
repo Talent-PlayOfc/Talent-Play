@@ -364,6 +364,8 @@ window.carregarMinhasCandidaturas = async function() {
   });
 };
 
+let listaCandidaturasCache = [];
+
 window.carregarRadarTalentos = async function() {
   if (modoOffline) return;
 
@@ -388,6 +390,7 @@ window.carregarRadarTalentos = async function() {
     return;
   }
 
+  listaCandidaturasCache = candidaturas;
   if (contadorTotal) contadorTotal.innerText = candidaturas.length;
   tbody.innerHTML = '';
 
@@ -397,6 +400,10 @@ window.carregarRadarTalentos = async function() {
 
     const medalhaCor = index === 0 ? 'text-emerald-400 border-emerald-500/30 bg-emerald-900/50' : (index === 1 ? 'text-indigo-400 border-indigo-500/30 bg-slate-800' : 'text-slate-400 border-slate-700 bg-slate-800');
 
+    const statusBadge = c.status === 'Entrevista Agendada' 
+      ? `<span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-black px-2 py-0.5 rounded border border-emerald-500/30 ml-2">CONVIDADO</span>`
+      : '';
+
     tr.innerHTML = `
       <td class="p-4">
         <div class="flex items-center gap-3">
@@ -404,7 +411,7 @@ window.carregarRadarTalentos = async function() {
             ${index + 1}º
           </div>
           <div>
-            <p class="font-bold text-white text-sm">${c.candidato_nome}</p>
+            <p class="font-bold text-white text-sm flex items-center">${c.candidato_nome} ${statusBadge}</p>
             <p class="text-xs text-indigo-400 font-bold flex items-center gap-1 mt-0.5">
               <i class="ph ph-lightning text-yellow-400"></i> +${c.xp_obtido || 0} XP
             </p>
@@ -425,13 +432,67 @@ window.carregarRadarTalentos = async function() {
         </div>
       </td>
       <td class="p-4 text-right">
-        <button onclick="abrirModal('modal-ver-candidato')" class="text-xs font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-lg hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
+        <button onclick="abrirModalDetalhesCandidato('${c.id}')" class="text-xs font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-lg hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
           Ver Ficha
         </button>
       </td>
     `;
     tbody.appendChild(tr);
   });
+};
+
+window.abrirModalDetalhesCandidato = function(idCandidatura) {
+  const c = listaCandidaturasCache.find(item => item.id === idCandidatura);
+  if (!c) return;
+
+  document.getElementById('modal-cand-id').value = c.id;
+  document.getElementById('modal-cand-nome').innerText = c.candidato_nome;
+  document.getElementById('modal-cand-xp').innerText = `+${c.xp_obtido || 0} XP Conquistados`;
+  document.getElementById('modal-cand-vaga').innerText = c.vaga_titulo;
+  document.getElementById('modal-cand-match').innerText = `${c.match_percentual}% MATCH TÉCNICO`;
+
+  const laudo = c.match_percentual >= 90 
+    ? 'Demonstrou alta maturidade operacional, comunicação clara e foco na solução de problemas sob pressão.'
+    : 'Apresentou boa intenção na condução das tarefas, com oportunidades de aprimoramento em priorização.';
+  document.getElementById('modal-cand-laudo').innerText = laudo;
+
+  const btnAcao = document.getElementById('modal-cand-btn-acao');
+  if (c.status === 'Entrevista Agendada') {
+    btnAcao.innerText = 'Entrevista Já Agendada';
+    btnAcao.className = 'w-full py-4 bg-slate-800 text-slate-400 rounded-xl font-black uppercase tracking-wider cursor-not-allowed';
+    btnAcao.disabled = true;
+  } else {
+    btnAcao.innerText = 'Convidar para Entrevista';
+    btnAcao.className = 'w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]';
+    btnAcao.disabled = false;
+  }
+
+  abrirModal('modal-ver-candidato');
+};
+
+window.convidarParaEntrevista = async function() {
+  const idCandidatura = document.getElementById('modal-cand-id').value;
+  if (!idCandidatura || modoOffline) return;
+
+  const btnAcao = document.getElementById('modal-cand-btn-acao');
+  btnAcao.innerText = 'ENVIANDO CONVITE...';
+  btnAcao.disabled = true;
+
+  const { error } = await supabaseClient
+    .from('candidaturas')
+    .update({ status: 'Entrevista Agendada' })
+    .eq('id', idCandidatura);
+
+  if (error) {
+    mostrarToast('Erro ao atualizar status: ' + error.message, 'error');
+    btnAcao.innerText = 'Convidar para Entrevista';
+    btnAcao.disabled = false;
+    return;
+  }
+
+  mostrarToast('Convite oficial para entrevista enviado!', 'success');
+  fecharModal('modal-ver-candidato');
+  carregarRadarTalentos();
 };
 
 // ----------------------------------------------------
