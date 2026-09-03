@@ -625,6 +625,7 @@ window.salvarFotoPerfil = async function() {
 
     if (perfilAtual) perfilAtual.avatar_url = url;
     atualizarExibicaoAvatar(url);
+    fecharModal('modal-editar-perfil');
     fecharModal('modal-foto-perfil');
     mostrarToast('Foto de perfil atualizada!', 'success');
     urlInput.value = '';
