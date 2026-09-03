@@ -842,13 +842,35 @@
     </div>
   </div>
 
-  <!-- Modal: Editar Perfil e Configurações (Genéricos) -->
+ <!-- Modal: Editar Perfil e Foto -->
   <div id="modal-editar-perfil" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
     <div class="absolute inset-0" onclick="fecharModal('modal-editar-perfil')"></div>
     <div class="max-w-sm w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-editar-perfil">
-      <h3 class="text-xl font-black text-white flex items-center gap-2 mb-4"><i class="ph ph-wrench text-indigo-500"></i> Em Construção</h3>
-      <p class="text-sm text-slate-400 font-medium mb-6">A oficina de personagens estará disponível na próxima atualização (Build 1.5).</p>
-      <button onclick="fecharModal('modal-editar-perfil')" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-all">Voltar ao Jogo</button>
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-black text-white">Foto de Perfil</h3>
+        <button onclick="fecharModal('modal-editar-perfil')" class="text-slate-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Carregar do computador</label>
+          <input type="file" id="input-foto-arquivo" accept="image/*" class="w-full text-xs text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 cursor-pointer bg-slate-950 p-2 rounded-xl border border-slate-800">
+        </div>
+
+        <div class="flex items-center gap-2 my-2">
+          <div class="h-px bg-slate-800 flex-1"></div>
+          <span class="text-[10px] text-slate-500 uppercase font-black">ou cole a url</span>
+          <div class="h-px bg-slate-800 flex-1"></div>
+        </div>
+
+        <div>
+          <input type="url" id="input-foto-url" placeholder="https://exemplo.com/foto.jpg" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 outline-none">
+        </div>
+
+        <button onclick="salvarFotoPerfil()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20">
+          Salvar Nova Foto
+        </button>
+      </div>
     </div>
   </div>
   <div id="modal-configuracoes" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
