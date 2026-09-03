@@ -275,33 +275,58 @@ window.adicionarExperiencia = function(e) {
   document.getElementById('ae-cargo').value = ''; document.getElementById('ae-empresa').value = '';
 }
 
-window.criarNovaVaga = function(e) {
+window.criarNovaVaga = async function(e) {
   e.preventDefault();
   const titulo = document.getElementById('nv-titulo').value;
   const local = document.getElementById('nv-local').value;
   const xp = document.getElementById('nv-xp').value;
+  const nomeEmpresa = perfilAtual ? perfilAtual.nome : 'Empresa Parceira';
   
+  if(!modoOffline) {
+    const { error } = await supabaseClient.from('vagas').insert([{ titulo, local, xp, empresa: nomeEmpresa }]);
+    if(error) {
+      mostrarToast('Erro ao salvar vaga no banco: ' + error.message, 'error');
+      return;
+    }
+  }
+
+  // Adiciona visualmente na hora
+  adicionarVagaNaTela(titulo, local, xp, nomeEmpresa);
+
+  fecharModal('modal-nova-vaga');
+  mostrarToast('Oportunidade lançada no radar de talentos!', 'success');
+  document.getElementById('nv-titulo').value = ''; 
+  document.getElementById('nv-local').value = '';
+}
+
+// Essa função só desenha a vaga na tela (separada para ser usada tanto ao criar quanto ao carregar do banco)
+window.adicionarVagaNaTela = function(titulo, local, xp, empresaNome) {
   const cGeral = document.getElementById('container-todas-vagas');
   const cEmpresa = document.getElementById('container-vagas-empresa');
   
   if(cGeral) {
     const el = document.createElement('div');
     el.className = "vaga-card bg-slate-900 border border-emerald-500/50 rounded-3xl p-6 relative shadow-[0_0_20px_rgba(16,185,129,0.1)] flex flex-col h-full hover:border-emerald-400 transition-colors group";
-    el.setAttribute('data-titulo', titulo); el.setAttribute('data-empresa', perfilAtual ? perfilAtual.nome : 'Empresa Parceira');
-    el.innerHTML = `<div class="flex justify-between items-start mb-6"><div><span class="text-[9px] font-black text-white bg-emerald-500 px-2 py-1 rounded-md tracking-widest uppercase shadow-md animate-pulse">NOVA</span><h3 class="text-xl font-bold text-white mt-3 vaga-titulo group-hover:text-emerald-400 transition-colors leading-tight">${titulo}</h3><p class="text-sm text-slate-400 mt-1 vaga-empresa">${perfilAtual ? perfilAtual.nome : 'Empresa'} • ${local}</p></div><div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-center text-2xl text-emerald-500 shadow-inner shrink-0">🏢</div></div><div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between"><span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">+${xp} XP</span><button onclick="iniciarRPG('${titulo}', '${perfilAtual ? perfilAtual.nome : 'Empresa'}')" class="text-sm font-bold text-slate-900 bg-emerald-500 hover:bg-emerald-400 px-5 py-2.5 rounded-xl transition-colors shadow-lg">Jogar Missão</button></div>`;
+    el.setAttribute('data-titulo', titulo); el.setAttribute('data-empresa', empresaNome);
+    el.innerHTML = `<div class="flex justify-between items-start mb-6"><div><span class="text-[9px] font-black text-white bg-emerald-500 px-2 py-1 rounded-md tracking-widest uppercase shadow-md animate-pulse">NOVA</span><h3 class="text-xl font-bold text-white mt-3 vaga-titulo group-hover:text-emerald-400 transition-colors leading-tight">${titulo}</h3><p class="text-sm text-slate-400 mt-1 vaga-empresa">${empresaNome} • ${local}</p></div><div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-center text-2xl text-emerald-500 shadow-inner shrink-0">🏢</div></div><div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between"><span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">+${xp} XP</span><button onclick="iniciarRPG('${titulo}', '${empresaNome}')" class="text-sm font-bold text-slate-900 bg-emerald-500 hover:bg-emerald-400 px-5 py-2.5 rounded-xl transition-colors shadow-lg">Iniciar</button></div>`;
     cGeral.prepend(el);
   }
 
   if(cEmpresa) {
     const el = document.createElement('div');
-    el.className = "bg-slate-900 border border-slate-800 rounded-3xl p-8 relative overflow-hidden shadow-xl";
-    el.innerHTML = `<div class="flex justify-between items-start mb-6"><div><span class="inline-block py-1 px-2.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-3">Ativa Agora</span><h3 class="text-2xl font-black text-white leading-tight">${titulo}</h3><p class="text-sm text-slate-400 mt-1 font-medium"><i class="ph ph-map-pin text-emerald-500"></i> ${local}</p></div><button class="text-slate-400 hover:text-white p-3 rounded-xl transition-colors"><i class="ph ph-dots-three text-2xl font-bold"></i></button></div><div class="grid grid-cols-3 gap-4 mb-2"><div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center"><p class="text-3xl font-black text-white mb-1">0</p><p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Jogadores</p></div><div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center"><p class="text-3xl font-black text-emerald-400 mb-1">0</p><p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Matches</p></div><div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center flex flex-col justify-center items-center gap-1"><p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Recompensa</p><span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-3 py-1 rounded-lg font-black text-sm">+${xp} XP</span></div></div>`;
+    el.className = "bg-slate-900 border border-emerald-500/30 rounded-3xl p-8 relative overflow-hidden shadow-xl group";
+    el.innerHTML = `<div class="flex justify-between items-start mb-6"><div><span class="inline-block py-1 px-2.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-3">Missão Ativa</span><h3 class="text-2xl font-black text-white leading-tight">${titulo}</h3><p class="text-sm text-slate-400 mt-1 font-medium"><i class="ph ph-map-pin text-emerald-500"></i> ${local} • Banco de Dados</p></div><button class="bg-slate-950 border border-slate-800 hover:border-slate-600 text-slate-400 hover:text-white p-3 rounded-xl transition-colors shadow-sm"><i class="ph ph-pencil-simple text-xl font-bold"></i></button></div><div class="grid grid-cols-3 gap-4 mb-6"><div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center"><p class="text-3xl font-black text-white mb-1">0</p><p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Jogadores</p></div><div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center"><p class="text-3xl font-black text-emerald-400 mb-1">0</p><p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Matches >90%</p></div><div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-center flex flex-col justify-center items-center gap-1"><p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Recompensa</p><span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-3 py-1 rounded-lg font-black text-sm">+${xp} XP</span></div></div><div class="border-t border-slate-800 pt-6"><button class="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-md">Analisar Candidatos</button></div>`;
     cEmpresa.prepend(el);
   }
+}
 
-  fecharModal('modal-nova-vaga');
-  mostrarToast('Missão lançada no radar de talentos!', 'success');
-  document.getElementById('nv-titulo').value = ''; document.getElementById('nv-local').value = '';
+// Busca as vagas no Supabase quando a página carrega
+window.carregarVagasDoBanco = async function() {
+  if(modoOffline) return;
+  const { data: vagas, error } = await supabaseClient.from('vagas').select('*').order('created_at', { ascending: true });
+  if(!error && vagas) {
+    vagas.forEach(v => adicionarVagaNaTela(v.titulo, v.local, v.xp, v.empresa));
+  }
 }
 
 window.iniciarRPG = function(vagaTitulo = 'Missão Padrão', empresa = 'Nossa Empresa') {
@@ -356,7 +381,8 @@ window.escolherOpcao = async function(opcao) {
 }
 
 window.onload = function() {
-  if(!modoOffline) {
+  carregarVagasDoBanco();
+  if(!modoOffline) { 
     supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) verificarPerfil(session.user);
       if (event === 'SIGNED_OUT') atualizarInterfaceAuth(false);
