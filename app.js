@@ -38,10 +38,13 @@ window.fecharModal = function(idModal) {
 // ----------------------------------------------------
 window.navegarPara = function(idTela) {
   document.querySelectorAll('.app-screen').forEach(tela => {
+    tela.classList.add('hidden'); // Linha restaurada
     tela.classList.remove('active');
   });
+  
   const telaAlvo = document.getElementById(idTela);
   if (telaAlvo) {
+    telaAlvo.classList.remove('hidden'); // Linha restaurada
     void telaAlvo.offsetWidth; 
     telaAlvo.classList.add('active');
   }
