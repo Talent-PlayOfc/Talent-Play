@@ -346,6 +346,7 @@ window.escolherOpcao = async function(opcao) {
   const rpgText = document.getElementById('rpg-text');
   document.getElementById('rpg-choices').classList.add('hidden');
   let xpGanho = (opcao === 'C') ? 100 : 25;
+  let matchCalc = (opcao === 'C') ? 95 : 60;
   
   if(opcao === 'C') {
     rpgText.innerHTML = `<div class='bg-emerald-500/10 border border-emerald-500/30 p-6 rounded-2xl mb-6 shadow-[0_0_30px_rgba(16,185,129,0.1)]'><span class='text-emerald-400 font-black text-3xl mb-2 flex items-center gap-3'><i class="ph ph-check-circle"></i> SUCESSO CRÍTICO!</span> <p class='text-slate-300 font-medium'>Você demonstrou controle emocional impecável e comunicação assertiva de sênior. O gerente ficou satisfeito e o fornecedor se sentiu respeitado.</p></div><span class='inline-block bg-indigo-500 text-white px-6 py-3 rounded-xl font-black text-2xl shadow-[0_0_20px_rgba(79,70,229,0.4)] transform hover:scale-105 transition-transform'>+${xpGanho} XP GANHOS</span>`;
@@ -353,7 +354,21 @@ window.escolherOpcao = async function(opcao) {
     rpgText.innerHTML = `<div class='bg-yellow-500/10 border border-yellow-500/30 p-6 rounded-2xl mb-6 shadow-[0_0_30px_rgba(234,179,8,0.1)]'><span class='text-yellow-400 font-black text-3xl mb-2 flex items-center gap-3'><i class="ph ph-warning-circle"></i> QUASE LÁ!</span> <p class='text-slate-300 font-medium'>A intenção de resolver rápido foi boa, mas priorizar uma tarefa e abandonar o relacionamento com o fornecedor quebra a dinâmica da equipe.</p></div><span class='inline-block bg-indigo-500 text-white px-6 py-3 rounded-xl font-black text-2xl shadow-[0_0_20px_rgba(79,70,229,0.4)]'>+${xpGanho} XP GANHOS</span>`;
   }
 
-  let btnConcluir = `<button onclick="fecharRPG()" class='mt-8 w-full py-5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-lg rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)]'>COLETAR RECOMPENSA E SAIR</button>`;
+  let tituloVagaAtual = document.getElementById('rpg-titulo-header').innerText;
+  let btnConcluir = `<button onclick="fecharRPG()" class='mt-8 w-full py-5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-lg rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)]'>COLETAR RECOMPENSA E ENVIAR AO RH</button>`;
+
+  // Salva a candidatura e o laudo no Supabase para o RH visualizar
+  if(!modoOffline && perfilAtual) {
+    await supabaseClient.from('candidaturas').insert([{
+      vaga_titulo: tituloVagaAtual,
+      candidato_nome: perfilAtual.nome,
+      candidato_id: usuarioLogado.id,
+      empresa: 'Empresa Parceira',
+      status: 'Avaliação Concluída',
+      xp_obtido: xpGanho,
+      match_percentual: matchCalc
+    }]);
+  }
   
   if(modoOffline) {
     perfilAtual.xp += xpGanho;
