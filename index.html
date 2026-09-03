@@ -803,24 +803,36 @@
     </div>
   </div>
 
-  <!-- Modal: Ver Candidato (Recrutador) -->
+ <!-- Modal: Ver Candidato (Recrutador Dinâmico) -->
   <div id="modal-ver-candidato" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
     <div class="absolute inset-0" onclick="fecharModal('modal-ver-candidato')"></div>
     <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-ver-candidato">
       <div class="flex justify-between items-start mb-6">
         <div class="flex items-center gap-4">
-          <div class="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center border-2 border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]"><i class="ph ph-user text-3xl text-emerald-500"></i></div>
-          <div><h3 class="text-2xl font-black text-white">Ana Silva</h3><p class="text-sm font-bold text-emerald-400 uppercase tracking-widest mt-1">Lvl. 4 • 450 XP</p></div>
+          <div class="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center border-2 border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+            <i class="ph ph-user text-3xl text-emerald-500"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-black text-white" id="modal-cand-nome">Candidato</h3>
+            <p class="text-sm font-bold text-emerald-400 uppercase tracking-widest mt-1" id="modal-cand-xp">+0 XP</p>
+          </div>
         </div>
         <button onclick="fecharModal('modal-ver-candidato')" class="text-slate-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
       </div>
+      
       <div class="bg-slate-950 rounded-xl p-5 border border-slate-800 mb-6 shadow-inner relative overflow-hidden">
         <div class="absolute left-0 top-0 w-1 h-full bg-emerald-500"></div>
-        <p class="text-xs font-black text-slate-500 uppercase tracking-widest mb-2 pl-2">Laudo do Sistema (RPG)</p>
-        <p class="text-sm text-slate-300 font-medium leading-relaxed pl-2">A candidata respondeu com extrema assertividade aos desafios sob pressão. Priorizou a comunicação clara com o cliente final e manteve a organização da equipe interna.</p>
-        <p class="text-sm font-black text-emerald-500 mt-4 pl-2 bg-emerald-500/10 inline-block px-3 py-1 rounded-lg">100% MATCH CULTURAL</p>
+        <p class="text-xs font-black text-slate-500 uppercase tracking-widest mb-1 pl-2">Vaga Avaliada</p>
+        <p class="text-sm font-bold text-white mb-3 pl-2" id="modal-cand-vaga">-</p>
+        
+        <p class="text-xs font-black text-slate-500 uppercase tracking-widest mb-1 pl-2">Desempenho no Teste</p>
+        <p class="text-sm text-slate-300 font-medium leading-relaxed pl-2 mb-3" id="modal-cand-laudo">Avaliação prática concluída com sucesso.</p>
+        
+        <span class="text-sm font-black text-emerald-400 pl-2 bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20" id="modal-cand-match">0% MATCH</span>
       </div>
-      <button onclick="mostrarToast('Convite oficial para entrevista enviado com sucesso!', 'success'); fecharModal('modal-ver-candidato');" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+
+      <input type="hidden" id="modal-cand-id">
+      <button id="modal-cand-btn-acao" onclick="convidarParaEntrevista()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">
         Convidar para Entrevista
       </button>
     </div>
