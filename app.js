@@ -183,6 +183,7 @@ function atualizarInterfaceAuth(logado) {
 }
 
 function atualizarInfoTela(data) {
+  atualizarExibicaoAvatar(data.avatar_url);
   document.getElementById('sidebar-name').innerText = data.nome;
   
   if (data.tipo_conta === 'candidato') {
@@ -599,6 +600,61 @@ window.adicionarExperiencia = async function(e) {
   mostrarToast('Experiência profissional salva com sucesso!', 'success');
   document.getElementById('ae-cargo').value = ''; 
   document.getElementById('ae-empresa').value = '';
+};
+
+// ----------------------------------------------------
+// GESTÃO DE FOTO DE PERFIL
+// ----------------------------------------------------
+window.salvarFotoPerfil = async function() {
+  const fileInput = document.getElementById('input-foto-arquivo');
+  const urlInput = document.getElementById('input-foto-url');
+  let novaFotoUrl = urlInput.value.trim();
+
+  const aplicarFoto = async (url) => {
+    if (!modoOffline && usuarioLogado) {
+      const { error } = await supabaseClient
+        .from('perfis')
+        .update({ avatar_url: url })
+        .eq('id', usuarioLogado.id);
+
+      if (error) {
+        mostrarToast('Erro ao salvar foto: ' + error.message, 'error');
+        return;
+      }
+    }
+
+    if (perfilAtual) perfilAtual.avatar_url = url;
+    atualizarExibicaoAvatar(url);
+    fecharModal('modal-foto-perfil');
+    mostrarToast('Foto de perfil atualizada!', 'success');
+    urlInput.value = '';
+    fileInput.value = '';
+  };
+
+  if (fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = (e) => aplicarFoto(e.target.result);
+    reader.readAsDataURL(fileInput.files[0]);
+  } else if (novaFotoUrl) {
+    aplicarFoto(novaFotoUrl);
+  } else {
+    mostrarToast('Selecione uma imagem ou informe uma URL.', 'error');
+  }
+};
+
+window.atualizarExibicaoAvatar = function(url) {
+  const imgEl = document.getElementById('sidebar-avatar-img');
+  const iconEl = document.getElementById('sidebar-avatar-icon');
+  if (!imgEl || !iconEl) return;
+
+  if (url) {
+    imgEl.src = url;
+    imgEl.classList.remove('hidden');
+    iconEl.classList.add('hidden');
+  } else {
+    imgEl.classList.add('hidden');
+    iconEl.classList.remove('hidden');
+  }
 };
 
 // ----------------------------------------------------
