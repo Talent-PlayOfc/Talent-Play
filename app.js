@@ -3,6 +3,7 @@
 // ----------------------------------------------------
 window.mostrarToast = function(mensagem, tipo = 'info') {
   const container = document.getElementById('toast-container');
+  if(!container) return;
   const toast = document.createElement('div');
   toast.className = `toast ${tipo}`;
   let icone = tipo === 'success' ? 'check-circle' : (tipo === 'error' ? 'warning-circle' : 'info');
@@ -37,11 +38,10 @@ window.fecharModal = function(idModal) {
 // ----------------------------------------------------
 window.navegarPara = function(idTela) {
   document.querySelectorAll('.app-screen').forEach(tela => {
-    tela.classList.add('hidden'); tela.classList.remove('active');
+    tela.classList.remove('active');
   });
   const telaAlvo = document.getElementById(idTela);
   if (telaAlvo) {
-    telaAlvo.classList.remove('hidden');
     void telaAlvo.offsetWidth; 
     telaAlvo.classList.add('active');
   }
@@ -57,7 +57,6 @@ window.navegarPara = function(idTela) {
       else btn.classList.add('bg-indigo-500/10', 'text-indigo-400');
     }
   });
-  // Scroll to top upon navigation
   const container = document.getElementById('app-content-area');
   if(container) container.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -85,6 +84,7 @@ let modoAutenticacao = 'login';
 window.alternarModoAuth = function(modo) {
   modoAutenticacao = modo;
   const btn = document.getElementById('auth-submit-btn');
+  if (!btn) return;
   if (modo === 'signup') {
     document.getElementById('tab-signup').className = 'flex-1 py-3 bg-slate-800 text-white text-sm font-black rounded-lg shadow-sm transition-all uppercase tracking-wider';
     document.getElementById('tab-login').className = 'flex-1 py-3 text-slate-500 hover:text-slate-300 text-sm font-black rounded-lg transition-all uppercase tracking-wider';
@@ -158,7 +158,6 @@ window.fazerLogout = async function() {
   window.location.reload();
 }
 
-// ATUALIZAÇÃO VISUAL DA INTERFACE
 function atualizarInterfaceAuth(logado) {
   const btnEntrar = document.getElementById('btn-entrar-header');
   const userMenu = document.getElementById('user-menu-header');
@@ -168,7 +167,6 @@ function atualizarInterfaceAuth(logado) {
   } else {
     if(btnEntrar) btnEntrar.classList.remove('hidden');
     if(userMenu) { userMenu.classList.add('hidden'); userMenu.classList.remove('flex'); }
-    // Reset para Visitante
     document.getElementById('sidebar-name').innerText = "Visitante";
     document.getElementById('sidebar-role').innerText = "Faça Login";
     document.getElementById('sidebar-role').className = "text-[11px] font-semibold text-slate-500 uppercase tracking-wide mt-0.5";
@@ -197,7 +195,6 @@ function atualizarInfoTela(data) {
     document.getElementById('menu-candidato').classList.remove('hidden');
     document.getElementById('menu-empresa').classList.add('hidden');
     
-    // Atualiza Ficha (CV)
     document.getElementById('ficha-nome').innerText = data.nome;
     document.getElementById('ficha-nivel').innerText = `Lvl. ${data.nivel}`;
     document.getElementById('ficha-xp-bar').style.width = `${progressoBarra}%`;
@@ -205,14 +202,11 @@ function atualizarInfoTela(data) {
     
     navegarPara('tela-home-candidato');
   } else {
-    // Modo Empresa
     document.getElementById('sidebar-role').innerText = "Recrutador";
     document.getElementById('sidebar-role').className = "text-[11px] font-bold text-emerald-400 uppercase tracking-widest mt-0.5";
     document.getElementById('sidebar-level-badge').classList.add('hidden');
     document.getElementById('sidebar-xp-container').classList.add('hidden');
     document.getElementById('sidebar-avatar-icon').className = "ph ph-buildings text-2xl text-emerald-400";
-    
-    // Troca as cores base do menu superior
     document.getElementById('sidebar-avatar-icon').parentElement.className = "w-14 h-14 rounded-2xl bg-slate-800 border-2 border-emerald-500/50 flex items-center justify-center overflow-hidden shadow-lg shadow-emerald-500/20";
     
     document.getElementById('menu-candidato').classList.add('hidden');
@@ -229,9 +223,6 @@ async function verificarPerfil(user) {
   else { perfilAtual = data; atualizarInfoTela(data); }
 }
 
-// ----------------------------------------------------
-// FUNÇÕES DO DOM DINÂMICO (Adicionar Itens na Tela)
-// ----------------------------------------------------
 window.filtrarVagas = function() {
   const input = document.getElementById('busca-vagas-input').value.toLowerCase();
   const vagas = document.querySelectorAll('.vaga-card');
@@ -310,9 +301,6 @@ window.criarNovaVaga = function(e) {
   document.getElementById('nv-titulo').value = ''; document.getElementById('nv-local').value = '';
 }
 
-// ----------------------------------------------------
-// MOTOR DO RPG (SIMULADOR DE VAGAS)
-// ----------------------------------------------------
 window.iniciarRPG = function(vagaTitulo = 'Missão Padrão', empresa = 'Nossa Empresa') {
   if(!perfilAtual) return abrirModal('login-modal');
   if(perfilAtual.tipo_conta === 'empresa') return mostrarToast("Você está como RH. Crie vagas ao invés de jogá-las.", "error");
@@ -364,9 +352,6 @@ window.escolherOpcao = async function(opcao) {
   } catch (err) { console.error(err); }
 }
 
-// ----------------------------------------------------
-// STARTUP DO SISTEMA
-// ----------------------------------------------------
 window.onload = function() {
   if(!modoOffline) {
     supabaseClient.auth.onAuthStateChange((event, session) => {
