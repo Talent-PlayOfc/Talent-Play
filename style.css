@@ -1,0 +1,20 @@
+body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; }
+.menu-scroll::-webkit-scrollbar { width: 4px; }
+.menu-scroll::-webkit-scrollbar-track { background: transparent; }
+.menu-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+.menu-scroll:hover::-webkit-scrollbar-thumb { background: #334155; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #020617; }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+.glass-panel { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(51, 65, 85, 0.4); }
+.rpg-border { border: 1px solid rgba(99, 102, 241, 0.3); box-shadow: 0 0 15px rgba(79, 70, 229, 0.1) inset; }
+.app-screen { display: none; }
+.app-screen.active { display: block; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+#toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+.toast { padding: 14px 24px; border-radius: 12px; font-size: 14px; font-weight: 700; color: white; display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s forwards, fadeOut 0.3s 3.7s forwards; box-shadow: 0 10px 25px rgba(0,0,0,0.5); backdrop-filter: blur(8px); }
+.toast.success { background: rgba(5, 150, 105, 0.9); border: 1px solid #10b981; }
+.toast.error { background: rgba(220, 38, 38, 0.9); border: 1px solid #ef4444; }
+.toast.info { background: rgba(79, 70, 229, 0.9); border: 1px solid #6366f1; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes fadeOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
