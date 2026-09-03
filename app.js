@@ -212,9 +212,6 @@ function atualizarInfoTela(data) {
     carregarPerfilDetalhes();
     carregarMinhasCandidaturas();
     navegarPara('tela-home-candidato');
-    
-    carregarMinhasCandidaturas();
-    navegarPara('tela-home-candidato');
   } else {
     document.getElementById('sidebar-role').innerText = "Recrutador";
     document.getElementById('sidebar-role').className = "text-[11px] font-bold text-emerald-400 uppercase tracking-widest mt-0.5";
