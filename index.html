@@ -192,102 +192,109 @@
         <!-- ============================================================== -->
         <!-- TELA 1: PAINEL DE CONTROLE DO CANDIDATO (HOME)                 -->
         <!-- ============================================================== -->
+        <!-- TELA 1: PAINEL DE CONTROLE DO CANDIDATO (HOME REFINADA) -->
         <section id="tela-home-candidato" class="app-screen active">
           
-          <!-- Banner Hero Gamificado -->
-          <div class="bg-gradient-to-br from-indigo-900/40 via-slate-900 to-slate-900 border border-indigo-500/30 rounded-[2rem] p-8 sm:p-12 relative overflow-hidden shadow-2xl mb-10 group">
-            <div class="absolute right-0 top-0 w-[500px] h-[500px] bg-indigo-500/20 blur-[120px] rounded-full pointer-events-none group-hover:bg-indigo-500/30 transition-colors duration-700"></div>
-            <div class="absolute -bottom-10 -right-10 opacity-10 pointer-events-none"><i class="ph ph-sword text-[250px] text-indigo-400 rotate-45"></i></div>
+          <!-- Banner e Busca Integrada Compactos -->
+          <div class="bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-900 border border-indigo-500/20 rounded-[2rem] p-6 sm:p-10 relative overflow-hidden shadow-2xl mb-8">
+            <div class="absolute right-0 top-0 w-96 h-96 bg-indigo-600/10 blur-[100px] rounded-full pointer-events-none"></div>
             
-            <div class="relative z-10 flex flex-col md:flex-row gap-8 items-center md:items-start justify-between">
-              <div class="flex-1">
-                <span class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[10px] font-black uppercase tracking-widest mb-6 backdrop-blur-md">
-                  <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Temporada Alpha 1.0
-                </span>
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight tracking-tight">Sua Carreira não é um PDF.<br>É uma <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-300 animate-gradient">Jornada Épica.</span></h1>
-                <p class="text-slate-400 max-w-2xl text-lg mb-10 font-medium leading-relaxed">Complete desafios práticos elaborados diretamente pelos recrutadores. Ganhe XP, suba de nível e seja contratado pelas suas habilidades reais.</p>
+            <div class="relative z-10">
+              <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+                <div>
+                  <span class="inline-flex items-center gap-2 py-1 px-3 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[10px] font-bold uppercase tracking-widest mb-3">
+                    Painel do Candidato
+                  </span>
+                  <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight">Oportunidades validadas por <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">desempenho real.</span></h1>
+                  <p class="text-slate-400 text-sm mt-2 max-w-xl font-medium">Resolva simulações práticas das empresas parceiras, comprove suas competências técnicas e destaque-se nos processos seletivos.</p>
+                </div>
                 
-                <div class="flex flex-col sm:flex-row gap-4">
-                  <button onclick="navegarPara('tela-vagas')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-xl font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1">
-                    <i class="ph ph-crosshair text-xl"></i> Encontrar Missões
-                  </button>
-                  <button onclick="navegarPara('tela-ficha-personagem')" class="bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-white px-8 py-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-3 backdrop-blur-md">
-                    <i class="ph ph-user text-xl"></i> Ver Minha Ficha
-                  </button>
+                <!-- Estatísticas Compactas -->
+                <div class="flex gap-3 shrink-0">
+                  <div class="bg-slate-950/80 border border-slate-800 px-4 py-3 rounded-2xl text-center">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Aproveitamento</p>
+                    <p class="text-lg font-black text-white">0%</p>
+                  </div>
+                  <div class="bg-slate-950/80 border border-slate-800 px-4 py-3 rounded-2xl text-center">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Empresas</p>
+                    <p class="text-lg font-black text-emerald-400">Ativas</p>
+                  </div>
                 </div>
               </div>
-              
-              <!-- Card de Status Rápido -->
-              <div class="w-full md:w-72 bg-slate-950/50 border border-slate-800 rounded-3xl p-6 backdrop-blur-xl shrink-0 shadow-2xl">
-                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 text-center">Estatísticas da Temporada</p>
-                <div class="space-y-4">
-                  <div class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400"><i class="ph ph-target text-xl"></i></div>
-                    <div><p class="text-xs text-slate-400 font-bold">Taxa de Acerto</p><p class="text-lg font-black text-white">0%</p></div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400"><i class="ph ph-buildings text-xl"></i></div>
-                    <div><p class="text-xs text-slate-400 font-bold">Empresas de Olho</p><p class="text-lg font-black text-white">0</p></div>
-                  </div>
+
+              <!-- BARRA DE BUSCA EMBUTIDA DIRETO NO PAINEL -->
+              <div class="bg-slate-950 border border-slate-800 rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-inner">
+                <div class="relative flex-1 flex items-center px-3">
+                  <i class="ph ph-magnifying-glass text-indigo-400 text-xl mr-3"></i>
+                  <input type="text" id="busca-home-input" placeholder="Cargo, área ou competência..." class="w-full bg-transparent border-none text-white text-sm py-3 outline-none placeholder-slate-500 font-medium">
                 </div>
+                <div class="hidden sm:block w-px bg-slate-800 my-2"></div>
+                <div class="relative sm:w-48 flex items-center px-3">
+                  <i class="ph ph-map-pin text-indigo-400 text-xl mr-3"></i>
+                  <input type="text" value="Candeias, BA" class="w-full bg-transparent border-none text-white text-sm py-3 outline-none font-medium">
+                </div>
+                <button onclick="navegarPara('tela-vagas')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/20">
+                  Buscar Vagas
+                </button>
               </div>
             </div>
           </div>
 
+          <!-- Seção de Vagas em Destaque -->
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-black text-white flex items-center gap-3"><i class="ph ph-fire text-orange-500 text-3xl animate-pulse"></i> Missões Recomendadas</h2>
-            <button class="text-sm font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Ver todas &rarr;</button>
+            <h2 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-briefcase text-indigo-400"></i> Oportunidades Recomendadas</h2>
+            <button onclick="navegarPara('tela-vagas')" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Ver quadro completo &rarr;</button>
           </div>
           
           <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="lista-recomendadas">
             <!-- Vaga Card Dinâmico -->
-            <div class="bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-7 transition-all duration-300 group relative shadow-lg hover:shadow-[0_10px_40px_rgba(79,70,229,0.15)] flex flex-col h-full">
-              <div class="flex justify-between items-start mb-6">
-                <div>
-                  <div class="flex flex-wrap gap-2 mb-4">
-                    <span class="text-[9px] font-black text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-md border border-emerald-400/20 tracking-widest uppercase shadow-sm">Lvl. 1+ Requisitado</span>
-                    <span class="text-[9px] font-black text-indigo-400 bg-indigo-400/10 px-2.5 py-1 rounded-md border border-indigo-400/20 tracking-widest uppercase shadow-sm">Administrativo</span>
+            <div class="bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-7 transition-all duration-300 group relative shadow-lg flex flex-col justify-between">
+              <div>
+                <div class="flex justify-between items-start mb-6">
+                  <div>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                      <span class="text-[9px] font-black text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-md border border-emerald-400/20 tracking-widest uppercase">Nível: Júnior</span>
+                      <span class="text-[9px] font-black text-indigo-400 bg-indigo-400/10 px-2.5 py-1 rounded-md border border-indigo-400/20 tracking-widest uppercase">Setor Administrativo</span>
+                    </div>
+                    <h3 class="text-2xl font-black text-white group-hover:text-indigo-300 transition-colors">Auxiliar de Operações</h3>
+                    <p class="text-sm text-slate-400 font-medium flex items-center gap-1.5 mt-2"><i class="ph ph-map-pin text-indigo-400"></i> Candeias, BA • Mosaic Fertilizantes</p>
                   </div>
-                  <h3 class="text-2xl font-black text-white group-hover:text-indigo-300 transition-colors">Auxiliar de Operações</h3>
-                  <p class="text-sm text-slate-400 font-medium flex items-center gap-1.5 mt-2"><i class="ph ph-map-pin text-indigo-400"></i> Candeias, BA • Mosaic Fertilizantes</p>
+                  <div class="w-14 h-14 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-2xl shrink-0 shadow-inner">🏢</div>
                 </div>
-                <div class="w-16 h-16 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-inner shrink-0">🏢</div>
-              </div>
-              
-              <div class="mt-auto">
-                <div class="bg-slate-950 rounded-2xl p-5 mb-6 border border-slate-800/50 flex justify-between items-center relative overflow-hidden">
-                  <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
-                  <div class="pl-2">
-                    <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">Recompensa</p>
-                    <p class="text-xl font-black text-indigo-400 flex items-center gap-2"><i class="ph ph-sparkle text-yellow-400"></i> +50 XP</p>
+                
+                <div class="bg-slate-950 rounded-2xl p-4 mb-6 border border-slate-800/50 flex justify-between items-center">
+                  <div>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">Validação Prática</p>
+                    <p class="text-sm font-bold text-indigo-300">Logística & Rotinas de Escritório</p>
                   </div>
                   <div class="text-right">
-                    <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">Status</p>
-                    <p class="text-sm font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20">Aberta</p>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">Pontuação Alvo</p>
+                    <p class="text-sm font-bold text-emerald-400">+50 XP</p>
                   </div>
                 </div>
-                <button onclick="iniciarRPG('Auxiliar de Operações', 'Mosaic')" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)] transform group-hover:-translate-y-1 flex items-center justify-center gap-2">
-                  <i class="ph ph-play text-lg"></i> Iniciar Desafio Prático
-                </button>
               </div>
+
+              <button onclick="iniciarRPG('Auxiliar de Operações', 'Mosaic')" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2">
+                <i class="ph ph-play-circle text-lg"></i> Iniciar Simulação Prática
+              </button>
             </div>
 
             <!-- Vaga Card Bloqueado -->
-            <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-3xl p-7 transition-all duration-300 relative shadow-lg flex flex-col h-full opacity-80">
-              <div class="absolute inset-0 bg-slate-950/40 rounded-3xl z-10 flex flex-col items-center justify-center backdrop-blur-[2px]">
-                <div class="bg-slate-900 border border-slate-700 p-4 rounded-full mb-3 shadow-2xl"><i class="ph ph-lock-key text-3xl text-slate-400"></i></div>
-                <p class="font-bold text-white">Requer Nível 3</p>
-                <p class="text-xs text-slate-400 mt-1">Acumule mais XP para desbloquear</p>
+            <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-3xl p-7 transition-all duration-300 relative shadow-lg flex flex-col justify-between opacity-80">
+              <div class="absolute inset-0 bg-slate-950/50 rounded-3xl z-10 flex flex-col items-center justify-center backdrop-blur-[2px]">
+                <div class="bg-slate-900 border border-slate-700 p-3 rounded-full mb-2 shadow-2xl"><i class="ph ph-lock-key text-2xl text-slate-400"></i></div>
+                <p class="font-bold text-white text-sm">Requer Nível 3 de Validação</p>
+                <p class="text-xs text-slate-400 mt-0.5">Complete mais simulações para liberar</p>
               </div>
-              <div class="flex justify-between items-start mb-6 blur-[2px]">
-                <div>
-                  <div class="flex flex-wrap gap-2 mb-4">
-                    <span class="text-[9px] font-black text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-md border border-yellow-400/20 tracking-widest uppercase">Lvl. 3+ Requisitado</span>
+              <div class="blur-[2px]">
+                <div class="flex justify-between items-start mb-6">
+                  <div>
+                    <span class="text-[9px] font-black text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-md border border-yellow-400/20 tracking-widest uppercase">Nível: Pleno</span>
+                    <h3 class="text-2xl font-black text-slate-400 mt-3">Analista de Suporte Júnior</h3>
+                    <p class="text-sm text-slate-500 font-medium flex items-center gap-1.5 mt-2"><i class="ph ph-map-pin"></i> Remoto • SeuCondominio</p>
                   </div>
-                  <h3 class="text-2xl font-black text-slate-500">Analista de Suporte Júnior</h3>
-                  <p class="text-sm text-slate-600 font-medium flex items-center gap-1.5 mt-2"><i class="ph ph-map-pin"></i> Remoto • SeuCondominio</p>
+                  <div class="w-14 h-14 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-2xl shadow-inner shrink-0 grayscale opacity-50">💻</div>
                 </div>
-                <div class="w-16 h-16 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-3xl shadow-inner shrink-0 grayscale opacity-50">💻</div>
               </div>
             </div>
           </div>
