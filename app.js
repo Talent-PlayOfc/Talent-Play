@@ -496,37 +496,106 @@ window.convidarParaEntrevista = async function() {
 };
 
 // ----------------------------------------------------
-// HABILIDADES & EXPERIÊNCIAS (PERFIL)
+// HABILIDADES & EXPERIÊNCIAS (PERFIL DINÂMICO)
 // ----------------------------------------------------
-window.adicionarHabilidade = function(e) {
+window.renderizarCardHabilidade = function(nome, nivel) {
+  const c = document.getElementById('container-habilidades');
+  if (!c) return;
+  const el = document.createElement('div');
+  el.className = "item-habilidade bg-slate-950 border border-purple-500/30 p-5 rounded-2xl text-center shadow-lg relative overflow-hidden group hover:border-purple-500 transition-colors";
+  el.innerHTML = `
+    <div class="absolute top-0 left-0 w-full h-1 bg-purple-500"></div>
+    <i class="ph ph-lightning text-3xl text-purple-500/50 mb-2 group-hover:scale-110 transition-transform"></i>
+    <p class="text-sm font-black text-white mb-1">${nome}</p>
+    <p class="text-[10px] text-purple-400 font-black uppercase tracking-widest bg-purple-500/10 inline-block px-2 py-0.5 rounded border border-purple-500/20">${nivel}</p>
+  `;
+  c.insertBefore(el, c.lastElementChild);
+};
+
+window.renderizarCardExperiencia = function(cargo, empresa) {
+  const c = document.getElementById('container-experiencias');
+  if (!c) return;
+  const el = document.createElement('div');
+  el.className = "item-experiencia relative group mb-10";
+  el.innerHTML = `
+    <div class="absolute -left-[46px] w-8 h-8 rounded-full bg-slate-900 border-4 border-indigo-500 flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.5)]">
+      <div class="w-2 h-2 bg-indigo-400 rounded-full group-hover:scale-150 transition-transform"></div>
+    </div>
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 group-hover:border-indigo-500/50 transition-colors shadow-lg">
+      <h4 class="font-black text-white text-xl mb-2">${cargo}</h4>
+      <p class="text-sm font-black text-indigo-400 uppercase tracking-wider bg-indigo-500/10 inline-block px-3 py-1 rounded-lg border border-indigo-500/20">${empresa}</p>
+    </div>
+  `;
+  c.insertBefore(el, c.lastElementChild);
+};
+
+window.carregarPerfilDetalhes = async function() {
+  if (modoOffline || !usuarioLogado) return;
+
+  const contHab = document.getElementById('container-habilidades');
+  if (contHab) {
+    contHab.querySelectorAll('.item-habilidade').forEach(el => el.remove());
+    const { data: habs } = await supabaseClient
+      .from('habilidades')
+      .select('*')
+      .eq('candidato_id', usuarioLogado.id)
+      .order('created_at', { ascending: true });
+
+    if (habs) habs.forEach(h => renderizarCardHabilidade(h.nome, h.nivel));
+  }
+
+  const contExp = document.getElementById('container-experiencias');
+  if (contExp) {
+    contExp.querySelectorAll('.item-experiencia').forEach(el => el.remove());
+    const { data: exps } = await supabaseClient
+      .from('experiencias')
+      .select('*')
+      .eq('candidato_id', usuarioLogado.id)
+      .order('created_at', { ascending: true });
+
+    if (exps) exps.forEach(e => renderizarCardExperiencia(e.cargo, e.empresa));
+  }
+};
+
+window.adicionarHabilidade = async function(e) {
   e.preventDefault();
   const nome = document.getElementById('ah-nome').value;
   const nivel = document.getElementById('ah-nivel').value;
-  const c = document.getElementById('container-habilidades');
   
-  const el = document.createElement('div');
-  el.className = "bg-slate-950 border border-purple-500/30 p-5 rounded-2xl text-center shadow-lg relative overflow-hidden group hover:border-purple-500 transition-colors";
-  el.innerHTML = `<div class="absolute top-0 left-0 w-full h-1 bg-purple-500"></div><i class="ph ph-lightning text-3xl text-purple-500/50 mb-2 group-hover:scale-110 transition-transform"></i><p class="text-sm font-black text-white mb-1">${nome}</p><p class="text-[10px] text-purple-400 font-black uppercase tracking-widest bg-purple-500/10 inline-block px-2 py-0.5 rounded border border-purple-500/20">${nivel}</p>`;
-  
-  c.insertBefore(el, c.lastElementChild);
+  if (!modoOffline && usuarioLogado) {
+    const { error } = await supabaseClient
+      .from('habilidades')
+      .insert([{ candidato_id: usuarioLogado.id, nome, nivel }]);
+    if (error) {
+      mostrarToast('Erro ao salvar habilidade: ' + error.message, 'error');
+      return;
+    }
+  }
+
+  renderizarCardHabilidade(nome, nivel);
   fecharModal('modal-add-habilidade');
-  mostrarToast('Nova habilidade adicionada ao currículo!', 'success');
+  mostrarToast('Competência adicionada com sucesso!', 'success');
   document.getElementById('ah-nome').value = '';
 };
 
-window.adicionarExperiencia = function(e) {
+window.adicionarExperiencia = async function(e) {
   e.preventDefault();
   const cargo = document.getElementById('ae-cargo').value;
   const empresa = document.getElementById('ae-empresa').value;
-  const c = document.getElementById('container-experiencias');
   
-  const el = document.createElement('div');
-  el.className = "relative group mb-10";
-  el.innerHTML = `<div class="absolute -left-[46px] w-8 h-8 rounded-full bg-slate-900 border-4 border-indigo-500 flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.5)]"><div class="w-2 h-2 bg-indigo-400 rounded-full group-hover:scale-150 transition-transform"></div></div><div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 group-hover:border-indigo-500/50 transition-colors shadow-lg"><h4 class="font-black text-white text-xl mb-2">${cargo}</h4><p class="text-sm font-black text-indigo-400 uppercase tracking-wider bg-indigo-500/10 inline-block px-3 py-1 rounded-lg border border-indigo-500/20">${empresa}</p></div>`;
-  
-  c.insertBefore(el, c.lastElementChild);
+  if (!modoOffline && usuarioLogado) {
+    const { error } = await supabaseClient
+      .from('experiencias')
+      .insert([{ candidato_id: usuarioLogado.id, cargo, empresa }]);
+    if (error) {
+      mostrarToast('Erro ao salvar experiência: ' + error.message, 'error');
+      return;
+    }
+  }
+
+  renderizarCardExperiencia(cargo, empresa);
   fecharModal('modal-add-experiencia');
-  mostrarToast('Experiência profissional adicionada!', 'success');
+  mostrarToast('Experiência profissional salva com sucesso!', 'success');
   document.getElementById('ae-cargo').value = ''; 
   document.getElementById('ae-empresa').value = '';
 };
