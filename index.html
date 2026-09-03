@@ -62,46 +62,47 @@
       <!-- MENU DO TALENTO (CANDIDATO) -->
       <div id="menu-candidato" class="space-y-6">
         
+        <!-- Categoria 1: Menu Principal -->
+        <div>
+          <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Menu Principal</p>
+          <div class="space-y-1">
+            <button onclick="navegarPara('tela-home-candidato')" class="nav-btn active w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-home-candidato">
+              <i class="ph ph-house text-xl"></i> Início
+            </button>
+            <button onclick="navegarPara('tela-vagas')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-indigo-300 bg-indigo-600/10 border border-indigo-500/30 hover:bg-indigo-600/20 shadow-[0_0_15px_rgba(79,70,229,0.15)]" data-target="tela-vagas">
+              <i class="ph ph-briefcase text-xl text-indigo-400"></i> Buscar Vagas <span class="ml-auto bg-indigo-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">Novo</span>
+            </button>
+            <button onclick="navegarPara('tela-candidaturas')" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-candidaturas">
+              <div class="flex items-center gap-3"><i class="ph ph-paper-plane-tilt text-xl"></i> Processos Seletivos</div>
+              <span class="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-md">2</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Categoria 2: Seu Desenvolvimento -->
         <div>
           <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Seu Desenvolvimento</p>
           <div class="space-y-1">
             <button onclick="navegarPara('tela-ficha-personagem')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-ficha-personagem">
-              <i class="ph ph-user-circle-gear text-xl"></i> Meu Perfil (CV)
+              <i class="ph ph-user-circle-gear text-xl"></i> Perfil Profissional
             </button>
             <button onclick="mostrarToast('Em breve: Avaliações para validar habilidades.', 'info')" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
               <div class="flex items-center gap-3"><i class="ph ph-laptop text-xl"></i> Avaliações Práticas</div>
             </button>
-            <button onclick="mostrarToast('Ranking da temporada atualizando...', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
+            <button onclick="mostrarToast('Ranking de talentos atualizando...', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
               <i class="ph ph-medal text-xl text-yellow-500/70"></i> Conquistas e Destaques
             </button>
           </div>
         </div>
 
-        <!-- Categoria 2: Evolução RPG -->
-        <div>
-          <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Sua Jornada</p>
-          <div class="space-y-1">
-            <button onclick="navegarPara('tela-ficha-personagem')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-ficha-personagem">
-              <i class="ph ph-user-circle-gear text-xl"></i> Personagem (CV)
-            </button>
-            <button onclick="mostrarToast('Em breve: Testes práticos para validar habilidades.', 'info')" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
-              <div class="flex items-center gap-3"><i class="ph ph-sword text-xl"></i> Provas e Testes</div>
-            </button>
-            <button onclick="mostrarToast('Ranking da temporada atualizando...', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
-              <i class="ph ph-trophy text-xl text-yellow-500/70"></i> Conquistas e Ranking
-            </button>
-          </div>
-        </div>
-
-        <!-- Categoria 3: Networking -->
+        <!-- Categoria 3: Conexões -->
         <div>
           <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Conexões</p>
           <div class="space-y-1">
-            <button onclick="mostrarToast('Diretório de Guildas corporativas em manutenção.', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
+            <button onclick="mostrarToast('Diretório de empresas em manutenção.', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
               <i class="ph ph-buildings text-xl"></i> Empresas Parceiras
             </button>
-            <button onclick="mostrarToast('Área de mentoria liberada no Nível 5.', 'error')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50 opacity-60">
+            <button onclick="mostrarToast('Área de mentoria liberada para talentos de nível Pleno.', 'error')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50 opacity-60">
               <i class="ph ph-users-three text-xl"></i> Mentorias <i class="ph ph-lock text-xs ml-auto"></i>
             </button>
           </div>
