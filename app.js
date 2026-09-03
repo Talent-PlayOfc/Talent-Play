@@ -208,6 +208,10 @@ function atualizarInfoTela(data) {
     if(fbar) fbar.style.width = `${progressoBarra}%`;
     const ftxt = document.getElementById('ficha-xp-texto');
     if(ftxt) ftxt.innerText = `${data.xp} XP totais acumulados`;
+
+    carregarPerfilDetalhes();
+    carregarMinhasCandidaturas();
+    navegarPara('tela-home-candidato');
     
     carregarMinhasCandidaturas();
     navegarPara('tela-home-candidato');
