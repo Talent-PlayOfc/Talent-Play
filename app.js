@@ -603,58 +603,85 @@ window.adicionarExperiencia = async function(e) {
 };
 
 // ----------------------------------------------------
-// GESTÃO DE FOTO DE PERFIL
+// GESTÃO DE FOTO DE PERFIL (COM PRÉVIA & OTIMIZAÇÃO)
 // ----------------------------------------------------
-window.salvarFotoPerfil = async function() {
-  const fileInput = document.getElementById('input-foto-arquivo');
-  const urlInput = document.getElementById('input-foto-url');
-  let novaFotoUrl = urlInput.value.trim();
+let imagemOtimizadaCache = null;
 
-  const aplicarFoto = async (url) => {
-    if (!modoOffline && usuarioLogado) {
-      const { error } = await supabaseClient
-        .from('perfis')
-        .update({ avatar_url: url })
-        .eq('id', usuarioLogado.id);
+window.gerarPreviaFoto = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
 
-      if (error) {
-        mostrarToast('Erro ao salvar foto: ' + error.message, 'error');
-        return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.src = e.target.result;
+    img.onload = function() {
+      // Redimensiona para 256x256 para ficar leve e rápido no banco
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 256;
+      canvas.height = 256;
+      ctx.drawImage(img, 0, 0, 256, 256);
+      
+      imagemOtimizadaCache = canvas.toDataURL('image/jpeg', 0.85);
+
+      const previewImg = document.getElementById('avatar-preview-img');
+      const placeholder = document.getElementById('avatar-preview-placeholder');
+      if (previewImg && placeholder) {
+        previewImg.src = imagemOtimizadaCache;
+        previewImg.classList.remove('hidden');
+        placeholder.classList.add('hidden');
       }
-    }
-
-    if (perfilAtual) perfilAtual.avatar_url = url;
-    atualizarExibicaoAvatar(url);
-    fecharModal('modal-editar-perfil');
-    fecharModal('modal-foto-perfil');
-    mostrarToast('Foto de perfil atualizada!', 'success');
-    urlInput.value = '';
-    fileInput.value = '';
+    };
   };
+  reader.readAsDataURL(file);
+};
 
-  if (fileInput.files && fileInput.files[0]) {
-    const reader = new FileReader();
-    reader.onload = (e) => aplicarFoto(e.target.result);
-    reader.readAsDataURL(fileInput.files[0]);
-  } else if (novaFotoUrl) {
-    aplicarFoto(novaFotoUrl);
-  } else {
-    mostrarToast('Selecione uma imagem ou informe uma URL.', 'error');
+window.salvarFotoPerfil = async function() {
+  if (!imagemOtimizadaCache) {
+    mostrarToast('Escolha uma imagem antes de salvar.', 'error');
+    return;
   }
+
+  const btn = document.getElementById('btn-confirmar-foto');
+  btn.disabled = true;
+  btn.innerText = 'SALVANDO...';
+
+  if (!modoOffline && usuarioLogado) {
+    const { error } = await supabaseClient
+      .from('perfis')
+      .update({ avatar_url: imagemOtimizadaCache })
+      .eq('id', usuarioLogado.id);
+
+    if (error) {
+      mostrarToast('Erro ao gravar foto: ' + error.message, 'error');
+      btn.disabled = false;
+      btn.innerText = 'SALVAR FOTO';
+      return;
+    }
+  }
+
+  if (perfilAtual) perfilAtual.avatar_url = imagemOtimizadaCache;
+  atualizarExibicaoAvatar(imagemOtimizadaCache);
+  
+  btn.disabled = false;
+  btn.innerText = 'SALVAR FOTO';
+  fecharModal('modal-editar-perfil');
+  mostrarToast('Foto de perfil atualizada com sucesso!', 'success');
 };
 
 window.atualizarExibicaoAvatar = function(url) {
   const imgEl = document.getElementById('sidebar-avatar-img');
-  const iconEl = document.getElementById('sidebar-avatar-icon');
-  if (!imgEl || !iconEl) return;
+  const fallbackEl = document.getElementById('sidebar-avatar-fallback');
+  if (!imgEl || !fallbackEl) return;
 
   if (url) {
     imgEl.src = url;
     imgEl.classList.remove('hidden');
-    iconEl.classList.add('hidden');
+    fallbackEl.classList.add('hidden');
   } else {
     imgEl.classList.add('hidden');
-    iconEl.classList.remove('hidden');
+    fallbackEl.classList.remove('hidden');
   }
 };
 
