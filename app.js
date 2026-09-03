@@ -215,6 +215,8 @@ function atualizarInfoTela(data) {
     
     document.getElementById('menu-candidato').classList.add('hidden');
     document.getElementById('menu-empresa').classList.remove('hidden');
+    
+    carregarRadarTalentos(); // <--- LINHA ADICIONADA AQUI
     navegarPara('tela-home-empresa');
   }
   atualizarInterfaceAuth(true);
@@ -402,57 +404,78 @@ window.escolherOpcao = async function(opcao) {
 // ----------------------------------------------------
 // BUSCAR CANDIDATURAS DO CANDIDATO NO BANCO
 // ----------------------------------------------------
-window.carregarMinhasCandidaturas = async function() {
-  if (modoOffline || !usuarioLogado) return;
+// ----------------------------------------------------
+// BUSCAR CANDIDATOS NO RADAR DO RH
+// ----------------------------------------------------
+window.carregarRadarTalentos = async function() {
+  if (modoOffline) return;
 
-  const container = document.getElementById('container-minhas-candidaturas');
-  const vazioMsg = document.getElementById('candidaturas-vazio');
-  if (!container) return;
+  const tbody = document.getElementById('tabela-radar-talentos');
+  const contadorTotal = document.getElementById('contador-radar-total');
+  if (!tbody) return;
 
   const { data: candidaturas, error } = await supabaseClient
     .from('candidaturas')
     .select('*')
-    .eq('candidato_id', usuarioLogado.id)
-    .order('created_at', { ascending: false });
+    .order('match_percentual', { ascending: false });
 
   if (error || !candidaturas || candidaturas.length === 0) {
-    if (vazioMsg) vazioMsg.classList.remove('hidden');
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" class="p-8 text-center text-slate-500 text-sm">
+          Nenhum candidato realizou avaliações práticas ainda.
+        </td>
+      </tr>
+    `;
+    if (contadorTotal) contadorTotal.innerText = '0';
     return;
   }
 
-  container.innerHTML = '';
-  
-  const badges = document.querySelectorAll('#menu-candidato button[data-target="tela-candidaturas"] span');
-  badges.forEach(badge => badge.innerText = candidaturas.length);
+  if (contadorTotal) contadorTotal.innerText = candidaturas.length;
+  tbody.innerHTML = '';
 
-  candidaturas.forEach(c => {
-    const card = document.createElement('div');
-    card.className = "bg-slate-900 border border-slate-800 rounded-3xl p-6 lg:p-8 flex flex-col lg:flex-row gap-6 items-center shadow-xl hover:border-indigo-500/30 transition-all";
-    
-    card.innerHTML = `
-      <div class="w-16 h-16 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-3xl shadow-inner shrink-0 text-indigo-400">
-        <i class="ph ph-briefcase"></i>
-      </div>
-      <div class="flex-1 text-center lg:text-left">
-        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-2">
-          <span class="text-[10px] font-black text-indigo-400 bg-indigo-500/10 px-2.5 py-0.5 rounded-md border border-indigo-500/20 uppercase tracking-widest">+${c.xp_obtido || 0} XP Adquiridos</span>
-          <span class="text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-500/20 uppercase tracking-widest">${c.match_percentual || 70}% Match</span>
+  candidaturas.forEach((c, index) => {
+    const tr = document.createElement('tr');
+    tr.className = "hover:bg-slate-800/30 transition-colors group";
+
+    const medalhaCor = index === 0 ? 'text-emerald-400 border-emerald-500/30 bg-emerald-900/50' : (index === 1 ? 'text-indigo-400 border-indigo-500/30 bg-slate-800' : 'text-slate-400 border-slate-700 bg-slate-800');
+
+    tr.innerHTML = `
+      <td class="p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl border flex items-center justify-center font-black ${medalhaCor}">
+            ${index + 1}º
+          </div>
+          <div>
+            <p class="font-bold text-white text-sm">${c.candidato_nome}</p>
+            <p class="text-xs text-indigo-400 font-bold flex items-center gap-1 mt-0.5">
+              <i class="ph ph-lightning text-yellow-400"></i> +${c.xp_obtido || 0} XP
+            </p>
+          </div>
         </div>
-        <h3 class="text-2xl font-black text-white">${c.vaga_titulo}</h3>
-        <p class="text-slate-400 text-sm font-medium mt-1">${c.empresa}</p>
-        <div class="flex items-center justify-center lg:justify-start gap-4 mt-3">
-          <span class="text-xs font-bold text-slate-400 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
-            <i class="ph ph-check-circle text-emerald-400"></i> Avaliação Prática Enviada
-          </span>
+      </td>
+      <td class="p-4 text-center">
+        <span class="inline-block bg-slate-950 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1 rounded-lg">
+          ${c.vaga_titulo}
+        </span>
+      </td>
+      <td class="p-4 text-center">
+        <div class="flex flex-col items-center gap-1">
+          <span class="text-emerald-400 font-black text-sm">${c.match_percentual}%</span>
+          <div class="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div class="h-full bg-emerald-500" style="width: ${c.match_percentual}%"></div>
+          </div>
         </div>
-      </div>
-      <div class="w-full lg:w-64 bg-slate-950 rounded-2xl p-5 border border-slate-800 relative overflow-hidden text-center">
-        <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500"></div>
-        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Status do Processo</p>
-        <p class="text-base font-black text-white mb-1">${c.status}</p>
-        <p class="text-xs text-slate-400">Aguardando análise da equipe</p>
-      </div>
+      </td>
+      <td class="p-4 text-right">
+        <button onclick="abrirModal('modal-ver-candidato')" class="text-xs font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-lg hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
+          Ver Ficha
+        </button>
+      </td>
     `;
+    tbody.appendChild(tr);
+  });
+};
 
     container.appendChild(card);
   });
