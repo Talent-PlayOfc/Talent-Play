@@ -861,35 +861,53 @@
     </div>
   </div>
 
-<!-- Modal: Alterar Foto de Perfil com Prévia -->
+<!-- Modal: Alterar Foto de Perfil com Prévia e Avatares Prontos -->
   <div id="modal-editar-perfil" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
     <div class="absolute inset-0" onclick="fecharModal('modal-editar-perfil')"></div>
     <div class="max-w-sm w-full bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-editar-perfil">
-      <div class="flex justify-between items-center mb-6">
+      <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-black text-white">Alterar Foto</h3>
         <button onclick="fecharModal('modal-editar-perfil')" class="text-slate-500 hover:text-white transition-colors"><i class="ph ph-x text-2xl"></i></button>
       </div>
 
-      <div class="flex flex-col items-center mb-6">
-        <div class="w-28 h-28 rounded-3xl bg-slate-950 border-2 border-dashed border-slate-700 p-1 flex items-center justify-center relative overflow-hidden shadow-inner group">
+      <!-- Prévia Principal -->
+      <div class="flex flex-col items-center mb-5">
+        <div class="w-24 h-24 rounded-3xl bg-slate-950 border-2 border-dashed border-slate-700 p-1 flex items-center justify-center relative overflow-hidden shadow-inner group transition-all" id="avatar-preview-container">
           <img id="avatar-preview-img" class="w-full h-full object-cover rounded-2xl hidden" alt="Prévia">
           <div id="avatar-preview-placeholder" class="text-center text-slate-500">
             <i class="ph ph-image text-3xl block mb-1"></i>
-            <span class="text-[11px] font-bold uppercase tracking-wider">Sem foto</span>
           </div>
         </div>
-        <p class="text-xs text-slate-400 mt-3 font-medium">Pré-visualização do perfil</p>
       </div>
 
+      <!-- Escolha Rápida de Avatares -->
+      <div class="mb-5">
+        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 text-center">Avatares Rápidos</p>
+        <div class="flex justify-center gap-3">
+          <!-- Usando a API gratuita DiceBear (Estilo Gamificado) -->
+          <button onclick="selecionarAvatarPredefinido('https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=4f46e5')" class="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-700 hover:border-indigo-500 focus:border-indigo-500 transition-all hover:scale-110">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=4f46e5" alt="Avatar 1">
+          </button>
+          <button onclick="selecionarAvatarPredefinido('https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=10b981')" class="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-700 hover:border-emerald-500 focus:border-emerald-500 transition-all hover:scale-110">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=10b981" alt="Avatar 2">
+          </button>
+          <button onclick="selecionarAvatarPredefinido('https://api.dicebear.com/7.x/avataaars/svg?seed=Nala&backgroundColor=f59e0b')" class="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-700 hover:border-yellow-500 focus:border-yellow-500 transition-all hover:scale-110">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nala&backgroundColor=f59e0b" alt="Avatar 3">
+          </button>
+          <button onclick="selecionarAvatarPredefinido('https://api.dicebear.com/7.x/avataaars/svg?seed=Jack&backgroundColor=6366f1')" class="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-700 hover:border-indigo-500 focus:border-indigo-500 transition-all hover:scale-110">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jack&backgroundColor=6366f1" alt="Avatar 4">
+          </button>
+        </div>
+      </div>
+
+      <!-- Upload do PC -->
       <div class="space-y-4">
-        <label class="flex flex-col items-center justify-center gap-2 p-4 bg-slate-950 border border-slate-800 hover:border-indigo-500/50 rounded-2xl cursor-pointer transition-all">
-          <i class="ph ph-upload-simple text-2xl text-indigo-400"></i>
-          <span class="text-xs font-bold text-slate-300">Escolher imagem do dispositivo</span>
-          <span class="text-[10px] text-slate-500">PNG, JPG ou WEBP</span>
+        <label class="flex flex-col items-center justify-center gap-1 p-3 bg-slate-950 border border-slate-800 hover:border-indigo-500/50 rounded-xl cursor-pointer transition-all">
+          <span class="text-xs font-bold text-slate-400 flex items-center gap-2"><i class="ph ph-upload-simple text-lg text-indigo-400"></i> Ou envie do seu computador</span>
           <input type="file" id="input-foto-arquivo" accept="image/*" onchange="gerarPreviaFoto(event)" class="hidden">
         </label>
 
-        <button id="btn-confirmar-foto" onclick="salvarFotoPerfil()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20">
+        <button id="btn-confirmar-foto" onclick="salvarFotoPerfil()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-lg">
           Salvar Foto
         </button>
       </div>
