@@ -229,15 +229,33 @@
                   <p class="text-slate-400 text-sm mt-2 max-w-xl font-medium">Resolva simulações práticas das empresas parceiras, comprove suas competências técnicas e destaque-se nos processos seletivos.</p>
                 </div>
                 
-               <div class="flex gap-3 shrink-0">
-                  <div class="bg-slate-950/80 border border-slate-800 px-4 py-3 rounded-2xl text-center">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">Aproveitamento</p>
-                    <p class="text-lg font-black text-white">0%</p>
+               <!-- NOVAS MÉTRICAS REVOLUCIONÁRIAS -->
+                <div class="flex flex-col sm:flex-row gap-3 shrink-0 mt-4 md:mt-0">
+                  
+                  <!-- Métrica 1: Poder de Match -->
+                  <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 flex items-center gap-3 shadow-lg hover:border-indigo-500/50 transition-colors group">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition-transform shadow-inner">
+                      <i class="ph ph-lightning text-xl text-indigo-400"></i>
+                    </div>
+                    <div class="pr-2">
+                      <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Poder de Match</p>
+                      <p class="text-xl font-black text-white leading-none" id="metric-match">0<span class="text-sm text-indigo-400">%</span></p>
+                    </div>
                   </div>
-                  <div class="bg-slate-950/80 border border-slate-800 px-4 py-3 rounded-2xl text-center">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">Empresas</p>
-                    <p class="text-lg font-black text-emerald-400">Ativas</p>
+
+                  <!-- Métrica 2: No Radar -->
+                  <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 flex items-center gap-3 shadow-lg hover:border-emerald-500/50 transition-colors group">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform shadow-inner">
+                      <i class="ph ph-radar text-xl text-emerald-400"></i>
+                    </div>
+                    <div class="pr-2">
+                      <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-0.5">No Radar</p>
+                      <p class="text-xl font-black text-white leading-none flex items-baseline gap-1">
+                        <span id="metric-radar">0</span> <span class="text-[10px] text-slate-400 font-bold">RHs</span>
+                      </p>
+                    </div>
                   </div>
+
                 </div>
 
               <div class="bg-slate-950 border border-slate-800 rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-inner">
