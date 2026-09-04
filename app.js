@@ -603,9 +603,19 @@ window.adicionarExperiencia = async function(e) {
 };
 
 // ----------------------------------------------------
-// GESTÃO DE FOTO DE PERFIL (COM PRÉVIA & OTIMIZAÇÃO)
+// GESTÃO DE FOTO DE PERFIL (COM PRÉVIA & SEGURANÇA)
 // ----------------------------------------------------
 let imagemOtimizadaCache = null;
+
+// Função para abrir o modal apenas se o usuário estiver logado
+window.tentarAbrirModalFoto = function() {
+  if (!usuarioLogado && !perfilAtual) {
+    mostrarToast('Faça login para alterar sua foto de perfil.', 'info');
+    abrirModal('login-modal');
+    return;
+  }
+  abrirModal('modal-editar-perfil');
+};
 
 window.gerarPreviaFoto = function(event) {
   const file = event.target.files[0];
@@ -616,7 +626,6 @@ window.gerarPreviaFoto = function(event) {
     const img = new Image();
     img.src = e.target.result;
     img.onload = function() {
-      // Redimensiona para 256x256 para ficar leve e rápido no banco
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       canvas.width = 256;
@@ -638,6 +647,12 @@ window.gerarPreviaFoto = function(event) {
 };
 
 window.salvarFotoPerfil = async function() {
+  if (!usuarioLogado && !perfilAtual) {
+    mostrarToast('Apenas usuários conectados podem salvar uma foto.', 'error');
+    fecharModal('modal-editar-perfil');
+    return;
+  }
+
   if (!imagemOtimizadaCache) {
     mostrarToast('Escolha uma imagem antes de salvar.', 'error');
     return;
@@ -667,21 +682,36 @@ window.salvarFotoPerfil = async function() {
   btn.disabled = false;
   btn.innerText = 'SALVAR FOTO';
   fecharModal('modal-editar-perfil');
-  mostrarToast('Foto de perfil atualizada com sucesso!', 'success');
+  mostrarToast('Foto de perfil atualizada!', 'success');
 };
 
 window.atualizarExibicaoAvatar = function(url) {
+  // Atualiza avatar da barra lateral
   const imgEl = document.getElementById('sidebar-avatar-img');
   const fallbackEl = document.getElementById('sidebar-avatar-fallback');
-  if (!imgEl || !fallbackEl) return;
+  if (imgEl && fallbackEl) {
+    if (url) {
+      imgEl.src = url;
+      imgEl.classList.remove('hidden');
+      fallbackEl.classList.add('hidden');
+    } else {
+      imgEl.classList.add('hidden');
+      fallbackEl.classList.remove('hidden');
+    }
+  }
 
-  if (url) {
-    imgEl.src = url;
-    imgEl.classList.remove('hidden');
-    fallbackEl.classList.add('hidden');
-  } else {
-    imgEl.classList.add('hidden');
-    fallbackEl.classList.remove('hidden');
+  // Atualiza foto grande na tela de perfil profissional (se existir)
+  const perfilImg = document.getElementById('perfil-foto-grande');
+  const perfilIcon = document.getElementById('perfil-icone-grande');
+  if (perfilImg && perfilIcon) {
+    if (url) {
+      perfilImg.src = url;
+      perfilImg.classList.remove('hidden');
+      perfilIcon.classList.add('hidden');
+    } else {
+      perfilImg.classList.add('hidden');
+      perfilIcon.classList.remove('hidden');
+    }
   }
 };
 
