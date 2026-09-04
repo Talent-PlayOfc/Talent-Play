@@ -26,27 +26,34 @@
   <aside class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col hidden md:flex z-30 shadow-[4px_0_24px_rgba(0,0,0,0.5)] relative">
     <div class="absolute top-0 right-0 w-full h-48 bg-gradient-to-b from-indigo-900/10 to-transparent pointer-events-none"></div>
     
-    <!-- Player Widget -->
+   <!-- Player Widget -->
     <div class="p-6 border-b border-slate-800 relative z-10">
       <div class="flex items-center gap-4">
-        <div class="relative group cursor-pointer" onclick="abrirModal('modal-editar-perfil')">
-          <div id="sidebar-avatar-box" onclick="abrirModal('modal-editar-perfil')" class="w-14 h-14 rounded-2xl bg-slate-800 border-2 border-indigo-500/50 relative overflow-hidden shadow-lg cursor-pointer hover:border-indigo-400 transition-all shrink-0 group">
-  <img id="sidebar-avatar-img" class="w-full h-full object-cover absolute inset-0 hidden z-10" alt="Avatar">
-  <div id="sidebar-avatar-fallback" class="w-full h-full flex items-center justify-center">
-    <i id="sidebar-avatar-icon" class="ph ph-user text-2xl text-indigo-400"></i>
-  </div>
-  <div class="absolute inset-0 bg-black/50 backdrop-blur-[1px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
-    <i class="ph ph-camera text-white text-lg"></i>
-  </div>
-</div>
-          <div class="absolute inset-0 bg-slate-900/60 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><i class="ph ph-pencil-simple text-white font-bold"></i></div>
-          <div id="sidebar-level-badge" class="absolute -bottom-2 -right-2 bg-indigo-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-lg border-2 border-slate-950 hidden">Lvl.1</div>
+        
+        <!-- Container do Avatar + Badge (Limpo, sem sobreposições extras) -->
+        <div class="relative shrink-0">
+          <div id="sidebar-avatar-box" onclick="tentarAbrirModalFoto()" class="w-14 h-14 rounded-2xl bg-slate-800 border-2 border-indigo-500/50 relative overflow-hidden shadow-lg cursor-pointer hover:border-indigo-400 transition-all group">
+            <img id="sidebar-avatar-img" class="w-full h-full object-cover absolute inset-0 hidden z-10" alt="Avatar">
+            <div id="sidebar-avatar-fallback" class="w-full h-full flex items-center justify-center">
+              <i id="sidebar-avatar-icon" class="ph ph-user text-2xl text-indigo-400"></i>
+            </div>
+            <!-- Câmera ao passar o mouse -->
+            <div class="absolute inset-0 bg-black/50 backdrop-blur-[1px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
+              <i class="ph ph-camera text-white text-lg"></i>
+            </div>
+          </div>
+          
+          <!-- Badge de Nível: com z-30 para ficar acima do hover da foto -->
+          <div id="sidebar-level-badge" class="absolute -bottom-2 -right-2 bg-indigo-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-lg border-2 border-slate-950 hidden z-30 pointer-events-none">Lvl.1</div>
         </div>
+
         <div class="flex-1 overflow-hidden">
           <h2 id="sidebar-name" class="text-white font-bold text-base truncate">Visitante</h2>
-          <p id="sidebar-role" class="text-[11px] font-semibold text-indigo-400 uppercase tracking-wide truncate mt-0.5">Faça Login</p>
+          <p id="sidebar-role" class="text-[11px] font-semibold text-slate-500 uppercase tracking-wide truncate mt-0.5">Faça Login</p>
         </div>
+        
       </div>
+    </div>
       
       <!-- Barra de XP -->
       <div id="sidebar-xp-container" class="mt-5 hidden">
@@ -441,9 +448,10 @@
               <div class="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 relative overflow-hidden shadow-2xl">
                 <div class="absolute top-0 right-0 w-full h-40 bg-gradient-to-b from-indigo-600/20 to-transparent pointer-events-none"></div>
                 <div class="relative z-10 flex flex-col items-center text-center">
-                  <div class="w-32 h-32 rounded-3xl bg-slate-800 border-4 border-indigo-500/50 flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(99,102,241,0.3)] relative">
-                     <i class="ph ph-user text-6xl text-slate-400"></i>
-                     <button class="absolute -bottom-3 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg border-2 border-slate-900 hover:bg-indigo-500 transition-colors">Trocar Foto</button>
+                  <div class="w-32 h-32 rounded-3xl bg-slate-800 border-4 border-indigo-500/50 flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(99,102,241,0.3)] relative overflow-hidden group">
+                     <img id="perfil-foto-grande" class="w-full h-full object-cover hidden z-10" alt="Avatar Perfil">
+                     <i id="perfil-icone-grande" class="ph ph-user text-6xl text-slate-400 z-0"></i>
+                     <button onclick="tentarAbrirModalFoto()" class="absolute -bottom-1 z-20 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-t-lg hover:bg-indigo-500 transition-colors opacity-0 group-hover:opacity-100 translate-y-full group-hover:translate-y-0 w-full text-center">Alterar</button>
                   </div>
                   <h2 class="text-3xl font-black text-white" id="ficha-nome">Visitante</h2>
                   <p class="text-sm font-bold text-indigo-400 uppercase tracking-widest mt-2 mb-8 bg-indigo-500/10 px-4 py-1.5 rounded-full border border-indigo-500/20">Talento em Ascensão</p>
