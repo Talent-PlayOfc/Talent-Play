@@ -617,6 +617,25 @@ window.tentarAbrirModalFoto = function() {
   abrirModal('modal-editar-perfil');
 };
 
+window.selecionarAvatarPredefinido = function(url) {
+  imagemOtimizadaCache = url;
+  const previewImg = document.getElementById('avatar-preview-img');
+  const placeholder = document.getElementById('avatar-preview-placeholder');
+  const container = document.getElementById('avatar-preview-container');
+  
+  if (previewImg && placeholder) {
+    previewImg.src = url;
+    previewImg.classList.remove('hidden');
+    placeholder.classList.add('hidden');
+    
+    // Efeito visual de seleção
+    container.classList.add('border-indigo-500', 'shadow-[0_0_20px_rgba(99,102,241,0.3)]');
+    setTimeout(() => {
+      container.classList.remove('border-indigo-500', 'shadow-[0_0_20px_rgba(99,102,241,0.3)]');
+    }, 400);
+  }
+};
+
 window.gerarPreviaFoto = function(event) {
   const file = event.target.files[0];
   if (!file) return;
