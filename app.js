@@ -67,7 +67,7 @@ window.fecharModal = function(idModal) {
 };
 
 // ----------------------------------------------------
-// 3. SPA ROUTER (Navegação Instantânea sem Borda Branca)
+// 3. SPA ROUTER (Navegação Instantânea Limpa)
 // ----------------------------------------------------
 window.navegarPara = function(idTela) {
   document.querySelectorAll('.app-screen').forEach(tela => {
@@ -82,25 +82,31 @@ window.navegarPara = function(idTela) {
   }
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
-    // 1. Blindagem contra o piscar (Trava de tamanho e anel de foco)
-    btn.classList.add('border', 'border-transparent', 'focus:outline-none', 'focus:ring-0', 'outline-none');
+    // LIMPEZA ABSOLUTA: Arranca qualquer classe de borda que tenha ficado no HTML
+    btn.classList.remove(
+      'active', 
+      'border', 
+      'border-transparent', 
+      'border-indigo-500/30', 
+      'border-emerald-500/30', 
+      'bg-indigo-600/10', 
+      'bg-emerald-500/10', 
+      'text-indigo-400', 
+      'text-emerald-400'
+    );
     
-    // 2. Remove as cores ativas antigas
-    btn.classList.remove('active', 'bg-indigo-600/10', 'border-indigo-500/30', 'text-indigo-400', 'bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400');
-    
-    // 3. Volta a cor do texto para inativo
-    btn.classList.add('text-slate-400');
+    // Adiciona apenas a proteção padrão de foco e a cor apagada do menu
+    btn.classList.add('outline-none', 'text-slate-400');
 
-    // 4. Se for o botão que acabamos de clicar, acende as cores
+    // Se este for o botão clicado, aplica apenas a cor de fundo e texto (Sem bordas!)
     if (btn.getAttribute('data-target') === idTela) {
-      btn.classList.remove('border-transparent', 'text-slate-400'); // Tira a transparência
-      btn.classList.add('active'); // Marca como ativo
+      btn.classList.remove('text-slate-400');
+      btn.classList.add('active');
       
-      // Cor para o RH vs Cor para o Candidato
       if(idTela.includes('empresa')) {
-        btn.classList.add('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400');
+        btn.classList.add('bg-emerald-500/10', 'text-emerald-400');
       } else {
-        btn.classList.add('bg-indigo-600/10', 'border-indigo-500/30', 'text-indigo-400');
+        btn.classList.add('bg-indigo-600/10', 'text-indigo-400');
       }
     }
   });
