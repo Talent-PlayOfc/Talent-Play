@@ -1009,20 +1009,6 @@
     </div>
   </div>
 
-      <!-- Opção secundária para quem quiser enviar foto real -->
-      <div class="space-y-3 pt-3 border-t border-slate-800">
-        <label class="flex items-center justify-center gap-2 text-xs font-bold text-slate-400 hover:text-indigo-400 cursor-pointer transition-colors">
-          <i class="ph ph-camera text-base"></i> Prefere usar foto real? Enviar do dispositivo
-          <input type="file" id="input-foto-arquivo" accept="image/*" onchange="gerarPreviaFoto(event)" class="hidden">
-        </label>
-
-        <button id="btn-confirmar-foto" onclick="salvarFotoPerfil()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-lg">
-          Salvar Emblema
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- Modal: Configurações -->
   <div id="modal-configuracoes" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
     <div class="absolute inset-0" onclick="fecharModal('modal-configuracoes')"></div>
