@@ -830,55 +830,92 @@
         <button onclick="fecharModal('modal-nova-vaga')" class="text-slate-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
       </div>
       <form onsubmit="criarNovaVaga(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Título da Vaga</label>
-          <input type="text" id="nv-titulo" placeholder="Ex: Analista Financeiro Júnior" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
-        </div>
         
-        <div class="grid grid-cols-2 gap-4">
+        <!-- Bloco 1: Empresa -->
+        <div class="flex gap-4 items-center bg-slate-950 p-4 rounded-2xl border border-slate-800">
+          <div class="w-16 h-16 bg-slate-900 border-2 border-dashed border-slate-700 rounded-xl flex items-center justify-center text-slate-500 relative overflow-hidden group cursor-pointer">
+            <input type="file" id="nv-logo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="previewLogoEmpresa(event)">
+            <img id="nv-logo-preview" class="w-full h-full object-cover hidden absolute inset-0 z-10">
+            <i class="ph ph-image text-2xl group-hover:scale-110 transition-transform"></i>
+          </div>
+          <div class="flex-1">
+            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Nome da Empresa</label>
+            <input type="text" id="nv-empresa" placeholder="Ex: Nubank, Mosaic..." class="w-full bg-transparent border-b border-slate-700 text-white pb-2 focus:border-emerald-500 outline-none font-bold" required>
+          </div>
+        </div>
+
+        <!-- Bloco 2: A Vaga -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Localização</label>
-            <input type="text" id="nv-local" placeholder="Ex: Candeias, BA" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
+            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Título da Vaga</label>
+            <input type="text" id="nv-titulo" placeholder="Ex: Auxiliar de Logística" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Modalidade</label>
-            <select id="nv-modelo" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none">
-              <option value="Presencial">Presencial</option>
-              <option value="Híbrido">Híbrido</option>
-              <option value="Remoto">100% Remoto</option>
+            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Área / Setor</label>
+            <select id="nv-area" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none">
+              <option value="Administrativo">Administrativo</option>
+              <option value="Tecnologia">Tecnologia (TI)</option>
+              <option value="Saúde">Saúde</option>
+              <option value="Logística">Logística / Operações</option>
+              <option value="Vendas">Vendas / Comercial</option>
+              <option value="Atendimento">Atendimento / Suporte</option>
             </select>
           </div>
         </div>
 
+        <div>
+          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Descrição Completa</label>
+          <textarea id="nv-descricao" rows="3" placeholder="Descreva as responsabilidades e expectativas..." class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none resize-none" required></textarea>
+        </div>
+
+        <!-- Bloco 3: Detalhes -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="col-span-2 sm:col-span-1">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Nível</label>
+            <select id="nv-nivel" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm"><option>Júnior</option><option>Pleno</option><option>Sênior</option></select>
+          </div>
+          <div class="col-span-2 sm:col-span-1">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Contrato</label>
+            <select id="nv-contrato" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm"><option>CLT</option><option>Estágio</option><option>Trainee</option></select>
+          </div>
+          <div class="col-span-2 sm:col-span-2">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Modalidade & Local</label>
+            <div class="flex gap-2">
+              <select id="nv-modelo" class="w-1/2 bg-slate-950 border border-slate-700 text-white rounded-xl px-2 py-2.5 outline-none text-sm"><option>Presencial</option><option>Híbrido</option><option>Remoto</option></select>
+              <input type="text" id="nv-local" placeholder="Ex: Candeias, BA" class="w-1/2 bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm" required>
+            </div>
+          </div>
+        </div>
+
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Contrato</label>
-            <select id="nv-contrato" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none">
-              <option value="CLT">CLT</option>
-              <option value="Estágio">Estágio</option>
-              <option value="Trainee">Trainee</option>
-              <option value="PJ">PJ</option>
-            </select>
+            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Salário Mínimo</label>
+            <input type="number" id="nv-sal-min" placeholder="R$ 1.500" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Recompensa (XP)</label>
-            <input type="number" id="nv-xp" value="50" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
+            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Salário Máximo</label>
+            <input type="number" id="nv-sal-max" placeholder="R$ 2.500" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
           </div>
         </div>
 
-        <!-- Opções Extras (Benefícios e PCD) -->
-        <div class="flex items-center gap-6 pt-2 pb-2">
-          <label class="flex items-center gap-2 cursor-pointer group">
-            <input type="checkbox" id="nv-beneficios" class="w-4 h-4 rounded border-slate-700 text-emerald-500 focus:ring-emerald-500 bg-slate-950" checked>
-            <span class="text-sm font-bold text-slate-400 group-hover:text-white transition-colors">+ Benefícios</span>
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer group">
-            <input type="checkbox" id="nv-pcd" class="w-4 h-4 rounded border-slate-700 text-blue-500 focus:ring-blue-500 bg-slate-950">
-            <span class="text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-colors flex items-center gap-1"><i class="ph ph-wheelchair text-blue-400"></i> Vaga PCD</span>
-          </label>
+        <!-- Bloco 4: Avaliações e PCD -->
+        <div class="bg-indigo-950/30 border border-indigo-500/30 rounded-2xl p-4">
+          <label class="block text-xs font-bold text-indigo-400 uppercase mb-3">Avaliações Exigidas</label>
+          <div class="flex flex-wrap gap-3">
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="Fit Cultural" class="nv-testes w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-700" checked> <span class="text-sm text-slate-300">Fit Cultural</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="Raciocínio Lógico" class="nv-testes w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-700"> <span class="text-sm text-slate-300">Raciocínio Lógico</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="Comunicação" class="nv-testes w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-700"> <span class="text-sm text-slate-300">Comunicação</span></label>
+          </div>
         </div>
 
-        <button type="submit" class="w-full py-4 mt-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">Publicar Missão</button>
+        <label class="flex items-center gap-2 cursor-pointer group pt-2">
+          <input type="checkbox" id="nv-pcd" class="w-5 h-5 rounded border-slate-700 text-blue-500 focus:ring-blue-500 bg-slate-950">
+          <span class="text-sm font-bold text-slate-300 group-hover:text-blue-400 transition-colors">Vaga também para PCD?</span>
+        </label>
+
+        <button type="submit" class="w-full py-4 mt-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] flex justify-center items-center gap-2">
+          <i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade
+        </button>
       </form>
     </div>
   </div>
