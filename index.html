@@ -831,24 +831,98 @@
       </div>
       <form onsubmit="criarNovaVaga(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Título da Vaga / Cargo</label>
-          <input type="text" id="nv-titulo" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
+          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Título da Vaga</label>
+          <input type="text" id="nv-titulo" placeholder="Ex: Analista Financeiro Júnior" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
         </div>
+        
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Localização</label>
-            <input type="text" id="nv-local" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
+            <input type="text" id="nv-local" placeholder="Ex: Candeias, BA" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">XP de Recompensa</label>
+            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Modalidade</label>
+            <select id="nv-modelo" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none">
+              <option value="Presencial">Presencial</option>
+              <option value="Híbrido">Híbrido</option>
+              <option value="Remoto">100% Remoto</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Contrato</label>
+            <select id="nv-contrato" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none">
+              <option value="CLT">CLT</option>
+              <option value="Estágio">Estágio</option>
+              <option value="Trainee">Trainee</option>
+              <option value="PJ">PJ</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Recompensa (XP)</label>
             <input type="number" id="nv-xp" value="50" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
           </div>
         </div>
-        <button type="submit" class="w-full py-4 mt-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">Publicar Missão</button>
+
+        <!-- Opções Extras (Benefícios e PCD) -->
+        <div class="flex items-center gap-6 pt-2 pb-2">
+          <label class="flex items-center gap-2 cursor-pointer group">
+            <input type="checkbox" id="nv-beneficios" class="w-4 h-4 rounded border-slate-700 text-emerald-500 focus:ring-emerald-500 bg-slate-950" checked>
+            <span class="text-sm font-bold text-slate-400 group-hover:text-white transition-colors">+ Benefícios</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer group">
+            <input type="checkbox" id="nv-pcd" class="w-4 h-4 rounded border-slate-700 text-blue-500 focus:ring-blue-500 bg-slate-950">
+            <span class="text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-colors flex items-center gap-1"><i class="ph ph-wheelchair text-blue-400"></i> Vaga PCD</span>
+          </label>
+        </div>
+
+        <button type="submit" class="w-full py-4 mt-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">Publicar Missão</button>
       </form>
     </div>
   </div>
 
+  <!-- Modal: Detalhes da Vaga (Visão do Candidato) -->
+  <div id="modal-detalhes-vaga" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[150] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
+    <div class="absolute inset-0" onclick="fecharModal('modal-detalhes-vaga')"></div>
+    <div class="max-w-xl w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-detalhes-vaga">
+      
+      <div class="flex justify-between items-start mb-6">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-3xl shadow-inner shrink-0">🏢</div>
+          <div>
+            <h3 class="text-2xl font-black text-white leading-tight" id="detalhes-titulo">Nome da Vaga</h3>
+            <p class="text-sm font-bold text-slate-400 mt-1" id="detalhes-empresa">Nome da Empresa</p>
+          </div>
+        </div>
+        <button onclick="fecharModal('modal-detalhes-vaga')" class="text-slate-500 hover:text-white bg-slate-800 p-2 rounded-xl"><i class="ph ph-x font-bold"></i></button>
+      </div>
+
+      <div class="space-y-6">
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5">
+          <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Requisitos da Missão</p>
+          <ul class="text-sm text-slate-300 font-medium space-y-2">
+            <li class="flex items-center gap-2"><i class="ph ph-check text-emerald-400"></i> Avaliação de rotinas práticas da área.</li>
+            <li class="flex items-center gap-2"><i class="ph ph-check text-emerald-400"></i> Análise de tomada de decisão sob pressão.</li>
+          </ul>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5">
+          <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">O que você ganha</p>
+          <div class="flex flex-wrap gap-2" id="detalhes-tags">
+            <!-- As tags entram aqui via Javascript -->
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 border-t border-slate-800 pt-6">
+        <button id="btn-iniciar-missao-detalhe" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] flex items-center justify-center gap-2">
+          <i class="ph ph-play-circle text-xl"></i> Aceitar Missão e Iniciar Simulação
+        </button>
+      </div>
+    </div>
+  </div>
+  
   <!-- Modal: Adicionar Habilidade (Candidato) -->
   <div id="modal-add-habilidade" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
     <div class="absolute inset-0" onclick="fecharModal('modal-add-habilidade')"></div>
