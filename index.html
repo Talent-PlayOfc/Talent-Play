@@ -970,6 +970,32 @@
           </div>
         </div>
 
+        <!-- Modal: Alterar Brasão / Emblema de Perfil -->
+  <div id="modal-editar-perfil" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-2 sm:p-4 opacity-0 transition-opacity">
+    <div class="absolute inset-0" onclick="fecharModal('modal-editar-perfil')"></div>
+    
+    <!-- CARTÃO DO MODAL -->
+    <div class="max-w-md w-full max-h-[90vh] flex flex-col bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl relative z-10 transform scale-95 transition-transform" id="card-modal-editar-perfil">
+      
+      <!-- 1. HEADER (Fixo no topo) -->
+      <div class="flex justify-between items-center p-5 sm:p-6 border-b border-slate-800 shrink-0">
+        <h3 class="text-xl font-black text-white">Escolher Emblema</h3>
+        <button onclick="fecharModal('modal-editar-perfil')" class="text-slate-500 hover:text-white transition-colors"><i class="ph ph-x text-2xl"></i></button>
+      </div>
+
+      <!-- 2. BODY (Área de Rolagem Interna) -->
+      <div class="p-5 sm:p-6 overflow-y-auto flex-1 menu-scroll">
+        
+        <!-- Prévia Principal do Emblema -->
+        <div class="flex flex-col items-center mb-6">
+          <div class="w-24 h-24 rounded-3xl bg-slate-950 border-2 border-indigo-500/50 p-1 flex items-center justify-center relative overflow-hidden shadow-[0_0_20px_rgba(99,102,241,0.2)] group transition-all" id="avatar-preview-container">
+            <img id="avatar-preview-img" class="w-16 h-16 object-contain hidden" alt="Prévia">
+            <div id="avatar-preview-placeholder" class="text-center text-indigo-400">
+              <i class="ph ph-shield-star text-4xl block mb-1"></i>
+            </div>
+          </div>
+        </div>
+
         <!-- Escolha Rápida de Emblemas Corporativos / RPG -->
         <div class="w-full">
           <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 text-center">Guildas Profissionais</p>
@@ -1023,6 +1049,7 @@
             <button type="button" title="Jurídico & Compliance" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:scales-duotone.svg?color=%23a855f7')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-purple-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
               <img src="https://api.iconify.design/ph:scales-duotone.svg?color=%23a855f7" class="w-7 h-7 sm:w-8 sm:h-8" alt="Jurídico">
             </button>
+            
           </div>
         </div>
       </div>
