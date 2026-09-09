@@ -82,18 +82,32 @@ window.navegarPara = function(idTela) {
   }
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
-    // A MÁGICA AQUI: Adicionamos a palavra 'border' na lista de remoção
-    // e o outline-none para blindar contra o foco do navegador
-    btn.classList.remove('active', 'border', 'border-indigo-500/30', 'bg-indigo-600/10');
-    btn.classList.add('outline-none');
+    // 1. Blindagem contra o piscar (Trava de tamanho e anel de foco)
+    btn.classList.add('border', 'border-transparent', 'focus:outline-none', 'focus:ring-0', 'outline-none');
+    
+    // 2. Remove as cores ativas antigas
+    btn.classList.remove('active', 'bg-indigo-600/10', 'border-indigo-500/30', 'text-indigo-400', 'bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400');
+    
+    // 3. Volta a cor do texto para inativo
+    btn.classList.add('text-slate-400');
 
+    // 4. Se for o botão que acabamos de clicar, acende as cores
     if (btn.getAttribute('data-target') === idTela) {
-      btn.classList.add('active', 'bg-indigo-600/10', 'border', 'border-indigo-500/30');
+      btn.classList.remove('border-transparent', 'text-slate-400'); // Tira a transparência
+      btn.classList.add('active'); // Marca como ativo
+      
+      // Cor para o RH vs Cor para o Candidato
+      if(idTela.includes('empresa')) {
+        btn.classList.add('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400');
+      } else {
+        btn.classList.add('bg-indigo-600/10', 'border-indigo-500/30', 'text-indigo-400');
+      }
     }
   });
 
   window.history.pushState({}, document.title, window.location.pathname);
-  document.getElementById('app-content-area').scrollTo({ top: 0, behavior: 'smooth' });
+  const contentArea = document.getElementById('app-content-area');
+  if (contentArea) contentArea.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 // ----------------------------------------------------
