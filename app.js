@@ -67,7 +67,7 @@ window.fecharModal = function(idModal) {
 };
 
 // ----------------------------------------------------
-// SPA ROUTER (Navegação Instantânea sem Borda Branca)
+// 3. SPA ROUTER (Navegação Instantânea sem Borda Branca)
 // ----------------------------------------------------
 window.navegarPara = function(idTela) {
   document.querySelectorAll('.app-screen').forEach(tela => {
@@ -82,9 +82,13 @@ window.navegarPara = function(idTela) {
   }
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.classList.remove('active', 'bg-slate-800/50', 'border-indigo-500/30', 'bg-indigo-600/10', 'outline-none', 'ring-0');
+    // A MÁGICA AQUI: Adicionamos a palavra 'border' na lista de remoção
+    // e o outline-none para blindar contra o foco do navegador
+    btn.classList.remove('active', 'border', 'border-indigo-500/30', 'bg-indigo-600/10');
+    btn.classList.add('outline-none');
+
     if (btn.getAttribute('data-target') === idTela) {
-      btn.classList.add('active', 'bg-indigo-600/10', 'border', 'border-indigo-500/30', 'outline-none');
+      btn.classList.add('active', 'bg-indigo-600/10', 'border', 'border-indigo-500/30');
     }
   });
 
