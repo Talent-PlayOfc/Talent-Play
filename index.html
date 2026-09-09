@@ -954,13 +954,20 @@
       <!-- 2. BODY (Área de Rolagem Interna) -->
       <div class="p-5 sm:p-6 overflow-y-auto flex-1 menu-scroll">
         
-        <!-- Prévia Principal do Emblema -->
+       <!-- Prévia Principal do Emblema / Foto -->
         <div class="flex flex-col items-center mb-6">
-          <div class="w-24 h-24 rounded-3xl bg-slate-950 border-2 border-indigo-500/50 p-1 flex items-center justify-center relative overflow-hidden shadow-[0_0_20px_rgba(99,102,241,0.2)] group transition-all" id="avatar-preview-container">
-            <img id="avatar-preview-img" class="w-16 h-16 object-contain hidden" alt="Prévia">
-            <div id="avatar-preview-placeholder" class="text-center text-indigo-400">
-              <i class="ph ph-shield-star text-4xl block mb-1"></i>
+          <!-- Removi o p-1 para a imagem poder colar nas bordas -->
+          <div class="w-24 h-24 rounded-3xl bg-slate-950 border-2 border-indigo-500/50 flex items-center justify-center relative overflow-hidden shadow-[0_0_20px_rgba(99,102,241,0.2)] group transition-all" id="avatar-preview-container">
+            
+            <!-- Imagem agora com w-full, h-full e object-cover para preencher tudo perfeitamente -->
+            <img id="avatar-preview-img" class="w-full h-full object-cover hidden" alt="Prévia">
+            
+            <!-- Novo Placeholder padrão "Preview de Imagem" -->
+            <div id="avatar-preview-placeholder" class="text-center flex flex-col items-center justify-center w-full h-full bg-slate-900/40">
+              <i class="ph ph-image text-3xl mb-0.5 text-slate-500"></i>
+              <span class="text-[9px] font-black uppercase tracking-widest text-slate-500">Prévia</span>
             </div>
+
           </div>
         </div>
 
