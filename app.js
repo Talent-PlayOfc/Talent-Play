@@ -443,6 +443,25 @@ window.adicionarVagaNaTela = function(titulo, local, xp, empresaNome) {
   }
 };
 
+window.abrirModalVagaDinamicamente = function(titulo, empresa, xp) {
+  document.getElementById('detalhes-titulo').innerText = titulo;
+  document.getElementById('detalhes-empresa').innerText = empresa;
+  
+  document.getElementById('detalhes-tags').innerHTML = `
+    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg">Vale Refeição</span>
+    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg">Plano de Saúde</span>
+    <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg">+${xp} XP</span>
+  `;
+
+  const btnIniciar = document.getElementById('btn-iniciar-missao-detalhe');
+  btnIniciar.onclick = function() {
+    fecharModal('modal-detalhes-vaga');
+    iniciarRPG(titulo, empresa);
+  };
+
+  abrirModal('modal-detalhes-vaga');
+};
+
 window.carregarPerfilDetalhes = async function(userId) {
   const contHab = document.getElementById('container-habilidades');
   if (contHab) {
