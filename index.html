@@ -944,50 +944,89 @@
         </div>
       </div>
 
+      <!-- Modal: Alterar Brasão / Emblema de Perfil -->
+  <div id="modal-editar-perfil" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
+    <div class="absolute inset-0" onclick="fecharModal('modal-editar-perfil')"></div>
+    <div class="max-w-md w-full bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-editar-perfil">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-black text-white">Escolher Emblema</h3>
+        <button onclick="fecharModal('modal-editar-perfil')" class="text-slate-500 hover:text-white transition-colors"><i class="ph ph-x text-2xl"></i></button>
+      </div>
+
+      <!-- Prévia Principal do Emblema -->
+      <div class="flex flex-col items-center mb-5">
+        <div class="w-24 h-24 rounded-3xl bg-slate-950 border-2 border-indigo-500/50 p-1 flex items-center justify-center relative overflow-hidden shadow-[0_0_20px_rgba(99,102,241,0.2)] group transition-all" id="avatar-preview-container">
+          <img id="avatar-preview-img" class="w-16 h-16 object-contain hidden" alt="Prévia">
+          <div id="avatar-preview-placeholder" class="text-center text-indigo-400">
+            <i class="ph ph-shield-star text-4xl block mb-1"></i>
+          </div>
+        </div>
+      </div>
+
       <!-- Escolha Rápida de Emblemas Corporativos / RPG -->
       <div class="mb-6 w-full">
-        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 text-center">Insígnias Disponíveis</p>
+        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 text-center">Guildas Profissionais</p>
         
         <div class="flex flex-wrap justify-center gap-3">
           
-          <!-- 1: Estrategista (Coroa/Gestão) -->
-          <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:crown-duotone.svg?color=%23f43f5e')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-rose-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <img src="https://api.iconify.design/ph:crown-duotone.svg?color=%23f43f5e" class="w-8 h-8" alt="Estrategista">
+          <!-- 1: Liderança & C-Level (Coroa) -->
+          <button type="button" title="Liderança & Gestão" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:crown-duotone.svg?color=%23f43f5e')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-rose-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:crown-duotone.svg?color=%23f43f5e" class="w-7 h-7 sm:w-8 sm:h-8" alt="Liderança">
           </button>
           
-          <!-- 2: Analista de Dados (Gráfico/Tech) -->
-          <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:chart-line-up-duotone.svg?color=%238b5cf6')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-purple-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <img src="https://api.iconify.design/ph:chart-line-up-duotone.svg?color=%238b5cf6" class="w-8 h-8" alt="Analista">
+          <!-- 2: Tecnologia & Dados (Código) -->
+          <button type="button" title="Tecnologia & Dados" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:code-block-duotone.svg?color=%238b5cf6')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-purple-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:code-block-duotone.svg?color=%238b5cf6" class="w-7 h-7 sm:w-8 sm:h-8" alt="Tecnologia">
           </button>
 
-          <!-- 3: Operações & Logística (Engrenagem) -->
-          <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:gear-six-duotone.svg?color=%234f46e5')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-indigo-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <img src="https://api.iconify.design/ph:gear-six-duotone.svg?color=%234f46e5" class="w-8 h-8" alt="Operações">
+          <!-- 3: Saúde & Bem-Estar (Coração/Batimento) -->
+          <button type="button" title="Saúde & Bem-Estar" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:heartbeat-duotone.svg?color=%23ef4444')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-red-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:heartbeat-duotone.svg?color=%23ef4444" class="w-7 h-7 sm:w-8 sm:h-8" alt="Saúde">
           </button>
           
-          <!-- 4: Inovação & Foguete (Startup) -->
-          <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:rocket-launch-duotone.svg?color=%2310b981')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-emerald-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <img src="https://api.iconify.design/ph:rocket-launch-duotone.svg?color=%2310b981" class="w-8 h-8" alt="Inovação">
+          <!-- 4: Vendas & Negócios (Gráfico Crescente) -->
+          <button type="button" title="Vendas & Negócios" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:trend-up-duotone.svg?color=%2310b981')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-emerald-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:trend-up-duotone.svg?color=%2310b981" class="w-7 h-7 sm:w-8 sm:h-8" alt="Vendas">
           </button>
 
           <!-- 5: Atendimento & Relacionamento (Headset) -->
-          <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:headset-duotone.svg?color=%2306b6d4')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-cyan-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <img src="https://api.iconify.design/ph:headset-duotone.svg?color=%2306b6d4" class="w-8 h-8" alt="Atendimento">
+          <button type="button" title="Atendimento ao Cliente" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:headset-duotone.svg?color=%2306b6d4')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-cyan-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:headset-duotone.svg?color=%2306b6d4" class="w-7 h-7 sm:w-8 sm:h-8" alt="Atendimento">
           </button>
 
-          <!-- 6: Mestre de Guilda (Troféu/Destaque) -->
-          <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:trophy-duotone.svg?color=%23eab308')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-yellow-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <img src="https://api.iconify.design/ph:trophy-duotone.svg?color=%23eab308" class="w-8 h-8" alt="Destaque">
+          <!-- 6: Criatividade & Design (Varinha Mágica) -->
+          <button type="button" title="Criatividade & Design" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:magic-wand-duotone.svg?color=%23ec4899')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-pink-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:magic-wand-duotone.svg?color=%23ec4899" class="w-7 h-7 sm:w-8 sm:h-8" alt="Criatividade">
           </button>
 
-          <!-- 7: Criatividade & Design (Varinha Mágica) -->
-          <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:magic-wand-duotone.svg?color=%23ec4899')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-pink-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <img src="https://api.iconify.design/ph:magic-wand-duotone.svg?color=%23ec4899" class="w-8 h-8" alt="Criatividade">
+          <!-- 7: RH & Pessoas (Usuários) -->
+          <button type="button" title="Recursos Humanos & Pessoas" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:users-three-duotone.svg?color=%23f97316')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-orange-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:users-three-duotone.svg?color=%23f97316" class="w-7 h-7 sm:w-8 sm:h-8" alt="Recursos Humanos">
           </button>
 
-          <!-- 8: Segurança & Qualidade (Escudo) -->
-          <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:shield-check-duotone.svg?color=%23f97316')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-orange-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <img src="https://api.iconify.design/ph:shield-check-duotone.svg?color=%23f97316" class="w-8 h-8" alt="Segurança">
+          <!-- 8: Finanças & Contabilidade (Moeda) -->
+          <button type="button" title="Finanças & Contabilidade" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:coin-duotone.svg?color=%23eab308')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-yellow-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:coin-duotone.svg?color=%23eab308" class="w-7 h-7 sm:w-8 sm:h-8" alt="Finanças">
+          </button>
+
+          <!-- 9: Educação & Ensino (Capelo) -->
+          <button type="button" title="Educação & Ensino" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:graduation-cap-duotone.svg?color=%233b82f6')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-blue-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:graduation-cap-duotone.svg?color=%233b82f6" class="w-7 h-7 sm:w-8 sm:h-8" alt="Educação">
+          </button>
+
+          <!-- 10: Operações & Logística (Caixa) -->
+          <button type="button" title="Operações & Logística" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:package-duotone.svg?color=%2384cc16')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-lime-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:package-duotone.svg?color=%2384cc16" class="w-7 h-7 sm:w-8 sm:h-8" alt="Logística">
+          </button>
+
+          <!-- 11: Engenharia & Manutenção (Chave de Boca) -->
+          <button type="button" title="Engenharia & Manutenção" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:wrench-duotone.svg?color=%2314b8a6')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-teal-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:wrench-duotone.svg?color=%2314b8a6" class="w-7 h-7 sm:w-8 sm:h-8" alt="Engenharia">
+          </button>
+
+          <!-- 12: Jurídico & Compliance (Balança) -->
+          <button type="button" title="Jurídico & Compliance" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:scales-duotone.svg?color=%23a855f7')" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-purple-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:scales-duotone.svg?color=%23a855f7" class="w-7 h-7 sm:w-8 sm:h-8" alt="Jurídico">
           </button>
 
         </div>
@@ -1005,56 +1044,6 @@
         <button id="btn-confirmar-foto" onclick="salvarFotoPerfil()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20">
           Salvar Alteração
         </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Configurações -->
-  <div id="modal-configuracoes" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
-    <div class="absolute inset-0" onclick="fecharModal('modal-configuracoes')"></div>
-    <div class="max-w-sm w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-configuracoes">
-      <h3 class="text-xl font-black text-white mb-6">Configurações do Jogo</h3>
-      <div class="space-y-4">
-        <div class="flex justify-between items-center p-4 bg-slate-950 rounded-xl border border-slate-800">
-          <div><p class="font-bold text-white text-sm">Modo Noturno</p><p class="text-xs text-slate-500">Trava da Temporada</p></div>
-          <div class="w-10 h-6 bg-indigo-600 rounded-full relative cursor-not-allowed opacity-80"><div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div></div>
-        </div>
-      </div>
-      <button onclick="fecharModal('modal-configuracoes')" class="w-full py-3 mt-6 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-all">Fechar Aba</button>
-    </div>
-  </div>
-  
-  <!-- Modal RPG / Mini Game -->
-  <div id="rpg-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[150] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="max-w-3xl w-full bg-slate-900 border-2 border-indigo-500/50 rounded-[2rem] shadow-[0_0_50px_rgba(79,70,229,0.2)] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300" id="card-rpg-modal">
-      <div class="bg-slate-950 px-8 py-5 border-b border-slate-800 flex items-center gap-5 relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500"></div>
-        <div class="w-14 h-14 rounded-2xl bg-indigo-600/20 border border-indigo-500/50 flex items-center justify-center text-3xl shadow-inner shrink-0" id="rpg-icone">🏢</div>
-        <div>
-          <h4 class="text-white font-black text-xl" id="rpg-titulo-header">Simulador de Realidade</h4>
-          <p class="text-xs text-indigo-400 font-black uppercase tracking-widest mt-1">Cena 1: A Provação Matinal</p>
-        </div>
-        <button onclick="fecharRPG()" class="ml-auto text-slate-500 hover:text-white bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm"><i class="ph ph-x font-bold text-lg"></i></button>
-      </div>
-      
-      <div class="p-8 sm:p-10 relative">
-        <div class="absolute right-0 bottom-0 opacity-5 pointer-events-none"><i class="ph ph-sword text-[300px]"></i></div>
-        <p id="rpg-text" class="text-slate-300 text-xl leading-relaxed min-h-[140px] mb-8 font-medium relative z-10"></p>
-        
-        <div id="rpg-choices" class="space-y-4 hidden relative z-10">
-          <button onclick="escolherOpcao('A')" class="group w-full text-left p-6 bg-slate-950 hover:bg-indigo-900/30 border-2 border-slate-800 hover:border-indigo-500 rounded-2xl text-slate-300 text-base transition-all shadow-md flex gap-5 items-start">
-            <span class="text-indigo-500 font-black text-2xl group-hover:text-indigo-400">A)</span> 
-            <span class="mt-1 font-medium leading-relaxed">Ignoro o telefone por enquanto, imprimo o relatório apressadamente e entrego na mão do gerente para evitar bronca.</span>
-          </button>
-          <button onclick="escolherOpcao('B')" class="group w-full text-left p-6 bg-slate-950 hover:bg-indigo-900/30 border-2 border-slate-800 hover:border-indigo-500 rounded-2xl text-slate-300 text-base transition-all shadow-md flex gap-5 items-start">
-            <span class="text-indigo-500 font-black text-2xl group-hover:text-indigo-400">B)</span> 
-            <span class="mt-1 font-medium leading-relaxed">Atendo o fornecedor e tento acalmá-lo enquanto uso a outra mão no mouse para imprimir o relatório ao mesmo tempo.</span>
-          </button>
-          <button onclick="escolherOpcao('C')" class="group w-full text-left p-6 bg-slate-950 hover:bg-indigo-900/30 border-2 border-slate-800 hover:border-emerald-500 hover:text-white rounded-2xl text-slate-300 text-base transition-all shadow-md flex gap-5 items-start">
-            <span class="text-indigo-500 font-black text-2xl group-hover:text-emerald-400">C)</span> 
-            <span class="mt-1 font-medium leading-relaxed">Aviso o gerente ("Já vou imprimir!"), atendo o telefone pedindo 1 minuto de paciência ao fornecedor, e então pego a impressão.</span>
-          </button>
-        </div>
       </div>
     </div>
   </div>
