@@ -338,14 +338,30 @@ window.salvarFotoPerfil = async function() {
 };
 
 window.atualizarExibicaoAvatar = function(url) {
+  // 1. Elementos da Barra Lateral
   const imgEl = document.getElementById('sidebar-avatar-img');
   const fallbackEl = document.getElementById('sidebar-avatar-fallback');
+  
+  // 2. Elementos da Tela de Perfil Grande
   const perfilImg = document.getElementById('perfil-foto-grande');
   const perfilIcon = document.getElementById('perfil-icone-grande');
 
+  // 3. Elementos do Modal de Edição (A Prévia)
+  const previewImg = document.getElementById('avatar-preview-img');
+  const placeholder = document.getElementById('avatar-preview-placeholder');
+
   if (url) {
+    // Atualiza a Sidebar
     if (imgEl) { imgEl.src = url; imgEl.classList.remove('hidden'); fallbackEl.classList.add('hidden'); }
+    
+    // Atualiza a Ficha
     if (perfilImg) { perfilImg.src = url; perfilImg.classList.remove('hidden'); perfilIcon.classList.add('hidden'); }
+    
+    // Atualiza o Modal para a prévia nunca ficar vazia
+    if (previewImg) { previewImg.src = url; previewImg.classList.remove('hidden'); if(placeholder) placeholder.classList.add('hidden'); }
+    
+    // Garante que o estado temporário lembre da foto atual
+    appState.avatarTemporario = url;
   }
 };
 
