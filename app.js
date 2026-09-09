@@ -386,21 +386,58 @@ window.adicionarVagaNaTela = function(titulo, local, xp, empresaNome) {
   const cGeral = document.getElementById('container-todas-vagas');
   if(cGeral) {
     const el = document.createElement('div');
-    el.className = "vaga-card bg-slate-900 border border-emerald-500/50 rounded-3xl p-6 relative shadow-[0_0_20px_rgba(16,185,129,0.1)] flex flex-col h-full hover:border-emerald-400 transition-colors group";
+    el.className = "vaga-card bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-6 transition-all duration-300 group relative shadow-lg flex flex-col h-full overflow-hidden";
     el.setAttribute('data-titulo', titulo); 
     el.setAttribute('data-empresa', empresaNome);
+    
+    // Gerando nota fake pro design (ex: 4.8)
+    const estrelas = (Math.random() * (5.0 - 4.2) + 4.2).toFixed(1);
+    
     el.innerHTML = `
-      <div class="flex justify-between items-start mb-6">
+      <div class="absolute -right-12 top-6 w-40 bg-emerald-500 text-white text-[10px] font-black py-1.5 text-center uppercase tracking-widest rotate-45 shadow-lg z-10 pointer-events-none">Nova</div>
+      
+      <div class="flex items-center gap-3 mb-4 pr-10">
+        <div class="w-11 h-11 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-xl shrink-0 shadow-inner">🏢</div>
         <div>
-          <span class="text-[9px] font-black text-white bg-emerald-500 px-2.5 py-1 rounded-md tracking-widest uppercase shadow-md">NOVA</span>
-          <h3 class="text-xl font-bold text-white mt-3 vaga-titulo group-hover:text-emerald-400 transition-colors leading-tight">${titulo}</h3>
-          <p class="text-sm text-slate-400 mt-1 vaga-empresa">${empresaNome} • ${local}</p>
+          <p class="text-sm font-bold text-slate-300">${empresaNome}</p>
+          <div class="flex items-center gap-1 text-[10px] font-black text-yellow-500 tracking-wider mt-0.5">
+            <i class="ph ph-star-fill"></i> ${estrelas} <span class="text-slate-600 font-medium ml-1">(Ver avaliações)</span>
+          </div>
         </div>
-        <div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-center text-2xl text-emerald-500 shadow-inner shrink-0">🏢</div>
       </div>
-      <div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between">
-        <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">+${xp} XP</span>
-        <button onclick="iniciarRPG('${titulo}', '${empresaNome}')" class="text-sm font-bold text-slate-900 bg-emerald-500 hover:bg-emerald-400 px-5 py-2.5 rounded-xl transition-colors shadow-lg">Iniciar</button>
+
+      <div class="mb-4">
+        <h3 class="text-xl sm:text-2xl font-black text-white group-hover:text-indigo-300 transition-colors leading-tight flex items-center gap-2">
+          ${titulo} <i class="ph ph-briefcase text-emerald-500 text-2xl"></i>
+        </h3>
+        <p class="text-xs text-slate-400 font-medium flex items-center gap-1.5 mt-2">
+          <i class="ph ph-map-pin text-indigo-400 text-sm"></i> ${local} <span class="text-slate-600">•</span> <span class="text-indigo-400 font-bold">A 2,5km</span>
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mb-5">
+        <span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase">CLT</span>
+        <span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase">Híbrido</span>
+        <span class="text-[9px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20 tracking-widest uppercase">+ Benefícios</span>
+      </div>
+
+      <div class="mt-auto">
+        <div class="bg-slate-950 rounded-xl p-3 mb-5 border border-slate-800/50 flex justify-between items-center relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+          <div class="pl-2">
+            <p class="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-0.5">Match Técnico</p>
+            <p class="text-xs font-bold text-indigo-300 flex items-center gap-1"><i class="ph ph-fire text-orange-500"></i> Calculando...</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-0.5">Recompensa</p>
+            <p class="text-xs font-black text-emerald-400">+${xp} XP</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/60 pt-4">
+          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><i class="ph ph-clock text-sm"></i> Recente</span>
+          <button onclick="abrirModalVagaDinamicamente('${titulo}', '${empresaNome}', ${xp})" class="w-full sm:w-auto bg-slate-800 hover:bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md">Ver Detalhes</button>
+        </div>
       </div>`;
     cGeral.prepend(el);
   }
