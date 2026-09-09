@@ -937,12 +937,11 @@
       <!-- Prévia Principal do Emblema -->
       <div class="flex flex-col items-center mb-5">
         <div class="w-24 h-24 rounded-3xl bg-slate-950 border-2 border-indigo-500/50 p-1 flex items-center justify-center relative overflow-hidden shadow-[0_0_20px_rgba(99,102,241,0.2)] group transition-all" id="avatar-preview-container">
-          <img id="avatar-preview-img" class="w-14 h-14 object-contain hidden" alt="Prévia">
+          <img id="avatar-preview-img" class="w-16 h-16 object-contain hidden" alt="Prévia">
           <div id="avatar-preview-placeholder" class="text-center text-indigo-400">
             <i class="ph ph-shield-star text-4xl block mb-1"></i>
           </div>
         </div>
-        <p class="text-[11px] text-slate-400 mt-2 text-center font-medium">Seu brasão de classe no TalentPlay</p>
       </div>
 
       <!-- Escolha Rápida de Emblemas Corporativos / RPG -->
@@ -953,36 +952,62 @@
           
           <!-- 1: Estrategista (Coroa/Gestão) -->
           <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:crown-duotone.svg?color=%23f43f5e')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-rose-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <i class="ph ph-crown-duotone text-2xl text-rose-400"></i>
+            <img src="https://api.iconify.design/ph:crown-duotone.svg?color=%23f43f5e" class="w-8 h-8" alt="Estrategista">
           </button>
           
           <!-- 2: Analista de Dados (Gráfico/Tech) -->
           <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:chart-line-up-duotone.svg?color=%238b5cf6')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-purple-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <i class="ph ph-chart-line-up-duotone text-2xl text-purple-400"></i>
+            <img src="https://api.iconify.design/ph:chart-line-up-duotone.svg?color=%238b5cf6" class="w-8 h-8" alt="Analista">
           </button>
 
           <!-- 3: Operações & Logística (Engrenagem) -->
           <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:gear-six-duotone.svg?color=%234f46e5')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-indigo-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <i class="ph ph-gear-six-duotone text-2xl text-indigo-400"></i>
+            <img src="https://api.iconify.design/ph:gear-six-duotone.svg?color=%234f46e5" class="w-8 h-8" alt="Operações">
           </button>
           
           <!-- 4: Inovação & Foguete (Startup) -->
           <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:rocket-launch-duotone.svg?color=%2310b981')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-emerald-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <i class="ph ph-rocket-launch-duotone text-2xl text-emerald-400"></i>
+            <img src="https://api.iconify.design/ph:rocket-launch-duotone.svg?color=%2310b981" class="w-8 h-8" alt="Inovação">
           </button>
 
           <!-- 5: Atendimento & Relacionamento (Headset) -->
           <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:headset-duotone.svg?color=%2306b6d4')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-cyan-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <i class="ph ph-headset-duotone text-2xl text-cyan-400"></i>
+            <img src="https://api.iconify.design/ph:headset-duotone.svg?color=%2306b6d4" class="w-8 h-8" alt="Atendimento">
           </button>
 
           <!-- 6: Mestre de Guilda (Troféu/Destaque) -->
           <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:trophy-duotone.svg?color=%23eab308')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-yellow-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
-            <i class="ph ph-trophy-duotone text-2xl text-yellow-400"></i>
+            <img src="https://api.iconify.design/ph:trophy-duotone.svg?color=%23eab308" class="w-8 h-8" alt="Destaque">
+          </button>
+
+          <!-- 7: Criatividade & Design (Varinha Mágica) -->
+          <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:magic-wand-duotone.svg?color=%23ec4899')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-pink-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:magic-wand-duotone.svg?color=%23ec4899" class="w-8 h-8" alt="Criatividade">
+          </button>
+
+          <!-- 8: Segurança & Qualidade (Escudo) -->
+          <button type="button" onclick="selecionarAvatarPredefinido('https://api.iconify.design/ph:shield-check-duotone.svg?color=%23f97316')" class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:border-orange-500 flex items-center justify-center transition-all hover:scale-110 shadow-md group">
+            <img src="https://api.iconify.design/ph:shield-check-duotone.svg?color=%23f97316" class="w-8 h-8" alt="Segurança">
           </button>
 
         </div>
       </div>
+
+      <!-- Upload da Imagem do Dispositivo -->
+      <div class="space-y-4 pt-4 border-t border-slate-800">
+        <label class="flex flex-col items-center justify-center gap-2 p-4 bg-slate-950 border border-slate-800 hover:border-indigo-500/50 rounded-2xl cursor-pointer transition-all group">
+          <span class="text-xs font-bold text-slate-300 flex items-center gap-2 group-hover:text-indigo-400 transition-colors">
+            <i class="ph ph-upload-simple text-xl text-indigo-400"></i> Selecionar imagem do dispositivo
+          </span>
+          <input type="file" id="input-foto-arquivo" accept="image/*" onchange="gerarPreviaFoto(event)" class="hidden">
+        </label>
+
+        <button id="btn-confirmar-foto" onclick="salvarFotoPerfil()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20">
+          Salvar Alteração
+        </button>
+      </div>
+    </div>
+  </div>
 
       <!-- Opção secundária para quem quiser enviar foto real -->
       <div class="space-y-3 pt-3 border-t border-slate-800">
