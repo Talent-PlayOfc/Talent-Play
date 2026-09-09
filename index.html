@@ -72,14 +72,13 @@
         <div>
           <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Menu Principal</p>
           <div class="space-y-1">
-            <button onclick="navegarPara('tela-home-candidato')" class="nav-btn active w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-home-candidato">
+            <button onclick="navegarPara('tela-home-candidato')" class="nav-btn active bg-indigo-600/10 text-indigo-400 outline-none w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50" data-target="tela-home-candidato">
               <i class="ph ph-house text-xl"></i> Início
             </button>
-            <button onclick="navegarPara('tela-vagas')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-indigo-300 bg-indigo-600/10 border border-indigo-500/30 hover:bg-indigo-600/20 shadow-[0_0_15px_rgba(79,70,229,0.15)] outline-none" data-target="tela-vagas">
-            <i class="ph ph-briefcase text-xl text-indigo-400"></i> Buscar Vagas <span class="ml-auto text-[9px] font-black text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-500/20 uppercase tracking-widest">Novo</span>
+            <button onclick="navegarPara('tela-vagas')" class="nav-btn text-slate-400 outline-none w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50" data-target="tela-vagas">
+              <i class="ph ph-briefcase text-xl text-indigo-400"></i> Buscar Vagas <span class="ml-auto text-[9px] font-black text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-md uppercase tracking-widest">Novo</span>
             </button>
-            </button>
-            <button onclick="navegarPara('tela-candidaturas')" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-candidaturas">
+            <button onclick="navegarPara('tela-candidaturas')" class="nav-btn text-slate-400 outline-none w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50" data-target="tela-candidaturas">
               <div class="flex items-center gap-3"><i class="ph ph-paper-plane-tilt text-xl"></i> Processos Seletivos</div>
               <span class="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-md">2</span>
             </button>
@@ -89,13 +88,13 @@
         <div>
           <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Seu Desenvolvimento</p>
           <div class="space-y-1">
-            <button onclick="navegarPara('tela-ficha-personagem')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-ficha-personagem">
+            <button onclick="navegarPara('tela-ficha-personagem')" class="nav-btn text-slate-400 outline-none w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50" data-target="tela-ficha-personagem">
               <i class="ph ph-user-circle-gear text-xl"></i> Perfil Profissional
             </button>
-            <button onclick="mostrarToast('Em breve: Avaliações para validar habilidades.', 'info')" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
+            <button onclick="mostrarToast('Em breve: Avaliações para validar habilidades.', 'info')" class="nav-btn text-slate-400 outline-none w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50">
               <div class="flex items-center gap-3"><i class="ph ph-laptop text-xl"></i> Avaliações Práticas</div>
             </button>
-            <button onclick="mostrarToast('Ranking de talentos atualizando...', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
+            <button onclick="mostrarToast('Ranking de talentos atualizando...', 'info')" class="nav-btn text-slate-400 outline-none w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50">
               <i class="ph ph-medal text-xl text-yellow-500/70"></i> Conquistas e Destaques
             </button>
           </div>
@@ -104,10 +103,10 @@
         <div>
           <p class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Conexões</p>
           <div class="space-y-1">
-            <button onclick="mostrarToast('Diretório de empresas em manutenção.', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
+            <button onclick="mostrarToast('Diretório de empresas em manutenção.', 'info')" class="nav-btn text-slate-400 outline-none w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50">
               <i class="ph ph-buildings text-xl"></i> Empresas Parceiras
             </button>
-            <button onclick="mostrarToast('Área de mentoria liberada para talentos de nível Pleno.', 'error')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50 opacity-60">
+            <button onclick="mostrarToast('Área de mentoria liberada para talentos de nível Pleno.', 'error')" class="nav-btn text-slate-400 outline-none w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50 opacity-60">
               <i class="ph ph-users-three text-xl"></i> Mentorias <i class="ph ph-lock text-xs ml-auto"></i>
             </button>
           </div>
@@ -119,20 +118,19 @@
         <div>
           <p class="px-2 text-[10px] font-extrabold text-emerald-600/70 uppercase tracking-widest mb-3">Gestão de Guilda (RH)</p>
           <div class="space-y-1">
-            <button onclick="navegarPara('tela-home-empresa')" class="nav-btn active w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-home-empresa">
+            <button onclick="navegarPara('tela-home-empresa')" class="nav-btn text-slate-400 outline-none w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50" data-target="tela-home-empresa">
               <i class="ph ph-radar text-xl"></i> Radar de Talentos
             </button>
-            <button onclick="navegarPara('tela-gerenciar-vagas')" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50" data-target="tela-gerenciar-vagas">
+            <button onclick="navegarPara('tela-gerenciar-vagas')" class="nav-btn text-slate-400 outline-none w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50" data-target="tela-gerenciar-vagas">
               <div class="flex items-center gap-3"><i class="ph ph-scroll text-xl"></i> Missões Abertas</div>
               <span class="bg-slate-800 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-md" id="contador-vagas-sidebar">3</span>
             </button>
-            <button onclick="mostrarToast('Gerador de relatórios analíticos em breve.', 'info')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-400 hover:bg-slate-800/50">
+            <button onclick="mostrarToast('Gerador de relatórios analíticos em breve.', 'info')" class="nav-btn text-slate-400 outline-none w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50">
               <i class="ph ph-chart-bar text-xl"></i> Relatórios de XP
             </button>
           </div>
         </div>
       </div>
-    </div>
 
     <!-- Rodapé Sidebar Fixa -->
     <div class="px-4 py-4 border-t border-slate-800 bg-slate-900 flex items-center justify-between z-20">
