@@ -1,5 +1,5 @@
 // =======================================================================
-// TALENTPLAY CORE MOTOR - v1.4.1 Fixes
+// TALENTPLAY CORE MOTOR - v1.4.2 Final Integrado
 // =======================================================================
 
 const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
@@ -10,8 +10,8 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const appState = {
   usuarioLogado: false,
   perfilAtual: null,
-  avatarTemporario: null, // Guarda URL do emblema ou Base64 do upload real
-  tipoSelecaoAtual: 'emblema', // 'emblema' ou 'upload'
+  avatarTemporario: null, 
+  tipoSelecaoAtual: 'emblema', 
   modoCadastro: false
 };
 
@@ -82,7 +82,6 @@ window.navegarPara = function(idTela) {
   }
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
-    // LIMPEZA ABSOLUTA: Arranca qualquer classe de borda que tenha ficado no HTML
     btn.classList.remove(
       'active', 
       'border', 
@@ -95,10 +94,8 @@ window.navegarPara = function(idTela) {
       'text-emerald-400'
     );
     
-    // Adiciona apenas a proteção padrão de foco e a cor apagada do menu
     btn.classList.add('outline-none', 'text-slate-400');
 
-    // Se este for o botão clicado, aplica apenas a cor de fundo e texto (Sem bordas!)
     if (btn.getAttribute('data-target') === idTela) {
       btn.classList.remove('text-slate-400');
       btn.classList.add('active');
@@ -245,7 +242,7 @@ function atualizarInfoTela(perfil) {
 }
 
 // ----------------------------------------------------
-// GESTÃO DE EMBLEMAS E FOTO PRÓPRIA (CORRIGIDO)
+// GESTÃO DE EMBLEMAS E FOTO PRÓPRIA
 // ----------------------------------------------------
 window.tentarAbrirModalFoto = function() {
   if (!appState.usuarioLogado) {
@@ -338,41 +335,215 @@ window.salvarFotoPerfil = async function() {
 };
 
 window.atualizarExibicaoAvatar = function(url) {
-  // 1. Elementos da Barra Lateral
   const imgEl = document.getElementById('sidebar-avatar-img');
   const fallbackEl = document.getElementById('sidebar-avatar-fallback');
-  
-  // 2. Elementos da Tela de Perfil Grande
   const perfilImg = document.getElementById('perfil-foto-grande');
   const perfilIcon = document.getElementById('perfil-icone-grande');
-
-  // 3. Elementos do Modal de Edição (A Prévia)
   const previewImg = document.getElementById('avatar-preview-img');
   const placeholder = document.getElementById('avatar-preview-placeholder');
 
   if (url) {
-    // Atualiza a Sidebar
     if (imgEl) { imgEl.src = url; imgEl.classList.remove('hidden'); fallbackEl.classList.add('hidden'); }
-    
-    // Atualiza a Ficha
     if (perfilImg) { perfilImg.src = url; perfilImg.classList.remove('hidden'); perfilIcon.classList.add('hidden'); }
-    
-    // Atualiza o Modal para a prévia nunca ficar vazia
     if (previewImg) { previewImg.src = url; previewImg.classList.remove('hidden'); if(placeholder) placeholder.classList.add('hidden'); }
-    
-    // Garante que o estado temporário lembre da foto atual
     appState.avatarTemporario = url;
   }
+};
+
+// ----------------------------------------------------
+// GESTÃO DE VAGAS & PERFIL DETALHADO (SUPABASE)
+// ----------------------------------------------------
+window.carregarVagasDoBanco = async function() {
+  const { data: vagas, error } = await supabaseClient.from('vagas').select('*').order('created_at', { ascending: false });
+  if (!error && vagas) {
+    vagas.forEach(v => adicionarVagaNaTela(v.titulo, v.local, v.xp, v.empresa));
+  }
+};
+
+window.adicionarVagaNaTela = function(titulo, local, xp, empresaNome) {
+  const cGeral = document.getElementById('container-todas-vagas');
+  if(cGeral) {
+    const el = document.createElement('div');
+    el.className = "vaga-card bg-slate-900 border border-emerald-500/50 rounded-3xl p-6 relative shadow-[0_0_20px_rgba(16,185,129,0.1)] flex flex-col h-full hover:border-emerald-400 transition-colors group";
+    el.setAttribute('data-titulo', titulo); 
+    el.setAttribute('data-empresa', empresaNome);
+    el.innerHTML = `
+      <div class="flex justify-between items-start mb-6">
+        <div>
+          <span class="text-[9px] font-black text-white bg-emerald-500 px-2.5 py-1 rounded-md tracking-widest uppercase shadow-md">NOVA</span>
+          <h3 class="text-xl font-bold text-white mt-3 vaga-titulo group-hover:text-emerald-400 transition-colors leading-tight">${titulo}</h3>
+          <p class="text-sm text-slate-400 mt-1 vaga-empresa">${empresaNome} • ${local}</p>
+        </div>
+        <div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-center text-2xl text-emerald-500 shadow-inner shrink-0">🏢</div>
+      </div>
+      <div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between">
+        <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">+${xp} XP</span>
+        <button onclick="iniciarRPG('${titulo}', '${empresaNome}')" class="text-sm font-bold text-slate-900 bg-emerald-500 hover:bg-emerald-400 px-5 py-2.5 rounded-xl transition-colors shadow-lg">Iniciar</button>
+      </div>`;
+    cGeral.prepend(el);
+  }
+};
+
+window.carregarPerfilDetalhes = async function(userId) {
+  const contHab = document.getElementById('container-habilidades');
+  if (contHab) {
+    contHab.querySelectorAll('.item-habilidade').forEach(el => el.remove());
+    const { data: habs } = await supabaseClient.from('habilidades').select('*').eq('candidato_id', userId);
+    if (habs) habs.forEach(h => renderizarCardHabilidade(h.nome, h.nivel));
+  }
+
+  const contExp = document.getElementById('container-experiencias');
+  if (contExp) {
+    contExp.querySelectorAll('.item-experiencia').forEach(el => el.remove());
+    const { data: exps } = await supabaseClient.from('experiencias').select('*').eq('candidato_id', userId);
+    if (exps) exps.forEach(e => renderizarCardExperiencia(e.cargo, e.empresa));
+  }
+};
+
+window.renderizarCardHabilidade = function(nome, nivel) {
+  const c = document.getElementById('container-habilidades');
+  if (!c) return;
+  const el = document.createElement('div');
+  el.className = "item-habilidade bg-slate-950 border border-purple-500/30 p-5 rounded-2xl text-center shadow-lg relative overflow-hidden group hover:border-purple-500 transition-colors";
+  el.innerHTML = `
+    <div class="absolute top-0 left-0 w-full h-1 bg-purple-500"></div>
+    <i class="ph ph-lightning text-3xl text-purple-500/50 mb-2 group-hover:scale-110 transition-transform"></i>
+    <p class="text-sm font-black text-white mb-1">${nome}</p>
+    <p class="text-[10px] text-purple-400 font-black uppercase tracking-widest bg-purple-500/10 inline-block px-2 py-0.5 rounded border border-purple-500/20">${nivel}</p>
+  `;
+  c.insertBefore(el, c.lastElementChild);
+};
+
+window.renderizarCardExperiencia = function(cargo, empresa) {
+  const c = document.getElementById('container-experiencias');
+  if (!c) return;
+  const el = document.createElement('div');
+  el.className = "item-experiencia relative group mb-10";
+  el.innerHTML = `
+    <div class="absolute -left-[46px] w-8 h-8 rounded-full bg-slate-900 border-4 border-indigo-500 flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.5)]">
+      <div class="w-2 h-2 bg-indigo-400 rounded-full group-hover:scale-150 transition-transform"></div>
+    </div>
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 group-hover:border-indigo-500/50 transition-colors shadow-lg">
+      <h4 class="font-black text-white text-xl mb-2">${cargo}</h4>
+      <p class="text-sm font-black text-indigo-400 uppercase tracking-wider bg-indigo-500/10 inline-block px-3 py-1 rounded-lg border border-indigo-500/20">${empresa}</p>
+    </div>
+  `;
+  c.insertBefore(el, c.lastElementChild);
+};
+
+window.carregarMinhasCandidaturas = async function(userId) {
+  const container = document.getElementById('container-minhas-candidaturas');
+  const vazioMsg = document.getElementById('candidaturas-vazio');
+  if (!container) return;
+
+  const { data: candidaturas, error } = await supabaseClient
+    .from('candidaturas')
+    .select('*')
+    .eq('candidato_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error || !candidaturas || candidaturas.length === 0) {
+    if (vazioMsg) vazioMsg.classList.remove('hidden');
+    return;
+  }
+
+  if (vazioMsg) vazioMsg.classList.add('hidden');
+  container.innerHTML = '';
+
+  candidaturas.forEach(c => {
+    const card = document.createElement('div');
+    card.className = "bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col lg:flex-row gap-6 items-center shadow-xl";
+    card.innerHTML = `
+      <div class="w-16 h-16 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center text-3xl text-indigo-400 shrink-0"><i class="ph ph-briefcase"></i></div>
+      <div class="flex-1 text-center lg:text-left">
+        <span class="text-[10px] font-black text-indigo-400 bg-indigo-500/10 px-2.5 py-0.5 rounded-md border border-indigo-500/20 uppercase tracking-widest">+${c.xp_obtido || 0} XP</span>
+        <h3 class="text-xl font-black text-white mt-1">${c.vaga_titulo}</h3>
+        <p class="text-slate-400 text-sm font-medium">${c.empresa}</p>
+      </div>
+      <div class="w-full lg:w-48 bg-slate-950 rounded-xl p-4 border border-slate-800 text-center">
+        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Status</p>
+        <p class="text-sm font-black text-white">${c.status}</p>
+      </div>`;
+    container.appendChild(card);
+  });
+};
+
+// ----------------------------------------------------
+// SIMULADOR PRÁTICO (AVALIAÇÃO)
+// ----------------------------------------------------
+window.iniciarRPG = function(vagaTitulo = 'Missão Padrão', empresa = 'Nossa Empresa') {
+  if(!appState.perfilAtual) return abrirModal('login-modal');
+  if(appState.perfilAtual.tipo_conta === 'empresa') return mostrarToast("Você está como RH. Crie vagas ao invés de avaliá-las.", "error");
+  
+  document.getElementById('rpg-titulo-header').innerText = `${vagaTitulo}`;
+  document.getElementById('rpg-text').innerHTML = `Você está no meio do expediente na <strong>${empresa}</strong>. O telefone toca sem parar. O gerente de operações passa correndo, bate na sua mesa e fala: <br><br><span class='text-white font-bold italic text-xl border-l-4 border-indigo-500 pl-4 block bg-slate-800/50 p-4 rounded-r-xl'>"Preciso daquele relatório de estoque de ontem impresso na minha mesa AGORA!"</span><br>Ao mesmo tempo, um fornecedor estratégico liga no seu ramal exigindo falar com alguém da equipe financeira urgentemente. <br><br><span class='text-indigo-400 font-black'>Qual é a sua ação imediata?</span>`;
+  
+  document.getElementById('rpg-choices').classList.remove('hidden');
+  abrirModal('rpg-modal');
+};
+
+window.fecharRPG = function() { 
+  fecharModal('rpg-modal'); 
+  if(appState.usuarioLogado && appState.perfilAtual) {
+    carregarMinhasCandidaturas(appState.perfilAtual.id);
+  }
+};
+
+window.escolherOpcao = async function(opcao) {
+  const rpgText = document.getElementById('rpg-text');
+  document.getElementById('rpg-choices').classList.add('hidden');
+  let xpGanho = (opcao === 'C') ? 100 : 25;
+  let matchCalc = (opcao === 'C') ? 95 : 60;
+  
+  if(opcao === 'C') {
+    rpgText.innerHTML = `<div class='bg-emerald-500/10 border border-emerald-500/30 p-6 rounded-2xl mb-6'><span class='text-emerald-400 font-black text-2xl mb-2 flex items-center gap-3'><i class="ph ph-check-circle"></i> DESEMPENHO EXCELENTE!</span> <p class='text-slate-300 font-medium'>Você demonstrou equilíbrio sob pressão e comunicação assertiva.</p></div><span class='inline-block bg-indigo-500 text-white px-6 py-3 rounded-xl font-black text-xl'>+${xpGanho} XP GANHOS</span>`;
+  } else {
+    rpgText.innerHTML = `<div class='bg-yellow-500/10 border border-yellow-500/30 p-6 rounded-2xl mb-6'><span class='text-yellow-400 font-black text-2xl mb-2 flex items-center gap-3'><i class="ph ph-warning-circle"></i> PONTO DE ATENÇÃO</span> <p class='text-slate-300 font-medium'>Priorizar apenas uma das frentes prejudica a dinâmica operacional.</p></div><span class='inline-block bg-indigo-500 text-white px-6 py-3 rounded-xl font-black text-xl'>+${xpGanho} XP GANHOS</span>`;
+  }
+
+  let tituloVagaAtual = document.getElementById('rpg-titulo-header').innerText;
+  let btnConcluir = `<button onclick="fecharRPG()" class='mt-6 w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition-all shadow-lg'>CONCLUIR E ENVIAR AO RH</button>`;
+
+  if(!appState.perfilAtual) return;
+
+  await supabaseClient.from('candidaturas').insert([{
+    vaga_titulo: tituloVagaAtual,
+    candidato_nome: appState.perfilAtual.nome,
+    candidato_id: appState.perfilAtual.id,
+    empresa: 'Empresa Parceira',
+    status: 'Avaliação Concluída',
+    xp_obtido: xpGanho,
+    match_percentual: matchCalc
+  }]);
+
+  let novoXp = (appState.perfilAtual.xp || 0) + xpGanho;
+  let novoNivel = Math.floor(novoXp / 100) + 1;
+
+  await supabaseClient.from('perfis').update({ xp: novoXp, nivel: novoNivel }).eq('id', appState.perfilAtual.id);
+  
+  appState.perfilAtual.xp = novoXp;
+  appState.perfilAtual.nivel = novoNivel;
+  atualizarInfoTela(appState.perfilAtual);
+
+  rpgText.innerHTML += btnConcluir;
 };
 
 // ----------------------------------------------------
 // INICIALIZAÇÃO DE SESSÃO AUTOMÁTICA
 // ----------------------------------------------------
 window.onload = function() {
+  carregarVagasDoBanco();
+
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
     if (session) {
       const { data } = await supabaseClient.from('perfis').select('*').eq('id', session.user.id).single();
-      if (data) atualizarInfoTela(data);
+      if (data) {
+        atualizarInfoTela(data);
+        if (data.tipo_conta === 'candidato') {
+          carregarPerfilDetalhes(session.user.id);
+          carregarMinhasCandidaturas(session.user.id);
+        }
+      }
     } else {
       appState.usuarioLogado = false;
       appState.perfilAtual = null;
