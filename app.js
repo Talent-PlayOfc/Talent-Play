@@ -821,27 +821,38 @@ window.carregarCidadesIBGE = async function() {
   }
 };
 
+// Função auxiliar para remover acentos e cedilhas
+function removerAcentos(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 window.filtrarCidadesCustom = function() {
   const input = document.getElementById('nv-local');
   const dropdown = document.getElementById('dropdown-cidades');
-  const valor = input.value.toLowerCase();
   
   if (!dropdown) return;
+  
+  // Pegamos o que o usuário digitou, em minúsculas e sem acentos
+  const valorDigitado = input.value ? removerAcentos(input.value.toLowerCase()) : '';
+  
   dropdown.innerHTML = '';
   
-  // Procura o que o usuário digitou (mostra só as primeiras 50 para o PC não travar)
-  const filtradas = listaCidadesGlobal.filter(c => c.toLowerCase().includes(valor)).slice(0, 50);
+  // Filtra comparando a versão sem acento tanto do input quanto da lista
+  const filtradas = listaCidadesGlobal.filter(c => {
+    const cidadeLimpa = removerAcentos(c.toLowerCase());
+    return cidadeLimpa.includes(valorDigitado);
+  }).slice(0, 50);
   
   if (filtradas.length === 0) {
     dropdown.innerHTML = `<li class="px-4 py-3 text-sm text-slate-500 italic text-center">Nenhuma cidade encontrada</li>`;
   } else {
     filtradas.forEach(cidade => {
       const li = document.createElement('li');
-      // Design de cada item: fica verde ao passar o mouse!
       li.className = "px-4 py-2.5 text-sm font-bold text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-400 cursor-pointer transition-colors";
-      li.innerText = cidade;
       
-      // Quando clica na cidade, preenche o campo e esconde a lista
+      // A cidade continua aparecendo bonitinha com acento na tela!
+      li.innerText = cidade; 
+      
       li.onclick = function() {
         input.value = cidade;
         dropdown.classList.add('hidden');
@@ -852,15 +863,6 @@ window.filtrarCidadesCustom = function() {
   
   dropdown.classList.remove('hidden');
 };
-
-// Se o usuário clicar fora da lista, ela se esconde automaticamente
-document.addEventListener('click', function(e) {
-  const input = document.getElementById('nv-local');
-  const dropdown = document.getElementById('dropdown-cidades');
-  if (input && dropdown && e.target !== input && !dropdown.contains(e.target)) {
-    dropdown.classList.add('hidden');
-  }
-});
 
 // ----------------------------------------------------
 // GESTÃO DO PAINEL DO RECRUTADOR (RH)
