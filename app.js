@@ -440,6 +440,7 @@ window.editarVaga = function(vagaJsonStr) {
   document.getElementById('nv-descricao').value = vaga.descricao;
   document.getElementById('nv-modelo').value = vaga.modelo;
   document.getElementById('nv-local').value = vaga.local;
+  
   document.getElementById('nv-nivel').value = vaga.nivel;
   document.getElementById('nv-contrato').value = vaga.contrato;
   document.getElementById('nv-sal-min').value = vaga.salario_min;
@@ -487,6 +488,7 @@ window.criarNovaVaga = async function(e) {
     const nivel = document.getElementById('nv-nivel').value;
     const contrato = document.getElementById('nv-contrato').value;
     const modelo = document.getElementById('nv-modelo').value;
+    const escala = document.getElementById('nv-escala').value;
     const local = document.getElementById('nv-local').value;
     const salario_min = document.getElementById('nv-sal-min').value;
     const salario_max = document.getElementById('nv-sal-max').value;
