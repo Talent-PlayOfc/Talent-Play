@@ -994,9 +994,22 @@ window.excluirVaga = async function(id) {
 // ----------------------------------------------------
 // INICIALIZAÇÃO DE SESSÃO AUTOMÁTICA
 // ----------------------------------------------------
-window.onload = function() {
+window.onload = async function() {
   carregarVagasDoBanco();
   carregarCidadesIBGE();
+
+  // Checa a sessão ativa imediatamente ao carregar a página
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (session) {
+    const { data } = await supabaseClient.from('perfis').select('*').eq('id', session.user.id).single();
+    if (data) {
+      atualizarInfoTela(data);
+      if (data.tipo_conta === 'candidato') {
+        carregarPerfilDetalhes(session.user.id);
+        carregarMinhasCandidaturas(session.user.id);
+      }
+    }
+  }
 
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
     if (session) {
