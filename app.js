@@ -447,7 +447,11 @@ window.criarNovaVaga = async function(e) {
 };
 
 window.carregarVagasDoBanco = async function() {
-  const { data: vagas, error } = await supabaseClient.from('vagas').select('*').order('created_at', { ascending: false });
+  const { data: vagas, error } = await supabaseClient
+    .from('vagas')
+    .select('*')
+    .eq('status_vaga', 'Ativa')
+    .order('created_at', { ascending: false });
   if (!error && vagas) vagas.forEach(v => adicionarVagaNaTela(v));
 };
 
