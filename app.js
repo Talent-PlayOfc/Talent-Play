@@ -894,7 +894,7 @@ window.carregarRadarTalentos = async function() {
     } else {
       badgeRH.classList.add('hidden');
     }
-  }
+  };
 
 window.alternarStatusVaga = async function(id, statusAtual) {
   const novoStatus = (statusAtual === 'Arquivada') ? 'Ativa' : 'Arquivada';
