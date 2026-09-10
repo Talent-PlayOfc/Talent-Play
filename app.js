@@ -405,13 +405,75 @@ function obterIconePorArea(area) {
   return icones[area] || 'ph-star text-slate-400';
 }
 
+// Variável global para rastrear se estamos criando ou editando
+let vagaEmEdicaoId = null;
+
+// Prepara o modal para criar uma vaga do zero
+window.prepararNovaVaga = function() {
+  vagaEmEdicaoId = null;
+  document.getElementById('nv-empresa').value = '';
+  document.getElementById('nv-titulo').value = '';
+  document.getElementById('nv-descricao').value = '';
+  document.getElementById('nv-local').value = '';
+  document.getElementById('nv-sal-min').value = '';
+  document.getElementById('nv-sal-max').value = '';
+  document.getElementById('nv-pcd').checked = false;
+  document.getElementById('nv-logo-preview').classList.add('hidden');
+  logoVagaTemporaria = null;
+  
+  document.querySelectorAll('.nv-testes').forEach(cb => cb.checked = false);
+  
+  document.querySelector('#modal-nova-vaga h3').innerHTML = '<i class="ph ph-plus-circle text-emerald-500"></i> Publicar Oportunidade';
+  document.querySelector('#modal-nova-vaga button[type="submit"]').innerHTML = '<i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
+  
+  abrirModal('modal-nova-vaga');
+};
+
+// Preenche o modal com os dados da vaga existente
+window.editarVaga = function(vagaJsonStr) {
+  const vaga = JSON.parse(decodeURIComponent(vagaJsonStr));
+  vagaEmEdicaoId = vaga.id;
+  
+  document.getElementById('nv-empresa').value = vaga.empresa;
+  document.getElementById('nv-titulo').value = vaga.titulo;
+  document.getElementById('nv-area').value = vaga.area;
+  document.getElementById('nv-descricao').value = vaga.descricao;
+  document.getElementById('nv-modelo').value = vaga.modelo;
+  document.getElementById('nv-local').value = vaga.local;
+  document.getElementById('nv-nivel').value = vaga.nivel;
+  document.getElementById('nv-contrato').value = vaga.contrato;
+  document.getElementById('nv-sal-min').value = vaga.salario_min;
+  document.getElementById('nv-sal-max').value = vaga.salario_max;
+  document.getElementById('nv-pcd').checked = vaga.pcd;
+  
+  logoVagaTemporaria = vaga.empresa_logo || null;
+  if (logoVagaTemporaria) {
+    document.getElementById('nv-logo-preview').src = logoVagaTemporaria;
+    document.getElementById('nv-logo-preview').classList.remove('hidden');
+  } else {
+    document.getElementById('nv-logo-preview').classList.add('hidden');
+  }
+  
+  const testes = vaga.testes ? vaga.testes.split(' + ') : [];
+  document.querySelectorAll('.nv-testes').forEach(cb => {
+    cb.checked = testes.includes(cb.value);
+  });
+  
+  document.querySelector('#modal-nova-vaga h3').innerHTML = '<i class="ph ph-pencil-simple text-indigo-400"></i> Editar Oportunidade';
+  document.querySelector('#modal-nova-vaga button[type="submit"]').innerHTML = '<i class="ph ph-floppy-disk text-xl"></i> Salvar Alterações';
+  
+  abrirModal('modal-nova-vaga');
+};
+
+// Salva no Supabase (Serve tanto para UPDATE quanto INSERT)
 window.criarNovaVaga = async function(e) {
   e.preventDefault();
   const btn = e.target.querySelector('button[type="submit"]');
-  btn.disabled = true; btn.innerHTML = 'PUBLICANDO...';
+  const textoOriginal = btn.innerHTML;
+  btn.disabled = true; 
+  btn.innerHTML = '<i class="ph ph-spinner-gap animate-spin text-xl"></i> Processando...';
 
   try {
-    // Pega o ID direto do usuário autenticado no Supabase com segurança total
     const { data: { user } } = await supabaseClient.auth.getUser();
     if (!user) {
       mostrarToast('Sessão expirada. Faça login novamente.', 'error');
@@ -433,33 +495,35 @@ window.criarNovaVaga = async function(e) {
     const testesMarcados = Array.from(document.querySelectorAll('.nv-testes:checked')).map(cb => cb.value).join(' + ');
     const testesFinal = testesMarcados || 'Análise Curricular';
 
-    const novaVaga = {
+    const dadosVaga = {
       empresa, titulo, area, descricao, nivel, contrato, modelo, local, 
       salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria,
-      criador_id: user.id, // ID garantido direto do Supabase
-      status_vaga: 'Ativa'
+      criador_id: user.id
     };
 
-    const { error } = await supabaseClient.from('vagas').insert([novaVaga]);
-    if (error) throw error;
+    if (vagaEmEdicaoId) {
+      // É UMA EDIÇÃO (UPDATE)
+      const { error } = await supabaseClient.from('vagas').update(dadosVaga).eq('id', vagaEmEdicaoId);
+      if (error) throw error;
+      mostrarToast('Oportunidade atualizada com sucesso!', 'success');
+    } else {
+      // É UMA VAGA NOVA (INSERT)
+      dadosVaga.status_vaga = 'Ativa';
+      const { error } = await supabaseClient.from('vagas').insert([dadosVaga]);
+      if (error) throw error;
+      mostrarToast('Oportunidade publicada com sucesso!', 'success');
+    }
 
-    mostrarToast('Oportunidade publicada com sucesso!', 'success');
     fecharModal('modal-nova-vaga');
-    e.target.reset();
-    document.getElementById('nv-logo-preview').classList.add('hidden');
-    logoVagaTemporaria = null;
-    
     document.getElementById('container-todas-vagas').innerHTML = '';
     carregarVagasDoBanco();
     if(typeof carregarRadarTalentos === 'function') carregarRadarTalentos();
 
   } catch (err) {
-    mostrarToast('Erro ao publicar: ' + err.message, 'error');
-    console.error(err);
+    mostrarToast('Erro ao processar: ' + err.message, 'error');
   } finally {
     btn.disabled = false; 
-    btn.innerHTML = '<i class="
-      ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
+    btn.innerHTML = textoOriginal;
   }
 };
 
@@ -929,7 +993,11 @@ window.carregarRadarTalentos = async function() {
           <h3 class="text-lg font-black text-white">${vaga.titulo}</h3>
           <p class="text-sm text-slate-400 font-medium">${vaga.modelo} • ${vaga.contrato}</p>
         </div>
-        
+
+        <div class="flex flex-wrap gap-2 w-full md:w-auto mt-4 md:mt-0">
+          <button onclick="editarVaga('${encodeURIComponent(JSON.stringify(vaga))}')" class="flex-1 md:flex-none bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 px-4 py-2.5 rounded-lg font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
+            <i class="ph ph-pencil-simple text-lg"></i> Editar
+          </button>
         <div class="flex flex-wrap gap-2 w-full md:w-auto mt-4 md:mt-0">
           <button onclick="alternarStatusVaga(${vaga.id}, '${vaga.status_vaga || 'Ativa'}')" class="flex-1 md:flex-none bg-slate-950 hover:bg-slate-800 border border-slate-700 text-slate-300 px-4 py-2.5 rounded-lg font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
             <i class="ph ${isArquivada ? 'ph-upload-simple' : 'ph-archive'} text-lg"></i> ${isArquivada ? 'Reativar' : 'Arquivar'}
