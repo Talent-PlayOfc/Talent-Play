@@ -498,7 +498,7 @@ window.criarNovaVaga = async function(e) {
     const testesFinal = testesMarcados || 'Análise Curricular';
 
     const dadosVaga = {
-      empresa, titulo, area, descricao, nivel, contrato, modelo, local, 
+      empresa, titulo, area, descricao, nivel, contrato, modelo, local, escala,
       salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria,
       criador_id: user.id
     };
