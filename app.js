@@ -759,8 +759,6 @@ window.carregarMinhasCandidaturas = async function(userId) {
 // ----------------------------------------------------
 // SISTEMA DE AVALIAÇÃO E CANDIDATURA (NOVO)
 // ----------------------------------------------------
-let empresaAtualAvaliacao = '';
-
 window.iniciarProcessoSeletivo = function(vagaTitulo, empresa, testesMarcados) {
   if(!appState.perfilAtual) return abrirModal('login-modal');
   if(appState.perfilAtual.tipo_conta === 'empresa') return mostrarToast("Recrutadores não podem se candidatar às vagas.", "error");
