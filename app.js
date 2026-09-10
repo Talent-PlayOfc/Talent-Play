@@ -750,6 +750,7 @@ window.carregarCidadesIBGE = async function() {
 // ----------------------------------------------------
 window.onload = function() {
   carregarVagasDoBanco();
+  carregarCidadesIBGE();
 
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
     if (session) {
