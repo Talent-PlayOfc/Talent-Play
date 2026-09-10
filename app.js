@@ -722,6 +722,8 @@ window.renderizarCardExperiencia = function(cargo, empresa) {
 window.carregarMinhasCandidaturas = async function(userId) {
   const container = document.getElementById('container-minhas-candidaturas');
   const vazioMsg = document.getElementById('candidaturas-vazio');
+  const badge = document.getElementById('badge-candidaturas'); // <-- Busca o selo do menu
+  
   if (!container) return;
 
   const { data: candidaturas, error } = await supabaseClient
@@ -730,13 +732,24 @@ window.carregarMinhasCandidaturas = async function(userId) {
     .eq('candidato_id', userId)
     .order('created_at', { ascending: false });
 
+  // Limpa os cards velhos, mas protege a mensagem de "vazio"
+  Array.from(container.children).forEach(child => {
+    if (child.id !== 'candidaturas-vazio') child.remove();
+  });
+
   if (error || !candidaturas || candidaturas.length === 0) {
     if (vazioMsg) vazioMsg.classList.remove('hidden');
+    if (badge) badge.classList.add('hidden'); // Esconde o selo se tiver 0
     return;
   }
 
   if (vazioMsg) vazioMsg.classList.add('hidden');
-  container.innerHTML = '';
+  
+  // Atualiza o contador com o número REAL do Banco de Dados!
+  if (badge) {
+    badge.innerText = candidaturas.length;
+    badge.classList.remove('hidden');
+  }
 
   candidaturas.forEach(c => {
     const card = document.createElement('div');
@@ -872,6 +885,17 @@ window.carregarRadarTalentos = async function() {
   if (metricAtivas) metricAtivas.innerText = ativas;
   if (metricArq) metricArq.innerText = arquivadas;
 };
+
+// Atualiza o contador de vagas no Menu Lateral do RH
+  const badgeRH = document.getElementById('contador-vagas-sidebar');
+  if (badgeRH) {
+    if (vagas.length > 0) {
+      badgeRH.innerText = vagas.length;
+      badgeRH.classList.remove('hidden');
+    } else {
+      badgeRH.classList.add('hidden');
+    }
+  }
 
 window.alternarStatusVaga = async function(id, statusAtual) {
   const novoStatus = (statusAtual === 'Arquivada') ? 'Ativa' : 'Arquivada';
