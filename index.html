@@ -1189,41 +1189,36 @@
     </div>
   </div>
   
-  <!-- Modal RPG / Mini Game -->
-  <div id="rpg-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[150] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="max-w-3xl w-full bg-slate-900 border-2 border-indigo-500/50 rounded-[2rem] shadow-[0_0_50px_rgba(79,70,229,0.2)] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300" id="card-rpg-modal">
-      <div class="bg-slate-950 px-8 py-5 border-b border-slate-800 flex items-center gap-5 relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500"></div>
-        <div class="w-14 h-14 rounded-2xl bg-indigo-600/20 border border-indigo-500/50 flex items-center justify-center text-3xl shadow-inner shrink-0" id="rpg-icone">🏢</div>
-        <div>
-          <h4 class="text-white font-black text-xl" id="rpg-titulo-header">Simulador de Realidade</h4>
-          <p class="text-xs text-indigo-400 font-black uppercase tracking-widest mt-1">Cena 1: A Provação Matinal</p>
-        </div>
-        <button onclick="fecharRPG()" class="ml-auto text-slate-500 hover:text-white bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm"><i class="ph ph-x font-bold text-lg"></i></button>
-      </div>
+  <!-- Modal: Processo Seletivo (Avaliação Prática) -->
+  <div id="aval-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[200] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
+    <div class="absolute inset-0" onclick="fecharAvaliacao()"></div>
+    <div class="max-w-2xl w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-aval-modal">
       
-      <div class="p-8 sm:p-10 relative">
-        <div class="absolute right-0 bottom-0 opacity-5 pointer-events-none"><i class="ph ph-sword text-[300px]"></i></div>
-        <p id="rpg-text" class="text-slate-300 text-xl leading-relaxed min-h-[140px] mb-8 font-medium relative z-10"></p>
-        
-        <div id="rpg-choices" class="space-y-4 hidden relative z-10">
-          <button onclick="escolherOpcao('A')" class="group w-full text-left p-6 bg-slate-950 hover:bg-indigo-900/30 border-2 border-slate-800 hover:border-indigo-500 rounded-2xl text-slate-300 text-base transition-all shadow-md flex gap-5 items-start">
-            <span class="text-indigo-500 font-black text-2xl group-hover:text-indigo-400">A)</span> 
-            <span class="mt-1 font-medium leading-relaxed">Ignoro o telefone por enquanto, imprimo o relatório apressadamente e entrego na mão do gerente para evitar bronca.</span>
-          </button>
-          <button onclick="escolherOpcao('B')" class="group w-full text-left p-6 bg-slate-950 hover:bg-indigo-900/30 border-2 border-slate-800 hover:border-indigo-500 rounded-2xl text-slate-300 text-base transition-all shadow-md flex gap-5 items-start">
-            <span class="text-indigo-500 font-black text-2xl group-hover:text-indigo-400">B)</span> 
-            <span class="mt-1 font-medium leading-relaxed">Atendo o fornecedor e tento acalmá-lo enquanto uso a outra mão no mouse para imprimir o relatório ao mesmo tempo.</span>
-          </button>
-          <button onclick="escolherOpcao('C')" class="group w-full text-left p-6 bg-slate-950 hover:bg-indigo-900/30 border-2 border-slate-800 hover:border-emerald-500 hover:text-white rounded-2xl text-slate-300 text-base transition-all shadow-md flex gap-5 items-start">
-            <span class="text-indigo-500 font-black text-2xl group-hover:text-emerald-400">C)</span> 
-            <span class="mt-1 font-medium leading-relaxed">Aviso o gerente ("Já vou imprimir!"), atendo o telefone pedindo 1 minuto de paciência ao fornecedor, e então pego a impressão.</span>
-          </button>
-        </div>
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-black text-indigo-400 flex items-center gap-2" id="aval-titulo-header">Processo Seletivo</h3>
+        <button onclick="fecharAvaliacao()" class="text-slate-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
       </div>
+
+      <div id="aval-text" class="text-white text-base leading-relaxed mb-8">
+        <!-- O JS vai injetar o texto da avaliação aqui -->
+      </div>
+
+      <div id="aval-choices" class="flex flex-col gap-4">
+        <button onclick="escolherOpcaoAvaliacao('C')" class="w-full text-left bg-slate-950 border border-slate-700 hover:border-emerald-500 hover:bg-emerald-500/10 text-slate-300 p-5 rounded-2xl transition-all group relative overflow-hidden">
+          <div class="absolute left-0 top-0 w-1 h-full bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <strong class="text-white block mb-1">A) Resposta Estratégica e Comunicativa</strong>
+          Alinho as prioridades com o gestor, redefino as metas imediatas e comunico o time sobre o novo prazo para não afetar a entrega.
+        </button>
+        <button onclick="escolherOpcaoAvaliacao('E')" class="w-full text-left bg-slate-950 border border-slate-700 hover:border-yellow-500 hover:bg-yellow-500/10 text-slate-300 p-5 rounded-2xl transition-all group relative overflow-hidden">
+          <div class="absolute left-0 top-0 w-1 h-full bg-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <strong class="text-white block mb-1">B) Resposta Operacional</strong>
+          Tento absorver toda a demanda extra sozinho e trabalho até mais tarde para entregar o que foi pedido, sem questionar ou avisar a equipe.
+        </button>
+      </div>
+
     </div>
   </div>
-
+  
   <!-- CONEXÃO COM O ARQUIVO APP.JS -->
   <script src="app.js"></script>
 </body>
