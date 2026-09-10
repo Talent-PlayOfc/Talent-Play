@@ -373,94 +373,186 @@ window.atualizarExibicaoAvatar = function(url) {
 };
 
 // ----------------------------------------------------
-// GESTÃO DE VAGAS & PERFIL DETALHADO (SUPABASE)
+// GESTÃO DE VAGAS (RH E SUPABASE)
 // ----------------------------------------------------
+let logoVagaTemporaria = null;
+
+window.previewLogoEmpresa = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    logoVagaTemporaria = e.target.result;
+    document.getElementById('nv-logo-preview').src = logoVagaTemporaria;
+    document.getElementById('nv-logo-preview').classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+};
+
+function obterIconePorArea(area) {
+  const icones = {
+    'Administrativo': 'ph-briefcase text-blue-400',
+    'Tecnologia': 'ph-desktop text-indigo-400',
+    'Saúde': 'ph-heartbeat text-rose-400',
+    'Logística': 'ph-package text-orange-400',
+    'Vendas': 'ph-storefront text-emerald-400',
+    'Atendimento': 'ph-headset text-yellow-400'
+  };
+  return icones[area] || 'ph-star text-slate-400';
+}
+
+window.criarNovaVaga = async function(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.disabled = true; btn.innerHTML = 'PUBLICANDO...';
+
+  // Capturando tudo
+  const empresa = document.getElementById('nv-empresa').value;
+  const titulo = document.getElementById('nv-titulo').value;
+  const area = document.getElementById('nv-area').value;
+  const descricao = document.getElementById('nv-descricao').value;
+  const nivel = document.getElementById('nv-nivel').value;
+  const contrato = document.getElementById('nv-contrato').value;
+  const modelo = document.getElementById('nv-modelo').value;
+  const local = document.getElementById('nv-local').value;
+  const salario_min = document.getElementById('nv-sal-min').value;
+  const salario_max = document.getElementById('nv-sal-max').value;
+  const pcd = document.getElementById('nv-pcd').checked;
+
+  // Pegando os testes marcados
+  const testesMarcados = Array.from(document.querySelectorAll('.nv-testes:checked')).map(cb => cb.value).join(' + ');
+  const testesFinal = testesMarcados || 'Análise Curricular';
+
+  const novaVaga = {
+    empresa, titulo, area, descricao, nivel, contrato, modelo, local, 
+    salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria
+  };
+
+  const { error } = await supabaseClient.from('vagas').insert([novaVaga]);
+
+  if(error) {
+    mostrarToast('Erro ao publicar: ' + error.message, 'error');
+  } else {
+    mostrarToast('Oportunidade publicada com sucesso!', 'success');
+    fecharModal('modal-nova-vaga');
+    e.target.reset();
+    document.getElementById('nv-logo-preview').classList.add('hidden');
+    logoVagaTemporaria = null;
+    
+    // Atualiza a tela limpando e buscando de novo
+    document.getElementById('container-todas-vagas').innerHTML = '';
+    carregarVagasDoBanco();
+  }
+  btn.disabled = false; btn.innerHTML = '<i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
+};
+
 window.carregarVagasDoBanco = async function() {
   const { data: vagas, error } = await supabaseClient.from('vagas').select('*').order('created_at', { ascending: false });
-  if (!error && vagas) {
-    vagas.forEach(v => adicionarVagaNaTela(v.titulo, v.local, v.xp, v.empresa));
-  }
+  if (!error && vagas) vagas.forEach(v => adicionarVagaNaTela(v));
 };
 
-window.adicionarVagaNaTela = function(titulo, local, xp, empresaNome) {
+window.adicionarVagaNaTela = function(vaga) {
   const cGeral = document.getElementById('container-todas-vagas');
-  if(cGeral) {
-    const el = document.createElement('div');
-    el.className = "vaga-card bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-6 transition-all duration-300 group relative shadow-lg flex flex-col h-full overflow-hidden";
-    el.setAttribute('data-titulo', titulo); 
-    el.setAttribute('data-empresa', empresaNome);
-    
-    // Gerando nota fake pro design (ex: 4.8)
-    const estrelas = (Math.random() * (5.0 - 4.2) + 4.2).toFixed(1);
-    
-    el.innerHTML = `
-      <div class="absolute -right-12 top-6 w-40 bg-emerald-500 text-white text-[10px] font-black py-1.5 text-center uppercase tracking-widest rotate-45 shadow-lg z-10 pointer-events-none">Nova</div>
-      
-      <div class="flex items-center gap-3 mb-4 pr-10">
-        <div class="w-11 h-11 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-xl shrink-0 shadow-inner">🏢</div>
-        <div>
-          <p class="text-sm font-bold text-slate-300">${empresaNome}</p>
-          <div class="flex items-center gap-1 text-[10px] font-black text-yellow-500 tracking-wider mt-0.5">
-            <i class="ph ph-star-fill"></i> ${estrelas} <span class="text-slate-600 font-medium ml-1">(Ver avaliações)</span>
-          </div>
-        </div>
-      </div>
+  if(!cGeral) return;
 
-      <div class="mb-4">
-        <h3 class="text-xl sm:text-2xl font-black text-white group-hover:text-indigo-300 transition-colors leading-tight flex items-center gap-2">
-          ${titulo} <i class="ph ph-briefcase text-emerald-500 text-2xl"></i>
-        </h3>
-        <p class="text-xs text-slate-400 font-medium flex items-center gap-1.5 mt-2">
-          <i class="ph ph-map-pin text-indigo-400 text-sm"></i> ${local} <span class="text-slate-600">•</span> <span class="text-indigo-400 font-bold">A 2,5km</span>
-        </p>
-      </div>
-
-      <div class="flex flex-wrap gap-2 mb-5">
-        <span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase">CLT</span>
-        <span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase">Híbrido</span>
-        <span class="text-[9px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20 tracking-widest uppercase">+ Benefícios</span>
-      </div>
-
-      <div class="mt-auto">
-        <div class="bg-slate-950 rounded-xl p-3 mb-5 border border-slate-800/50 flex justify-between items-center relative overflow-hidden">
-          <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
-          <div class="pl-2">
-            <p class="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-0.5">Match Técnico</p>
-            <p class="text-xs font-bold text-indigo-300 flex items-center gap-1"><i class="ph ph-fire text-orange-500"></i> Calculando...</p>
-          </div>
-          <div class="text-right">
-            <p class="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-0.5">Recompensa</p>
-            <p class="text-xs font-black text-emerald-400">+${xp} XP</p>
-          </div>
-        </div>
-
-        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/60 pt-4">
-          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><i class="ph ph-clock text-sm"></i> Recente</span>
-          <button onclick="abrirModalVagaDinamicamente('${titulo}', '${empresaNome}', ${xp})" class="w-full sm:w-auto bg-slate-800 hover:bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md">Ver Detalhes</button>
-        </div>
-      </div>`;
-    cGeral.prepend(el);
+  const dataObj = new Date(vaga.created_at);
+  const dataPostagem = `${String(dataObj.getDate()).padStart(2, '0')}/${String(dataObj.getMonth() + 1).padStart(2, '0')}`;
+  
+  const iconArea = obterIconePorArea(vaga.area);
+  const logoHtml = vaga.empresa_logo 
+    ? `<img src="${vaga.empresa_logo}" class="w-full h-full object-cover">` 
+    : `<i class="ph ph-buildings text-slate-500"></i>`;
+  
+  let tagsHtml = `
+    <span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase">${vaga.nivel}</span>
+    <span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase">${vaga.contrato}</span>
+    <span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase">${vaga.modelo}</span>
+    <span class="text-[9px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20 tracking-widest uppercase flex items-center gap-1">
+      R$ ${vaga.salario_min} a ${vaga.salario_max}
+    </span>
+  `;
+  if (vaga.pcd) {
+    tagsHtml += `<span class="text-[9px] font-black text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md border border-blue-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-wheelchair text-xs"></i> PCD</span>`;
   }
+
+  // Guardando objeto vaga como string segura para o modal
+  const vagaJsonStr = encodeURIComponent(JSON.stringify(vaga));
+
+  const el = document.createElement('div');
+  el.className = "vaga-card bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-6 transition-all duration-300 group relative shadow-lg flex flex-col h-full overflow-hidden";
+  el.innerHTML = `
+    <div class="absolute -right-12 top-6 w-40 bg-emerald-500 text-white text-[10px] font-black py-1.5 text-center uppercase tracking-widest rotate-45 shadow-lg z-10 pointer-events-none">Nova</div>
+    
+    <div class="flex items-center gap-3 mb-4 pr-10">
+      <div class="w-11 h-11 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-xl shrink-0 shadow-inner overflow-hidden">
+        ${logoHtml}
+      </div>
+      <div>
+        <p class="text-sm font-bold text-slate-300">${vaga.empresa}</p>
+        <div class="flex items-center gap-1 text-[10px] font-black text-yellow-500 tracking-wider mt-0.5">
+          <i class="ph ph-star-fill"></i> 5.0 <span class="text-slate-600 font-medium ml-1">(Empresa Verificada)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="text-xl font-black text-white group-hover:text-indigo-300 transition-colors leading-tight flex items-center gap-2">
+        ${vaga.titulo} <i class="ph ${iconArea} text-xl" title="${vaga.area}"></i>
+      </h3>
+      <p class="text-xs text-slate-400 font-medium flex items-center gap-1.5 mt-2">
+        <i class="ph ph-map-pin text-indigo-400 text-sm"></i> ${vaga.local} <span class="text-slate-600">•</span> <span class="text-indigo-400 font-bold">A 2,5km de você</span>
+      </p>
+    </div>
+
+    <div class="flex flex-wrap gap-2 mb-5">${tagsHtml}</div>
+
+    <div class="mt-auto">
+      <div class="bg-slate-950 rounded-xl p-3 mb-5 border border-slate-800/50 flex justify-between items-center relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+        <div class="pl-2">
+          <p class="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-0.5">Avaliações Exigidas</p>
+          <p class="text-xs font-bold text-indigo-300">${vaga.testes}</p>
+        </div>
+        <div class="text-right">
+          <p class="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-0.5">Match</p>
+          <p class="text-xs font-black text-emerald-400 flex items-center gap-1"><i class="ph ph-fire"></i> 85%</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/60 pt-4">
+        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><i class="ph ph-clock text-sm"></i> Postado em ${dataPostagem}</span>
+        <button onclick="abrirModalVagaDinamicamente('${vagaJsonStr}')" class="w-full sm:w-auto bg-slate-800 hover:bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md">Ver Detalhes</button>
+      </div>
+    </div>`;
+  cGeral.append(el);
 };
 
-window.abrirModalVagaDinamicamente = function(titulo, empresa, xp) {
-  document.getElementById('detalhes-titulo').innerText = titulo;
-  document.getElementById('detalhes-empresa').innerText = empresa;
+window.abrirModalVagaDinamicamente = function(vagaJsonStr) {
+  const vaga = JSON.parse(decodeURIComponent(vagaJsonStr));
+  
+  document.getElementById('detalhes-titulo').innerText = vaga.titulo;
+  document.getElementById('detalhes-empresa').innerText = vaga.empresa;
+  
+  // Como agora temos as URLs que você queria, atualiza a URL sem recarregar a página!
+  const urlVaga = `?vaga=${vaga.id}`;
+  window.history.pushState({vagaId: vaga.id}, "", urlVaga);
   
   document.getElementById('detalhes-tags').innerHTML = `
-    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg">Vale Refeição</span>
-    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg">Plano de Saúde</span>
-    <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg">+${xp} XP</span>
+    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg">${vaga.modelo}</span>
+    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg">${vaga.contrato}</span>
+    <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg">R$ ${vaga.salario_min} - R$ ${vaga.salario_max}</span>
+    <div class="w-full mt-2 text-sm text-slate-400 leading-relaxed">${vaga.descricao}</div>
   `;
 
   const btnIniciar = document.getElementById('btn-iniciar-missao-detalhe');
   btnIniciar.onclick = function() {
     fecharModal('modal-detalhes-vaga');
-    iniciarRPG(titulo, empresa);
+    // Para simplificar agora, inicia o RPG genérico
+    iniciarRPG(vaga.titulo, vaga.empresa);
   };
 
-  abrirModal('modal-detalhes-vaga');
-};
+    abrirModal('modal-detalhes-vaga');
+  };
 
 window.carregarPerfilDetalhes = async function(userId) {
   const contHab = document.getElementById('container-habilidades');
