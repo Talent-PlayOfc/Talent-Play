@@ -940,6 +940,23 @@
     </div>
   </div>
 
+  <!-- Modal: Modo Foco (Editor de Descrição Tela Cheia) -->
+  <div id="modal-editor-descricao" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[200] hidden flex-col p-4 sm:p-8 opacity-0 transition-opacity">
+    <div class="max-w-5xl mx-auto w-full flex justify-between items-center mb-6">
+      <h3 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2"><i class="ph ph-text-align-left text-indigo-500"></i> Editor da Oportunidade</h3>
+      <button type="button" onclick="salvarEFecharEditor()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center gap-2">
+        <i class="ph ph-check-circle text-lg"></i> Concluir Edição
+      </button>
+    </div>
+    <div class="max-w-5xl mx-auto w-full flex-1 flex flex-col pb-10">
+      <textarea id="nv-descricao-expandida" class="w-full flex-1 bg-slate-900 border border-slate-700 text-white rounded-3xl p-6 sm:p-10 focus:border-indigo-500 outline-none resize-none text-base sm:text-lg leading-relaxed shadow-inner" placeholder="Digite todos os detalhes da vaga, como:
+- Responsabilidades do dia a dia
+- Requisitos obrigatórios e diferenciais
+- Benefícios extras
+- Como será a rotina da pessoa..."></textarea>
+    </div>
+  </div>
+  
   <!-- Modal: Detalhes da Vaga (Visão do Candidato) -->
   <div id="modal-detalhes-vaga" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[150] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
     <div class="absolute inset-0" onclick="fecharModal('modal-detalhes-vaga')"></div>
