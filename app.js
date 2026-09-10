@@ -737,40 +737,77 @@ window.carregarMinhasCandidaturas = async function(userId) {
 };
 
 // ----------------------------------------------------
-// SIMULADOR PRÁTICO (AVALIAÇÃO)
+// SISTEMA DE AVALIAÇÃO E CANDIDATURA (NOVO)
 // ----------------------------------------------------
-window.iniciarRPG = function(vagaTitulo = 'Missão Padrão', empresa = 'Nossa Empresa') {
+let empresaAtualAvaliacao = '';
+
+window.iniciarProcessoSeletivo = function(vagaTitulo, empresa, testesMarcados) {
   if(!appState.perfilAtual) return abrirModal('login-modal');
-  if(appState.perfilAtual.tipo_conta === 'empresa') return mostrarToast("Você está como RH. Crie vagas ao invés de avaliá-las.", "error");
+  if(appState.perfilAtual.tipo_conta === 'empresa') return mostrarToast("Recrutadores não podem se candidatar às vagas.", "error");
   
-  document.getElementById('rpg-titulo-header').innerText = `${vagaTitulo}`;
-  document.getElementById('rpg-text').innerHTML = `Você está no meio do expediente na <strong>${empresa}</strong>. O telefone toca sem parar. O gerente de operações passa correndo, bate na sua mesa e fala: <br><br><span class='text-white font-bold italic text-xl border-l-4 border-indigo-500 pl-4 block bg-slate-800/50 p-4 rounded-r-xl'>"Preciso daquele relatório de estoque de ontem impresso na minha mesa AGORA!"</span><br>Ao mesmo tempo, um fornecedor estratégico liga no seu ramal exigindo falar com alguém da equipe financeira urgentemente. <br><br><span class='text-indigo-400 font-black'>Qual é a sua ação imediata?</span>`;
+  empresaAtualAvaliacao = empresa;
+  document.getElementById('aval-titulo-header').innerText = `Candidatura: ${vagaTitulo}`;
   
-  document.getElementById('rpg-choices').classList.remove('hidden');
-  abrirModal('rpg-modal');
+  document.getElementById('aval-text').innerHTML = `
+    <div class="bg-slate-900 border border-slate-700 p-6 rounded-2xl mb-6">
+      <p class="text-slate-400 text-sm mb-4">Para prosseguir com sua candidatura na empresa <strong class="text-white">${empresa}</strong>, responda a situação abaixo baseada nas exigências da vaga.</p>
+      <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">Avaliações Contempladas:</p>
+      <div class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-4 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider">
+        ${testesMarcados}
+      </div>
+    </div>
+    <h4 class="text-white font-black text-lg mb-2">Situação Profissional:</h4>
+    <p class="text-slate-300 mb-6 text-sm">Durante a execução de um projeto crítico, a diretoria decide alterar o escopo repentinamente e antecipar o prazo de entrega. Como você conduz a situação com a sua equipe?</p>
+  `;
+  
+  document.getElementById('aval-choices').classList.remove('hidden');
+  abrirModal('aval-modal');
 };
 
-window.fecharRPG = function() { 
-  fecharModal('rpg-modal'); 
+window.fecharAvaliacao = function() { 
+  fecharModal('aval-modal'); 
   if(appState.usuarioLogado && appState.perfilAtual) {
     carregarMinhasCandidaturas(appState.perfilAtual.id);
   }
 };
 
-window.escolherOpcao = async function(opcao) {
-  const rpgText = document.getElementById('rpg-text');
-  document.getElementById('rpg-choices').classList.add('hidden');
-  let xpGanho = (opcao === 'C') ? 100 : 25;
-  let matchCalc = (opcao === 'C') ? 95 : 60;
+window.escolherOpcaoAvaliacao = async function(opcao) {
+  const avalText = document.getElementById('aval-text');
+  document.getElementById('aval-choices').classList.add('hidden');
+  
+  let xpGanho = (opcao === 'C') ? 100 : 50;
+  let matchCalc = (opcao === 'C') ? 95 : 65;
   
   if(opcao === 'C') {
-    rpgText.innerHTML = `<div class='bg-emerald-500/10 border border-emerald-500/30 p-6 rounded-2xl mb-6'><span class='text-emerald-400 font-black text-2xl mb-2 flex items-center gap-3'><i class="ph ph-check-circle"></i> DESEMPENHO EXCELENTE!</span> <p class='text-slate-300 font-medium'>Você demonstrou equilíbrio sob pressão e comunicação assertiva.</p></div><span class='inline-block bg-indigo-500 text-white px-6 py-3 rounded-xl font-black text-xl'>+${xpGanho} XP GANHOS</span>`;
+    avalText.innerHTML = `
+      <div class='bg-emerald-500/10 border border-emerald-500/30 p-8 rounded-3xl mb-6 text-center'>
+        <div class="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400 text-4xl"><i class="ph ph-check-circle"></i></div>
+        <h3 class='text-emerald-400 font-black text-2xl mb-2'>Avaliação Concluída!</h3>
+        <p class='text-emerald-500/80 font-medium text-sm'>Seu perfil demonstrou alta aderência aos requisitos.</p>
+      </div>`;
   } else {
-    rpgText.innerHTML = `<div class='bg-yellow-500/10 border border-yellow-500/30 p-6 rounded-2xl mb-6'><span class='text-yellow-400 font-black text-2xl mb-2 flex items-center gap-3'><i class="ph ph-warning-circle"></i> PONTO DE ATENÇÃO</span> <p class='text-slate-300 font-medium'>Priorizar apenas uma das frentes prejudica a dinâmica operacional.</p></div><span class='inline-block bg-indigo-500 text-white px-6 py-3 rounded-xl font-black text-xl'>+${xpGanho} XP GANHOS</span>`;
+    avalText.innerHTML = `
+      <div class='bg-yellow-500/10 border border-yellow-500/30 p-8 rounded-3xl mb-6 text-center'>
+        <div class="w-20 h-20 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-yellow-400 text-4xl"><i class="ph ph-warning-circle"></i></div>
+        <h3 class='text-yellow-400 font-black text-2xl mb-2'>Avaliação Registrada</h3>
+        <p class='text-yellow-500/80 font-medium text-sm'>Seu teste foi enviado para análise do RH.</p>
+      </div>`;
   }
 
-  let tituloVagaAtual = document.getElementById('rpg-titulo-header').innerText;
-  let btnConcluir = `<button onclick="fecharRPG()" class='mt-6 w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition-all shadow-lg'>CONCLUIR E ENVIAR AO RH</button>`;
+  let tituloVagaAtual = document.getElementById('aval-titulo-header').innerText.replace('Candidatura: ', '');
+  
+  let btnConcluir = `
+    <div class="flex justify-between items-center bg-slate-900 border border-slate-700 p-5 rounded-2xl mb-6 mt-4">
+      <div>
+        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Match Gerado</p>
+        <p class="text-xl font-black text-white">${matchCalc}% Compatível</p>
+      </div>
+      <div class="text-right">
+        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Recompensa</p>
+        <p class="text-xl font-black text-indigo-400">+${xpGanho} XP</p>
+      </div>
+    </div>
+    <button onclick="fecharAvaliacao()" class='w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition-all shadow-lg flex justify-center items-center gap-2'><i class="ph ph-paper-plane-right text-xl"></i> ENVIAR CANDIDATURA AO RH</button>`;
 
   if(!appState.perfilAtual) return;
 
@@ -778,8 +815,8 @@ window.escolherOpcao = async function(opcao) {
     vaga_titulo: tituloVagaAtual,
     candidato_nome: appState.perfilAtual.nome,
     candidato_id: appState.perfilAtual.id,
-    empresa: 'Empresa Parceira',
-    status: 'Avaliação Concluída',
+    empresa: empresaAtualAvaliacao,
+    status: 'Aguardando Retorno do RH',
     xp_obtido: xpGanho,
     match_percentual: matchCalc
   }]);
@@ -793,7 +830,7 @@ window.escolherOpcao = async function(opcao) {
   appState.perfilAtual.nivel = novoNivel;
   atualizarInfoTela(appState.perfilAtual);
 
-  rpgText.innerHTML += btnConcluir;
+  avalText.innerHTML += btnConcluir;
 };
 
 // ----------------------------------------------------
