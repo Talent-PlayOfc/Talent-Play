@@ -877,7 +877,7 @@ document.getElementById('nv-local')?.addEventListener('blur', function() {
       mostrarToast('Por favor, selecione uma cidade válida da lista.', 'error');
     }
   }, 250); // Timeout para dar tempo de registrar o clique na lista
-});
+}); 
 
 // ----------------------------------------------------
 // GESTÃO DO PAINEL DO RECRUTADOR (RH)
