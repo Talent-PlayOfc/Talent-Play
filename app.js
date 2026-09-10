@@ -406,7 +406,6 @@ window.criarNovaVaga = async function(e) {
   const btn = e.target.querySelector('button[type="submit"]');
   btn.disabled = true; btn.innerHTML = 'PUBLICANDO...';
 
-  // Capturando tudo
   const empresa = document.getElementById('nv-empresa').value;
   const titulo = document.getElementById('nv-titulo').value;
   const area = document.getElementById('nv-area').value;
@@ -419,13 +418,13 @@ window.criarNovaVaga = async function(e) {
   const salario_max = document.getElementById('nv-sal-max').value;
   const pcd = document.getElementById('nv-pcd').checked;
 
-  // Pegando os testes marcados
   const testesMarcados = Array.from(document.querySelectorAll('.nv-testes:checked')).map(cb => cb.value).join(' + ');
   const testesFinal = testesMarcados || 'Análise Curricular';
 
   const novaVaga = {
     empresa, titulo, area, descricao, nivel, contrato, modelo, local, 
-    salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria
+    salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria,
+    criador_id: appState.perfilAtual.id // <--- A MÁGICA ACONTECE AQUI! VINCULA AO SEU ID!
   };
 
   const { error } = await supabaseClient.from('vagas').insert([novaVaga]);
@@ -439,9 +438,10 @@ window.criarNovaVaga = async function(e) {
     document.getElementById('nv-logo-preview').classList.add('hidden');
     logoVagaTemporaria = null;
     
-    // Atualiza a tela limpando e buscando de novo
+    // Atualiza a tela do candidato e a TELA DO RH IMEDIATAMENTE!
     document.getElementById('container-todas-vagas').innerHTML = '';
     carregarVagasDoBanco();
+    if(typeof carregarRadarTalentos === 'function') carregarRadarTalentos();
   }
   btn.disabled = false; btn.innerHTML = '<i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
 };
