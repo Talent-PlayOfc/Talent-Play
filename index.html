@@ -80,7 +80,7 @@
             </button>
             <button onclick="navegarPara('tela-candidaturas')" class="nav-btn text-slate-400 outline-none w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50" data-target="tela-candidaturas">
               <div class="flex items-center gap-3"><i class="ph ph-paper-plane-tilt text-xl"></i> Processos Seletivos</div>
-              <span class="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-md">2</span>
+              <span class="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-md hidden" id="badge-candidaturas">0</span>
             </button>
           </div>
         </div>
@@ -119,9 +119,10 @@
           <p class="px-2 text-[10px] font-extrabold text-emerald-600/70 uppercase tracking-widest mb-3">Gestão de Talentos (RH)</p>
           <div class="space-y-1">
             <!-- Botão Principal do Painel -->
-            <button onclick="navegarPara('tela-home-empresa')" class="nav-btn text-slate-400 outline-none w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50" data-target="tela-home-empresa">
-              <i class="ph ph-briefcase text-xl"></i> Painel de Oportunidades
-            </button>
+        <button onclick="navegarPara('tela-home-empresa')" class="nav-btn text-slate-400 outline-none w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50" data-target="tela-home-empresa">
+        <div class="flex items-center gap-3"><i class="ph ph-briefcase text-xl"></i> Painel de Oportunidades</div>
+        <span class="bg-slate-800 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-md hidden" id="contador-vagas-sidebar">0</span>
+        </button>
             
             <!-- Botão de Relatórios -->
             <button onclick="mostrarToast('Gerador de relatórios analíticos em breve.', 'info')" class="nav-btn text-slate-400 outline-none w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all hover:bg-slate-800/50">
