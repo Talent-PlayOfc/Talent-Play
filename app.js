@@ -885,7 +885,7 @@ window.carregarRadarTalentos = async function() {
   if (metricAtivas) metricAtivas.innerText = ativas;
   if (metricArq) metricArq.innerText = arquivadas;
 
-// Atualiza o contador de vagas no Menu Lateral do RH
+  // Atualiza o contador de vagas no Menu Lateral do RH (AGORA NO LUGAR CERTO!)
   const badgeRH = document.getElementById('contador-vagas-sidebar');
   if (badgeRH) {
     if (vagas.length > 0) {
@@ -894,16 +894,6 @@ window.carregarRadarTalentos = async function() {
     } else {
       badgeRH.classList.add('hidden');
     }
-  };
-
-window.alternarStatusVaga = async function(id, statusAtual) {
-  const novoStatus = (statusAtual === 'Arquivada') ? 'Ativa' : 'Arquivada';
-  const { error } = await supabaseClient.from('vagas').update({ status_vaga: novoStatus }).eq('id', id);
-  if (!error) {
-    mostrarToast(`Oportunidade ${novoStatus.toLowerCase()}!`, "success");
-    carregarRadarTalentos();
-    document.getElementById('container-todas-vagas').innerHTML = '';
-    carregarVagasDoBanco();
   }
 };
 
