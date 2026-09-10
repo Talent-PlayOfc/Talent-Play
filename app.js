@@ -699,6 +699,53 @@ window.escolherOpcao = async function(opcao) {
 };
 
 // ----------------------------------------------------
+// EDITOR MODO FOCO & CIDADES DO IBGE
+// ----------------------------------------------------
+window.abrirEditorDescricao = function() {
+  const textoAtual = document.getElementById('nv-descricao').value;
+  document.getElementById('nv-descricao-expandida').value = textoAtual;
+  
+  const modalEd = document.getElementById('modal-editor-descricao');
+  modalEd.classList.remove('hidden');
+  modalEd.classList.add('flex');
+  setTimeout(() => modalEd.classList.remove('opacity-0'), 10);
+};
+
+window.salvarEFecharEditor = function() {
+  const textoExpandido = document.getElementById('nv-descricao-expandida').value;
+  document.getElementById('nv-descricao').value = textoExpandido;
+  
+  const modalEd = document.getElementById('modal-editor-descricao');
+  modalEd.classList.add('opacity-0');
+  setTimeout(() => {
+    modalEd.classList.add('hidden');
+    modalEd.classList.remove('flex');
+  }, 300);
+};
+
+window.carregarCidadesIBGE = async function() {
+  try {
+    // Busca a lista oficial de cidades do Governo Federal
+    const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/municipios');
+    const cidades = await response.json();
+    const datalist = document.getElementById('lista-cidades-br');
+    
+    if(datalist) {
+      const fragment = document.createDocumentFragment();
+      cidades.forEach(c => {
+        const opt = document.createElement('option');
+        // Formato: Nome da Cidade, UF (Ex: Candeias, BA)
+        opt.value = `${c.nome}, ${c.microrregiao.mesorregiao.UF.sigla}`;
+        fragment.appendChild(opt);
+      });
+      datalist.appendChild(fragment);
+    }
+  } catch(erro) {
+    console.log("Erro ao buscar cidades do IBGE:", erro);
+  }
+};
+
+// ----------------------------------------------------
 // INICIALIZAÇÃO DE SESSÃO AUTOMÁTICA
 // ----------------------------------------------------
 window.onload = function() {
