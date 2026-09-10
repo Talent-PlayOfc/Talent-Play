@@ -794,45 +794,73 @@ window.salvarEFecharEditor = function() {
   }, 300);
 };
 
+
 // ----------------------------------------------------
-// EDITOR MODO FOCO & CIDADES DO IBGE
+// EDITOR MODO FOCO & AUTOCOMPLETE DE CIDADES DO IBGE
 // ----------------------------------------------------
-// ----------------------------------------------------
-// EDITOR MODO FOCO & CIDADES DO IBGE
-// ----------------------------------------------------
+let listaCidadesGlobal = []; // Guarda as cidades na memória para não travar
+
 window.carregarCidadesIBGE = async function() {
   try {
-    // Busca a lista oficial de cidades do Governo Federal
     const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/municipios');
     const cidades = await response.json();
-    const datalist = document.getElementById('lista-cidades-br');
     
-    if(datalist) {
-      datalist.innerHTML = ''; // Limpa a lista antes de injetar
-      const fragment = document.createDocumentFragment();
-      
-      // Organiza todas as cidades em ordem alfabética
-      cidades.sort((a, b) => a.nome.localeCompare(b.nome));
+    // Ordem alfabética
+    cidades.sort((a, b) => a.nome.localeCompare(b.nome));
 
-      cidades.forEach(c => {
-        // O ponto de interrogação (?) blinda o código contra dados faltando no IBGE
-        const siglaUF = c.microrregiao?.mesorregiao?.UF?.sigla;
-        
-        // Só adiciona na lista se a cidade tiver o estado certinho
-        if (siglaUF) {
-          const opt = document.createElement('option');
-          opt.value = `${c.nome}, ${siglaUF}`;
-          fragment.appendChild(opt);
-        }
-      });
-      
-      datalist.appendChild(fragment);
-      console.log(`✅ IBGE: Lista de cidades carregada com sucesso!`);
-    }
+    // Monta a lista limpa
+    cidades.forEach(c => {
+      const siglaUF = c.microrregiao?.mesorregiao?.UF?.sigla;
+      if (siglaUF) {
+        listaCidadesGlobal.push(`${c.nome}, ${siglaUF}`);
+      }
+    });
+    console.log(`✅ IBGE: Sistema Customizado pronto com ${listaCidadesGlobal.length} cidades!`);
   } catch(erro) {
     console.error("Erro ao buscar cidades do IBGE:", erro);
   }
 };
+
+window.filtrarCidadesCustom = function() {
+  const input = document.getElementById('nv-local');
+  const dropdown = document.getElementById('dropdown-cidades');
+  const valor = input.value.toLowerCase();
+  
+  if (!dropdown) return;
+  dropdown.innerHTML = '';
+  
+  // Procura o que o usuário digitou (mostra só as primeiras 50 para o PC não travar)
+  const filtradas = listaCidadesGlobal.filter(c => c.toLowerCase().includes(valor)).slice(0, 50);
+  
+  if (filtradas.length === 0) {
+    dropdown.innerHTML = `<li class="px-4 py-3 text-sm text-slate-500 italic text-center">Nenhuma cidade encontrada</li>`;
+  } else {
+    filtradas.forEach(cidade => {
+      const li = document.createElement('li');
+      // Design de cada item: fica verde ao passar o mouse!
+      li.className = "px-4 py-2.5 text-sm font-bold text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-400 cursor-pointer transition-colors";
+      li.innerText = cidade;
+      
+      // Quando clica na cidade, preenche o campo e esconde a lista
+      li.onclick = function() {
+        input.value = cidade;
+        dropdown.classList.add('hidden');
+      };
+      dropdown.appendChild(li);
+    });
+  }
+  
+  dropdown.classList.remove('hidden');
+};
+
+// Se o usuário clicar fora da lista, ela se esconde automaticamente
+document.addEventListener('click', function(e) {
+  const input = document.getElementById('nv-local');
+  const dropdown = document.getElementById('dropdown-cidades');
+  if (input && dropdown && e.target !== input && !dropdown.contains(e.target)) {
+    dropdown.classList.add('hidden');
+  }
+});
 
 // ----------------------------------------------------
 // GESTÃO DO PAINEL DO RECRUTADOR (RH)
