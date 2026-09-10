@@ -666,18 +666,17 @@
           <div class="relative">
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Local (Cidade) <span class="text-rose-500">*</span></label>
             <div class="relative">
-              <!-- Tiramos o "list" e adicionamos eventos de clique e digitação -->
-              <input type="text" id="nv-local" autocomplete="new-password" placeholder="Ex: Candeias, BA" oninput="filtrarCidadesCustom()" onclick="filtrarCidadesCustom()" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-3 pr-10 py-2.5 outline-none text-sm focus:border-emerald-500 transition-colors cursor-text" required>
-              <!-- Nossa setinha customizada e alinhada -->
+              <input type="text" id="nv-local" autocomplete="new-password" placeholder="Ex: Salvador, BA" oninput="filtrarCidadesCustom()" onclick="filtrarCidadesCustom()" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-3 pr-10 py-2.5 outline-none text-sm focus:border-emerald-500 transition-colors cursor-text" required>
               <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"></i>
             </div>
             
-            <!-- A nossa nova Caixa de Cidades (Customizada, Menor e Verde) -->
-            <ul id="dropdown-cidades" class="absolute left-0 top-[calc(100%+8px)] w-full bg-slate-900 border border-emerald-500/50 rounded-xl shadow-[0_10px_30px_rgba(16,185,129,0.15)] max-h-48 overflow-y-auto hidden z-50 menu-scroll divide-y divide-slate-800">
-              <!-- O JS vai jogar as cidades aqui -->
-            </ul>
+            <!-- Verifique se esse wrapper com o ID dropdown-wrapper está lá -->
+            <div id="dropdown-wrapper" class="absolute left-0 top-[calc(100%+8px)] w-full bg-slate-900 border border-emerald-500/50 rounded-xl shadow-[0_10px_30px_rgba(16,185,129,0.15)] hidden z-50 overflow-hidden">
+              <ul id="dropdown-cidades" class="max-h-48 overflow-y-auto menu-scroll divide-y divide-slate-800">
+                <!-- As cidades entram aqui -->
+              </ul>
+            </div>
           </div>
-        </div>
 
         <!-- Bloco 4: Contrato, Nível e Salário -->
         <div class="grid grid-cols-2 gap-4">
