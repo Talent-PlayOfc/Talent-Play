@@ -794,6 +794,9 @@ window.salvarEFecharEditor = function() {
   }, 300);
 };
 
+// ----------------------------------------------------
+// EDITOR MODO FOCO & CIDADES DO IBGE
+// ----------------------------------------------------
 window.carregarCidadesIBGE = async function() {
   try {
     // Busca a lista oficial de cidades do Governo Federal
@@ -802,7 +805,12 @@ window.carregarCidadesIBGE = async function() {
     const datalist = document.getElementById('lista-cidades-br');
     
     if(datalist) {
+      datalist.innerHTML = ''; // Limpa a lista antes de injetar
       const fragment = document.createDocumentFragment();
+      
+      // Organiza todas as 5.570 cidades em ordem alfabética perfeita
+      cidades.sort((a, b) => a.nome.localeCompare(b.nome));
+
       cidades.forEach(c => {
         const opt = document.createElement('option');
         // Formato: Nome da Cidade, UF (Ex: Candeias, BA)
@@ -810,9 +818,10 @@ window.carregarCidadesIBGE = async function() {
         fragment.appendChild(opt);
       });
       datalist.appendChild(fragment);
+      console.log(`✅ IBGE: Lista de ${cidades.length} cidades carregada com sucesso!`);
     }
   } catch(erro) {
-    console.log("Erro ao buscar cidades do IBGE:", erro);
+    console.error("Erro ao buscar cidades do IBGE:", erro);
   }
 };
 
