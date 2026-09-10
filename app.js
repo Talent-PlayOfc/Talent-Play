@@ -881,6 +881,97 @@ window.carregarCidadesIBGE = async function() {
 };
 
 // ----------------------------------------------------
+// GESTÃO DO PAINEL DO RECRUTADOR (RH)
+// ----------------------------------------------------
+window.carregarRadarTalentos = async function() {
+  if (!appState.perfilAtual || appState.perfilAtual.tipo_conta !== 'empresa') return;
+  
+  const container = document.getElementById('container-vagas-empresa');
+  if (!container) return;
+
+  const { data: vagas, error } = await supabaseClient
+    .from('vagas')
+    .select('*')
+    .eq('criador_id', appState.perfilAtual.id)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    mostrarToast("Erro ao carregar suas vagas.", "error");
+    return;
+  }
+
+  container.innerHTML = '';
+  let ativas = 0;
+  let arquivadas = 0;
+
+  if (vagas.length === 0) {
+    container.innerHTML = `
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center">
+        <i class="ph ph-folder-dashed text-4xl text-slate-600 mb-3 block"></i>
+        <p class="text-slate-400 font-medium">Você ainda não publicou nenhuma oportunidade.</p>
+      </div>`;
+  } else {
+    vagas.forEach(vaga => {
+      if (vaga.status_vaga === 'Arquivada') arquivadas++;
+      else ativas++;
+
+      const card = document.createElement('div');
+      const isArquivada = vaga.status_vaga === 'Arquivada';
+      const opacidade = isArquivada ? 'opacity-60 grayscale-[0.5]' : '';
+      const corStatus = isArquivada ? 'text-slate-500 bg-slate-800' : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+      
+      card.className = `bg-slate-900 border border-slate-800 rounded-2xl p-5 md:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all hover:border-slate-600 shadow-md ${opacidade}`;
+      
+      card.innerHTML = `
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border ${corStatus}">${vaga.status_vaga || 'Ativa'}</span>
+          </div>
+          <h3 class="text-lg font-black text-white">${vaga.titulo}</h3>
+          <p class="text-sm text-slate-400 font-medium">${vaga.modelo} • ${vaga.contrato}</p>
+        </div>
+        
+        <div class="flex flex-wrap gap-2 w-full md:w-auto mt-4 md:mt-0">
+          <button onclick="alternarStatusVaga(${vaga.id}, '${vaga.status_vaga || 'Ativa'}')" class="flex-1 md:flex-none bg-slate-950 hover:bg-slate-800 border border-slate-700 text-slate-300 px-4 py-2.5 rounded-lg font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
+            <i class="ph ${isArquivada ? 'ph-upload-simple' : 'ph-archive'} text-lg"></i> ${isArquivada ? 'Reativar' : 'Arquivar'}
+          </button>
+          <button onclick="excluirVaga(${vaga.id})" class="flex-1 md:flex-none bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 px-4 py-2.5 rounded-lg font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
+            <i class="ph ph-trash text-lg"></i> Excluir
+          </button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  const metricAtivas = document.getElementById('metric-vagas-ativas');
+  const metricArq = document.getElementById('metric-vagas-arquivadas');
+  if (metricAtivas) metricAtivas.innerText = ativas;
+  if (metricArq) metricArq.innerText = arquivadas;
+};
+
+window.alternarStatusVaga = async function(id, statusAtual) {
+  const novoStatus = (statusAtual === 'Arquivada') ? 'Ativa' : 'Arquivada';
+  const { error } = await supabaseClient.from('vagas').update({ status_vaga: novoStatus }).eq('id', id);
+  if (!error) {
+    mostrarToast(`Oportunidade ${novoStatus.toLowerCase()}!`, "success");
+    carregarRadarTalentos();
+    document.getElementById('container-todas-vagas').innerHTML = '';
+    carregarVagasDoBanco();
+  }
+};
+
+window.excluirVaga = async function(id) {
+  if(!confirm("Tem certeza que deseja apagar esta oportunidade permanentemente?")) return;
+  const { error } = await supabaseClient.from('vagas').delete().eq('id', id);
+  if (!error) {
+    mostrarToast("Oportunidade excluída.", "success");
+    carregarRadarTalentos();
+    document.getElementById('container-todas-vagas').innerHTML = '';
+    carregarVagasDoBanco();
+  }
+};
+// ----------------------------------------------------
 // INICIALIZAÇÃO DE SESSÃO AUTOMÁTICA
 // ----------------------------------------------------
 window.onload = function() {
