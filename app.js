@@ -81,6 +81,10 @@ window.navegarPara = function(idTela) {
     setTimeout(() => telaDestino.classList.add('active'), 10);
   }
 
+  if (idTela === 'tela-home-empresa' && typeof carregarRadarTalentos === 'function') {
+    carregarRadarTalentos();
+  }
+  
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.classList.remove(
       'active', 
@@ -406,45 +410,56 @@ window.criarNovaVaga = async function(e) {
   const btn = e.target.querySelector('button[type="submit"]');
   btn.disabled = true; btn.innerHTML = 'PUBLICANDO...';
 
-  const empresa = document.getElementById('nv-empresa').value;
-  const titulo = document.getElementById('nv-titulo').value;
-  const area = document.getElementById('nv-area').value;
-  const descricao = document.getElementById('nv-descricao').value;
-  const nivel = document.getElementById('nv-nivel').value;
-  const contrato = document.getElementById('nv-contrato').value;
-  const modelo = document.getElementById('nv-modelo').value;
-  const local = document.getElementById('nv-local').value;
-  const salario_min = document.getElementById('nv-sal-min').value;
-  const salario_max = document.getElementById('nv-sal-max').value;
-  const pcd = document.getElementById('nv-pcd').checked;
+  try {
+    // Pega o ID direto do usuário autenticado no Supabase com segurança total
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+      mostrarToast('Sessão expirada. Faça login novamente.', 'error');
+      return;
+    }
 
-  const testesMarcados = Array.from(document.querySelectorAll('.nv-testes:checked')).map(cb => cb.value).join(' + ');
-  const testesFinal = testesMarcados || 'Análise Curricular';
+    const empresa = document.getElementById('nv-empresa').value;
+    const titulo = document.getElementById('nv-titulo').value;
+    const area = document.getElementById('nv-area').value;
+    const descricao = document.getElementById('nv-descricao').value;
+    const nivel = document.getElementById('nv-nivel').value;
+    const contrato = document.getElementById('nv-contrato').value;
+    const modelo = document.getElementById('nv-modelo').value;
+    const local = document.getElementById('nv-local').value;
+    const salario_min = document.getElementById('nv-sal-min').value;
+    const salario_max = document.getElementById('nv-sal-max').value;
+    const pcd = document.getElementById('nv-pcd').checked;
 
-  const novaVaga = {
-    empresa, titulo, area, descricao, nivel, contrato, modelo, local, 
-    salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria,
-    criador_id: appState.perfilAtual.id,
-    status_vaga: 'Ativa'
-  };
+    const testesMarcados = Array.from(document.querySelectorAll('.nv-testes:checked')).map(cb => cb.value).join(' + ');
+    const testesFinal = testesMarcados || 'Análise Curricular';
 
-  const { error } = await supabaseClient.from('vagas').insert([novaVaga]);
+    const novaVaga = {
+      empresa, titulo, area, descricao, nivel, contrato, modelo, local, 
+      salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria,
+      criador_id: user.id, // ID garantido direto do Supabase
+      status_vaga: 'Ativa'
+    };
 
-  if(error) {
-    mostrarToast('Erro ao publicar: ' + error.message, 'error');
-  } else {
+    const { error } = await supabaseClient.from('vagas').insert([novaVaga]);
+    if (error) throw error;
+
     mostrarToast('Oportunidade publicada com sucesso!', 'success');
     fecharModal('modal-nova-vaga');
     e.target.reset();
     document.getElementById('nv-logo-preview').classList.add('hidden');
     logoVagaTemporaria = null;
     
-    // Atualiza a tela do candidato e a TELA DO RH IMEDIATAMENTE!
     document.getElementById('container-todas-vagas').innerHTML = '';
     carregarVagasDoBanco();
     if(typeof carregarRadarTalentos === 'function') carregarRadarTalentos();
+
+  } catch (err) {
+    mostrarToast('Erro ao publicar: ' + err.message, 'error');
+    console.error(err);
+  } finally {
+    btn.disabled = false; 
+    btn.innerHTML = '<i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
   }
-  btn.disabled = false; btn.innerHTML = '<i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
 };
 
 window.carregarVagasDoBanco = async function() {
