@@ -797,6 +797,9 @@ window.salvarEFecharEditor = function() {
 // ----------------------------------------------------
 // EDITOR MODO FOCO & CIDADES DO IBGE
 // ----------------------------------------------------
+// ----------------------------------------------------
+// EDITOR MODO FOCO & CIDADES DO IBGE
+// ----------------------------------------------------
 window.carregarCidadesIBGE = async function() {
   try {
     // Busca a lista oficial de cidades do Governo Federal
@@ -808,17 +811,23 @@ window.carregarCidadesIBGE = async function() {
       datalist.innerHTML = ''; // Limpa a lista antes de injetar
       const fragment = document.createDocumentFragment();
       
-      // Organiza todas as 5.570 cidades em ordem alfabética perfeita
+      // Organiza todas as cidades em ordem alfabética
       cidades.sort((a, b) => a.nome.localeCompare(b.nome));
 
       cidades.forEach(c => {
-        const opt = document.createElement('option');
-        // Formato: Nome da Cidade, UF (Ex: Candeias, BA)
-        opt.value = `${c.nome}, ${c.microrregiao.mesorregiao.UF.sigla}`;
-        fragment.appendChild(opt);
+        // O ponto de interrogação (?) blinda o código contra dados faltando no IBGE
+        const siglaUF = c.microrregiao?.mesorregiao?.UF?.sigla;
+        
+        // Só adiciona na lista se a cidade tiver o estado certinho
+        if (siglaUF) {
+          const opt = document.createElement('option');
+          opt.value = `${c.nome}, ${siglaUF}`;
+          fragment.appendChild(opt);
+        }
       });
+      
       datalist.appendChild(fragment);
-      console.log(`✅ IBGE: Lista de ${cidades.length} cidades carregada com sucesso!`);
+      console.log(`✅ IBGE: Lista de cidades carregada com sucesso!`);
     }
   } catch(erro) {
     console.error("Erro ao buscar cidades do IBGE:", erro);
