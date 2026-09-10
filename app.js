@@ -458,7 +458,8 @@ window.criarNovaVaga = async function(e) {
     console.error(err);
   } finally {
     btn.disabled = false; 
-    btn.innerHTML = '<i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
+    btn.innerHTML = '<i class="
+      ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
   }
 };
 
@@ -823,21 +824,21 @@ window.carregarCidadesIBGE = async function() {
 
 window.filtrarCidadesCustom = async function() {
   const input = document.getElementById('nv-local');
+  const wrapper = document.getElementById('dropdown-wrapper');
   const dropdown = document.getElementById('dropdown-cidades');
-  if (!dropdown) return;
+  
+  if (!dropdown || !wrapper) return;
 
   if (listaCidadesGlobal.length === 0) {
     dropdown.innerHTML = `<li class="px-4 py-3 text-sm text-emerald-400 font-bold text-center flex flex-col items-center justify-center gap-2"><i class="ph ph-spinner-gap animate-spin text-2xl"></i> Conectando...</li>`;
-    dropdown.classList.remove('hidden');
+    wrapper.classList.remove('hidden');
     await carregarCidadesIBGE();
   }
   
   const valorDigitado = removerAcentos(input.value);
   dropdown.innerHTML = '';
   
-  const filtradas = listaCidadesGlobal.filter(c => {
-    return removerAcentos(c).includes(valorDigitado);
-  }).slice(0, 50);
+  const filtradas = listaCidadesGlobal.filter(c => removerAcentos(c).includes(valorDigitado)).slice(0, 50);
   
   if (filtradas.length === 0) {
     dropdown.innerHTML = `<li class="px-4 py-3 text-sm text-slate-500 italic text-center">Nenhuma cidade encontrada</li>`;
@@ -849,21 +850,33 @@ window.filtrarCidadesCustom = async function() {
       
       li.onclick = function() {
         input.value = cidade;
-        dropdown.classList.add('hidden');
+        wrapper.classList.add('hidden');
       };
       dropdown.appendChild(li);
     });
   }
   
-  dropdown.classList.remove('hidden');
+  wrapper.classList.remove('hidden');
 };
 
+// 1. Fecha a lista se clicar fora
 document.addEventListener('click', function(e) {
   const input = document.getElementById('nv-local');
-  const dropdown = document.getElementById('dropdown-cidades');
-  if (input && dropdown && e.target !== input && !dropdown.contains(e.target)) {
-    dropdown.classList.add('hidden');
+  const wrapper = document.getElementById('dropdown-wrapper');
+  if (input && wrapper && e.target !== input && !wrapper.contains(e.target)) {
+    wrapper.classList.add('hidden');
   }
+});
+
+// 2. Trava de Segurança: Apaga se digitar cidade que não existe
+document.getElementById('nv-local')?.addEventListener('blur', function() {
+  setTimeout(() => {
+    const val = this.value;
+    if (val && !listaCidadesGlobal.includes(val)) {
+      this.value = '';
+      mostrarToast('Por favor, selecione uma cidade válida da lista.', 'error');
+    }
+  }, 250); // Timeout para dar tempo de registrar o clique na lista
 });
 
 // ----------------------------------------------------
