@@ -884,15 +884,6 @@ window.carregarRadarTalentos = async function() {
   const metricArq = document.getElementById('metric-vagas-arquivadas');
   if (metricAtivas) metricAtivas.innerText = ativas;
   if (metricArq) metricArq.innerText = arquivadas;
-
-  // Atualiza o contador de vagas no Menu Lateral do RH (AGORA NO LUGAR CERTO!)
-  const badgeRH = document.getElementById('contador-vagas-sidebar');
-  if (badgeRH) {
-    if (vagas.length > 0) {
-      badgeRH.innerText = vagas.length;
-      badgeRH.classList.remove('hidden');
-    } else {
-      badgeRH.classList.add('hidden');
     }
   }
 };
