@@ -126,19 +126,19 @@ window.alternarModoAuth = function() {
   const textoToggle = document.getElementById('auth-toggle-text');
 
   if (appState.modoCadastro) {
-    titulo.innerText = "Criar Ficha";
+    titulo.innerText = "Criar Conta";
     campoNome.classList.remove('hidden');
     seletorConta.classList.remove('hidden');
-    btnSubmit.innerText = "Forjar meu Perfil";
+    btnSubmit.innerText = "Cadastrar Perfil";
     document.getElementById('auth-nome').required = true;
-    textoToggle.innerHTML = `Já faz parte da guilda? <button type="button" onclick="alternarModoAuth()" class="text-indigo-400 font-bold hover:text-indigo-300 ml-1 underline decoration-indigo-500/30 outline-none">Fazer Login</button>`;
+    textoToggle.innerHTML = `Já possui cadastro? <button type="button" onclick="alternarModoAuth()" class="text-indigo-400 font-bold hover:text-indigo-300 ml-1 underline decoration-indigo-500/30 outline-none">Fazer Login</button>`;
   } else {
     titulo.innerText = "Acessar Conta";
     campoNome.classList.add('hidden');
     seletorConta.classList.add('hidden');
     btnSubmit.innerText = "Entrar no Sistema";
     document.getElementById('auth-nome').required = false;
-    textoToggle.innerHTML = `Ainda não tem ficha cadastrada? <button type="button" onclick="alternarModoAuth()" class="text-indigo-400 font-bold hover:text-indigo-300 ml-1 underline decoration-indigo-500/30 outline-none">Criar Conta</button>`;
+    textoToggle.innerHTML = `Ainda não tem conta? <button type="button" onclick="alternarModoAuth()" class="text-indigo-400 font-bold hover:text-indigo-300 ml-1 underline decoration-indigo-500/30 outline-none">Criar Conta</button>`;
   }
 };
 
@@ -185,7 +185,7 @@ window.processarAutenticacao = async function(e) {
     mostrarToast('Erro: ' + err.message, 'error');
   } finally {
     btnSubmit.disabled = false;
-    btnSubmit.innerText = appState.modoCadastro ? "Forjar meu Perfil" : "Entrar no Sistema";
+    btnSubmit.innerText = appState.modoCadastro ? "Cadastrar Perfil" : "Entrar no Sistema";
   }
 };
 
@@ -533,7 +533,6 @@ window.abrirModalVagaDinamicamente = function(vagaJsonStr) {
   document.getElementById('detalhes-titulo').innerText = vaga.titulo;
   document.getElementById('detalhes-empresa').innerText = vaga.empresa;
   
-  // Como agora temos as URLs que você queria, atualiza a URL sem recarregar a página!
   const urlVaga = `?vaga=${vaga.id}`;
   window.history.pushState({vagaId: vaga.id}, "", urlVaga);
   
@@ -545,14 +544,113 @@ window.abrirModalVagaDinamicamente = function(vagaJsonStr) {
   `;
 
   const btnIniciar = document.getElementById('btn-iniciar-missao-detalhe');
+  // NOVO TEXTO DO BOTÃO!
+  btnIniciar.innerHTML = `<i class="ph ph-check-square-offset text-xl"></i> Realizar Avaliações e Candidatar-se`;
   btnIniciar.onclick = function() {
     fecharModal('modal-detalhes-vaga');
-    // Para simplificar agora, inicia o RPG genérico
-    iniciarRPG(vaga.titulo, vaga.empresa);
+    iniciarProcessoSeletivo(vaga.titulo, vaga.empresa, vaga.testes);
   };
 
-    abrirModal('modal-detalhes-vaga');
-  };
+  abrirModal('modal-detalhes-vaga');
+};
+
+// ----------------------------------------------------
+// SISTEMA DE AVALIAÇÃO E CANDIDATURA (NOVO)
+// ----------------------------------------------------
+let empresaAtualAvaliacao = '';
+
+window.iniciarProcessoSeletivo = function(vagaTitulo, empresa, testesMarcados) {
+  if(!appState.perfilAtual) return abrirModal('login-modal');
+  if(appState.perfilAtual.tipo_conta === 'empresa') return mostrarToast("Recrutadores não podem se candidatar às vagas.", "error");
+  
+  empresaAtualAvaliacao = empresa;
+  document.getElementById('aval-titulo-header').innerText = `Candidatura: ${vagaTitulo}`;
+  
+  document.getElementById('aval-text').innerHTML = `
+    <div class="bg-slate-900 border border-slate-700 p-6 rounded-2xl mb-6">
+      <p class="text-slate-400 text-sm mb-4">Para prosseguir com sua candidatura na empresa <strong class="text-white">${empresa}</strong>, responda a situação abaixo baseada nas exigências da vaga.</p>
+      <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">Avaliações Contempladas:</p>
+      <div class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-4 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider">
+        ${testesMarcados}
+      </div>
+    </div>
+    <h4 class="text-white font-black text-lg mb-2">Situação Profissional:</h4>
+    <p class="text-slate-300 mb-6 text-sm">Durante a execução de um projeto crítico, a diretoria decide alterar o escopo repentinamente e antecipar o prazo de entrega. Como você conduz a situação com a sua equipe?</p>
+  `;
+  
+  document.getElementById('aval-choices').classList.remove('hidden');
+  abrirModal('aval-modal');
+};
+
+window.fecharAvaliacao = function() { 
+  fecharModal('aval-modal'); 
+  if(appState.usuarioLogado && appState.perfilAtual) {
+    carregarMinhasCandidaturas(appState.perfilAtual.id);
+  }
+};
+
+window.escolherOpcaoAvaliacao = async function(opcao) {
+  const avalText = document.getElementById('aval-text');
+  document.getElementById('aval-choices').classList.add('hidden');
+  
+  let xpGanho = (opcao === 'C') ? 100 : 50;
+  let matchCalc = (opcao === 'C') ? 95 : 65;
+  
+  if(opcao === 'C') {
+    avalText.innerHTML = `
+      <div class='bg-emerald-500/10 border border-emerald-500/30 p-8 rounded-3xl mb-6 text-center'>
+        <div class="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400 text-4xl"><i class="ph ph-check-circle"></i></div>
+        <h3 class='text-emerald-400 font-black text-2xl mb-2'>Avaliação Concluída!</h3>
+        <p class='text-emerald-500/80 font-medium text-sm'>Seu perfil demonstrou alta aderência aos requisitos.</p>
+      </div>`;
+  } else {
+    avalText.innerHTML = `
+      <div class='bg-yellow-500/10 border border-yellow-500/30 p-8 rounded-3xl mb-6 text-center'>
+        <div class="w-20 h-20 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-yellow-400 text-4xl"><i class="ph ph-warning-circle"></i></div>
+        <h3 class='text-yellow-400 font-black text-2xl mb-2'>Avaliação Registrada</h3>
+        <p class='text-yellow-500/80 font-medium text-sm'>Seu teste foi enviado para análise do RH.</p>
+      </div>`;
+  }
+
+  let tituloVagaAtual = document.getElementById('aval-titulo-header').innerText.replace('Candidatura: ', '');
+  
+  let btnConcluir = `
+    <div class="flex justify-between items-center bg-slate-900 border border-slate-700 p-5 rounded-2xl mb-6 mt-4">
+      <div>
+        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Match Gerado</p>
+        <p class="text-xl font-black text-white">${matchCalc}% Compatível</p>
+      </div>
+      <div class="text-right">
+        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Recompensa</p>
+        <p class="text-xl font-black text-indigo-400">+${xpGanho} XP</p>
+      </div>
+    </div>
+    <button onclick="fecharAvaliacao()" class='w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition-all shadow-lg flex justify-center items-center gap-2'><i class="ph ph-paper-plane-right text-xl"></i> ENVIAR CANDIDATURA AO RH</button>`;
+
+  if(!appState.perfilAtual) return;
+
+  // Atualiza banco de dados real
+  await supabaseClient.from('candidaturas').insert([{
+    vaga_titulo: tituloVagaAtual,
+    candidato_nome: appState.perfilAtual.nome,
+    candidato_id: appState.perfilAtual.id,
+    empresa: empresaAtualAvaliacao,
+    status: 'Aguardando Retorno do RH',
+    xp_obtido: xpGanho,
+    match_percentual: matchCalc
+  }]);
+
+  let novoXp = (appState.perfilAtual.xp || 0) + xpGanho;
+  let novoNivel = Math.floor(novoXp / 100) + 1;
+
+  await supabaseClient.from('perfis').update({ xp: novoXp, nivel: novoNivel }).eq('id', appState.perfilAtual.id);
+  
+  appState.perfilAtual.xp = novoXp;
+  appState.perfilAtual.nivel = novoNivel;
+  atualizarInfoTela(appState.perfilAtual);
+
+  avalText.innerHTML += btnConcluir;
+};
 
 window.carregarPerfilDetalhes = async function(userId) {
   const contHab = document.getElementById('container-habilidades');
