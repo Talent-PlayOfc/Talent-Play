@@ -424,7 +424,8 @@ window.criarNovaVaga = async function(e) {
   const novaVaga = {
     empresa, titulo, area, descricao, nivel, contrato, modelo, local, 
     salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria,
-    criador_id: appState.perfilAtual.id // <--- A MÁGICA ACONTECE AQUI! VINCULA AO SEU ID!
+    criador_id: appState.perfilAtual.id,
+    status_vaga: 'Ativa'
   };
 
   const { error } = await supabaseClient.from('vagas').insert([novaVaga]);
