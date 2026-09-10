@@ -663,11 +663,11 @@
             </select>
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Local (Cidade) <span class="text-rose-500">*</span></label>
-            <!-- O input agora puxa dados da Datalist do IBGE -->
-            <input type="text" id="nv-local" list="lista-cidades-br" placeholder="Ex: Candeias, BA" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm" required>
-            <datalist id="lista-cidades-br"></datalist>
-          </div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Local (Cidade) <span class="text-rose-500">*</span></label>
+         <!-- Adicionamos o autocomplete="off" aqui para bloquear o navegador e liberar o IBGE -->
+          <input type="text" id="nv-local" list="lista-cidades-br" autocomplete="off" placeholder="Ex: Candeias, BA" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm" required>
+          <datalist id="lista-cidades-br"></datalist>
+        </div>
         </div>
 
         <!-- Bloco 4: Contrato, Nível e Salário -->
