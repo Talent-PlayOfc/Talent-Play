@@ -463,47 +463,43 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- TELA 5: DASHBOARD DO RH (EMPRESA)                              -->
+        <!-- TELA 4: PAINEL DA EMPRESA (HOME COMPACTO)                      -->
         <!-- ============================================================== -->
-        <!-- ============================================================== -->
-<!-- TELA: PAINEL DA EMPRESA (HOME COMPACTO)                        -->
-<!-- ============================================================== -->
-<section id="tela-home-empresa" class="app-screen hidden">
-  
-  <div class="bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-900 border border-emerald-500/20 rounded-3xl p-5 sm:p-7 relative overflow-hidden shadow-xl mb-6">
-    <div class="absolute right-0 top-0 w-64 h-64 bg-emerald-600/10 blur-[80px] rounded-full pointer-events-none"></div>
-    <div class="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-5">
-      <div>
-        <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[9px] font-bold uppercase tracking-widest mb-2"><i class="ph ph-buildings"></i> Área do Recrutador</span>
-        <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">Gestão de <span class="text-emerald-400">Talentos.</span></h1>
-      </div>
-      
-      <div class="flex gap-3 w-full lg:w-auto shrink-0">
-        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 flex items-center gap-3 shadow-md">
-          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400"><i class="ph ph-broadcast"></i></div>
-          <div><p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Ativas</p><p class="text-lg font-black text-white leading-none" id="metric-vagas-ativas">0</p></div>
-        </div>
-        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 flex items-center gap-3 shadow-md">
-          <div class="w-10 h-10 rounded-lg bg-slate-800/50 flex items-center justify-center border border-slate-700 text-slate-400"><i class="ph ph-archive"></i></div>
-          <div><p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Arquivadas</p><p class="text-lg font-black text-white leading-none" id="metric-vagas-arquivadas">0</p></div>
-        </div>
-      </div>
-    </div>
+        <section id="tela-home-empresa" class="app-screen hidden">
+          
+          <div class="bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-900 border border-emerald-500/20 rounded-3xl p-5 sm:p-7 relative overflow-hidden shadow-xl mb-6">
+            <div class="absolute right-0 top-0 w-64 h-64 bg-emerald-600/10 blur-[80px] rounded-full pointer-events-none"></div>
+            <div class="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-5">
+              <div>
+                <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[9px] font-bold uppercase tracking-widest mb-2"><i class="ph ph-buildings"></i> Área do Recrutador</span>
+                <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">Gestão de <span class="text-emerald-400">Talentos.</span></h1>
+              </div>
+              
+              <div class="flex gap-3 w-full lg:w-auto shrink-0">
+                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 flex items-center gap-3 shadow-md">
+                  <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400"><i class="ph ph-broadcast"></i></div>
+                  <div><p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Ativas</p><p class="text-lg font-black text-white leading-none" id="metric-vagas-ativas">0</p></div>
+                </div>
+                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 flex items-center gap-3 shadow-md">
+                  <div class="w-10 h-10 rounded-lg bg-slate-800/50 flex items-center justify-center border border-slate-700 text-slate-400"><i class="ph ph-archive"></i></div>
+                  <div><p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Arquivadas</p><p class="text-lg font-black text-white leading-none" id="metric-vagas-arquivadas">0</p></div>
+                </div>
+              </div>
+            </div>
 
-    <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-1.5 flex gap-2 shadow-lg">
-      <button onclick="abrirModal('modal-nova-vaga')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-3 rounded-lg font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2"><i class="ph ph-plus-circle text-lg"></i> Publicar Nova Oportunidade</button>
-    </div>
-  </div>
+            <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-1.5 flex gap-2 shadow-lg">
+              <button onclick="abrirModal('modal-nova-vaga')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-3 rounded-lg font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2"><i class="ph ph-plus-circle text-lg"></i> Publicar Nova Oportunidade</button>
+            </div>
+          </div>
 
-  <div class="mb-4 flex gap-4 border-b border-slate-800 pb-2">
-    <button class="text-sm font-bold text-emerald-400 border-b-2 border-emerald-400 pb-2 outline-none">Oportunidades Ativas</button>
-    <button class="text-sm font-bold text-slate-500 hover:text-slate-300 pb-2 transition-colors outline-none">Arquivo Oculto</button>
-  </div>
+          <div class="mb-4 flex gap-4 border-b border-slate-800 pb-2">
+            <button class="text-sm font-bold text-emerald-400 border-b-2 border-emerald-400 pb-2 outline-none">Suas Oportunidades</button>
+          </div>
 
-  <div class="grid grid-cols-1 gap-4" id="container-vagas-empresa">
-    <!-- As vagas da empresa entrarão aqui com os botões de Editar/Excluir/Arquivar via JavaScript -->
-  </div>
-</section>
+          <!-- AQUI É ONDE A MÁGICA ACONTECE! As vagas do RH vão aparecer aqui -->
+          <div class="grid grid-cols-1 gap-4" id="container-vagas-empresa">
+          </div>
+        </section>
 
         <!-- ============================================================== -->
         <!-- TELA 6: GERENCIAR MISSÕES (VAGAS DA EMPRESA)                   -->
