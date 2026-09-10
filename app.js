@@ -1074,3 +1074,65 @@ window.onload = async function() {
     }
   });
 };
+
+// ----------------------------------------------------
+// FERRAMENTAS DO EDITOR INTELIGENTE (AURORA BOREAL)
+// ----------------------------------------------------
+window.formatarEditor = function(tipo) {
+  const textarea = document.getElementById('nv-descricao');
+  const inicio = textarea.selectionStart;
+  const fim = textarea.selectionEnd;
+  const textoSelecionado = textarea.value.substring(inicio, fim);
+  
+  let textoFormatado = '';
+  if (tipo === 'bold') {
+    textoFormatado = `**${textoSelecionado || 'texto em negrito'}**`;
+  } else if (tipo === 'bullet') {
+    textoFormatado = `\n- ${textoSelecionado || 'Item de lista'}`;
+  }
+  
+  textarea.value = textarea.value.substring(0, inicio) + textoFormatado + textarea.value.substring(fim);
+  textarea.focus();
+};
+
+window.inserirTemplateEditor = function(tipo) {
+  const textarea = document.getElementById('nv-descricao');
+  let template = '';
+  
+  if (tipo === 'responsalidades') {
+    template = `\n\n📌 Principais Responsabilidades:\n- \n- `;
+  } else if (tipo === 'requisitos') {
+    template = `\n\n🎯 Requisitos e Habilidades:\n- \n- `;
+  } else if (tipo === 'beneficios') {
+    template = `\n\n🎁 Benefícios:\n- \n- `;
+  }
+  
+  textarea.value += template;
+  textarea.focus();
+};
+
+// ----------------------------------------------------
+// LÓGICA DO SALÁRIO A COMBINAR
+// ----------------------------------------------------
+window.alternarSalarioCombinar = function(checkbox) {
+  const inputMin = document.getElementById('nv-sal-min');
+  const inputMax = document.getElementById('nv-sal-max');
+  
+  if (checkbox.checked) {
+    inputMin.value = '';
+    inputMax.value = '';
+    inputMin.disabled = true;
+    inputMax.disabled = true;
+    inputMin.required = false;
+    inputMax.required = false;
+    inputMin.classList.add('opacity-40', 'cursor-not-allowed');
+    inputMax.classList.add('opacity-40', 'cursor-not-allowed');
+  } else {
+    inputMin.disabled = false;
+    inputMax.disabled = false;
+    inputMin.required = true;
+    inputMax.required = true;
+    inputMin.classList.remove('opacity-40', 'cursor-not-allowed');
+    inputMax.classList.remove('opacity-40', 'cursor-not-allowed');
+  }
+};
