@@ -770,7 +770,7 @@ window.carregarMinhasCandidaturas = async function(userId) {
 };
 
 // ----------------------------------------------------
-// EDITOR MODO FOCO & CIDADES DO IBGE
+// EDITOR MODO FOCO & CIDADES DO IBGE (CUSTOMIZADO)
 // ----------------------------------------------------
 window.abrirEditorDescricao = function() {
   const textoAtual = document.getElementById('nv-descricao').value;
@@ -794,53 +794,49 @@ window.salvarEFecharEditor = function() {
   }, 300);
 };
 
+let listaCidadesGlobal = [];
 
-// ----------------------------------------------------
-// EDITOR MODO FOCO & AUTOCOMPLETE DE CIDADES DO IBGE
-// ----------------------------------------------------
-let listaCidadesGlobal = []; // Guarda as cidades na memória para não travar
+function removerAcentos(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
 
 window.carregarCidadesIBGE = async function() {
   try {
     const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/municipios');
     const cidades = await response.json();
     
-    // Ordem alfabética
-    cidades.sort((a, b) => a.nome.localeCompare(b.nome));
-
-    // Monta a lista limpa
+    listaCidadesGlobal = []; 
+    
     cidades.forEach(c => {
-      const siglaUF = c.microrregiao?.mesorregiao?.UF?.sigla;
-      if (siglaUF) {
-        listaCidadesGlobal.push(`${c.nome}, ${siglaUF}`);
+      const uf = c.microrregiao?.mesorregiao?.UF?.sigla || c.UF?.sigla || "";
+      if (uf) {
+        listaCidadesGlobal.push(`${c.nome}, ${uf}`);
       }
     });
-    console.log(`✅ IBGE: Sistema Customizado pronto com ${listaCidadesGlobal.length} cidades!`);
+    
+    listaCidadesGlobal.sort((a, b) => a.localeCompare(b));
+    console.log(`✅ IBGE: ${listaCidadesGlobal.length} cidades prontas na memória!`);
   } catch(erro) {
-    console.error("Erro ao buscar cidades do IBGE:", erro);
+    console.error("Erro ao conectar com IBGE:", erro);
   }
 };
 
-// Função auxiliar para remover acentos e cedilhas
-function removerAcentos(str) {
-  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-
-window.filtrarCidadesCustom = function() {
+window.filtrarCidadesCustom = async function() {
   const input = document.getElementById('nv-local');
   const dropdown = document.getElementById('dropdown-cidades');
-  
   if (!dropdown) return;
+
+  if (listaCidadesGlobal.length === 0) {
+    dropdown.innerHTML = `<li class="px-4 py-3 text-sm text-emerald-400 font-bold text-center flex flex-col items-center justify-center gap-2"><i class="ph ph-spinner-gap animate-spin text-2xl"></i> Conectando...</li>`;
+    dropdown.classList.remove('hidden');
+    await carregarCidadesIBGE();
+  }
   
-  // Pegamos o que o usuário digitou, em minúsculas e sem acentos
-  const valorDigitado = input.value ? removerAcentos(input.value.toLowerCase()) : '';
-  
+  const valorDigitado = removerAcentos(input.value);
   dropdown.innerHTML = '';
   
-  // Filtra comparando a versão sem acento tanto do input quanto da lista
   const filtradas = listaCidadesGlobal.filter(c => {
-    const cidadeLimpa = removerAcentos(c.toLowerCase());
-    return cidadeLimpa.includes(valorDigitado);
+    return removerAcentos(c).includes(valorDigitado);
   }).slice(0, 50);
   
   if (filtradas.length === 0) {
@@ -849,9 +845,7 @@ window.filtrarCidadesCustom = function() {
     filtradas.forEach(cidade => {
       const li = document.createElement('li');
       li.className = "px-4 py-2.5 text-sm font-bold text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-400 cursor-pointer transition-colors";
-      
-      // A cidade continua aparecendo bonitinha com acento na tela!
-      li.innerText = cidade; 
+      li.innerText = cidade;
       
       li.onclick = function() {
         input.value = cidade;
@@ -863,6 +857,14 @@ window.filtrarCidadesCustom = function() {
   
   dropdown.classList.remove('hidden');
 };
+
+document.addEventListener('click', function(e) {
+  const input = document.getElementById('nv-local');
+  const dropdown = document.getElementById('dropdown-cidades');
+  if (input && dropdown && e.target !== input && !dropdown.contains(e.target)) {
+    dropdown.classList.add('hidden');
+  }
+});
 
 // ----------------------------------------------------
 // GESTÃO DO PAINEL DO RECRUTADOR (RH)
