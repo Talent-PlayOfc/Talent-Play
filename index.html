@@ -612,7 +612,6 @@
         <div class="flex gap-4 items-center bg-slate-950 p-4 rounded-2xl border border-slate-800">
           <div class="w-16 h-16 bg-slate-900 border-2 border-dashed border-slate-700 rounded-xl flex items-center justify-center text-slate-500 relative overflow-hidden group cursor-pointer">
             <input type="file" id="nv-logo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-30" onchange="previewLogoEmpresa(event)">
-            <!-- Ajuste de Z-index para a foto não ficar escondida -->
             <img id="nv-logo-preview" class="w-full h-full object-cover hidden absolute inset-0 z-20">
             <i class="ph ph-image text-2xl group-hover:scale-110 transition-transform relative z-10"></i>
           </div>
@@ -641,19 +640,33 @@
           </div>
         </div>
 
-        <!-- Descrição com Botão de Expandir -->
+        <!-- Bloco 3: Descrição Estilo "Editor Aurora Boreal" (Expansível de Verdade) -->
         <div>
           <div class="flex justify-between items-center mb-2">
             <label class="block text-xs font-bold text-slate-400 uppercase">Descrição Completa <span class="text-rose-500">*</span></label>
-            <button type="button" onclick="abrirEditorDescricao()" class="text-[10px] font-black text-indigo-400 hover:text-indigo-300 uppercase tracking-wider flex items-center gap-1 bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20">
-              <i class="ph ph-arrows-out"></i> Abrir Editor Maior
-            </button>
+            <span class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1"><i class="ph ph-sparkle"></i> Editor Inteligente</span>
           </div>
-          <textarea id="nv-descricao" rows="2" placeholder="Clique em 'Abrir Editor Maior' para digitar com conforto..." class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none resize-none" required></textarea>
+
+          <!-- Container do Editor Estilizado -->
+          <div class="bg-slate-950 border border-slate-700 focus-within:border-emerald-500 rounded-2xl overflow-hidden transition-all shadow-inner">
+            
+            <!-- Barra de Ferramentas Aurora Boreal (Verdes/Esmeralda) -->
+            <div class="bg-gradient-to-r from-slate-900 via-emerald-950/40 to-slate-900 px-3 py-2 border-b border-slate-800 flex flex-wrap items-center gap-1.5">
+              <button type="button" onclick="formatarEditor('bold')" title="Negrito" class="p-1.5 rounded-lg text-slate-300 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors"><i class="ph ph-text-b text-base font-bold"></i></button>
+              <button type="button" onclick="formatarEditor('bullet')" title="Lista de Tópicos" class="p-1.5 rounded-lg text-slate-300 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors"><i class="ph ph-list-bullets text-base"></i></button>
+              <div class="h-4 w-px bg-slate-800 mx-1"></div>
+              <button type="button" onclick="inserirTemplateEditor('responsalidades')" class="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 px-2 py-1 rounded-md transition-all">+ Responsabilidades</button>
+              <button type="button" onclick="inserirTemplateEditor('requisitos')" class="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 px-2 py-1 rounded-md transition-all">+ Requisitos</button>
+              <button type="button" onclick="inserirTemplateEditor('beneficios')" class="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 px-2 py-1 rounded-md transition-all">+ Benefícios</button>
+            </div>
+
+            <!-- Textarea que expande naturalmente -->
+            <textarea id="nv-descricao" rows="5" placeholder="Descreva os detalhes da oportunidade..." class="w-full bg-transparent text-white p-4 outline-none resize-y text-sm leading-relaxed" required></textarea>
+          </div>
         </div>
 
-        <!-- Bloco 3: Local e Modalidade (Separados) -->
-        <div class="grid grid-cols-2 gap-4">
+        <!-- Bloco 4: Local, Modalidade e Escala -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Modalidade <span class="text-rose-500">*</span></label>
             <select id="nv-modelo" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm focus:border-emerald-500 transition-colors cursor-pointer" required>
@@ -663,6 +676,17 @@
             </select>
           </div>
           
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Escala <span class="text-rose-500">*</span></label>
+            <select id="nv-escala" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm focus:border-emerald-500 transition-colors cursor-pointer" required>
+              <option>5x2 (Comercial)</option>
+              <option>6x1</option>
+              <option>12x36</option>
+              <option>Diarista</option>
+              <option>Flexível / Outros</option>
+            </select>
+          </div>
+
           <div class="relative">
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Local (Cidade) <span class="text-rose-500">*</span></label>
             <div class="relative">
@@ -670,16 +694,13 @@
               <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"></i>
             </div>
             
-            <!-- Verifique se esse wrapper com o ID dropdown-wrapper está lá -->
             <div id="dropdown-wrapper" class="absolute left-0 top-[calc(100%+8px)] w-full bg-slate-900 border border-emerald-500/50 rounded-xl shadow-[0_10px_30px_rgba(16,185,129,0.15)] hidden z-50 overflow-hidden">
-              <ul id="dropdown-cidades" class="max-h-48 overflow-y-auto menu-scroll divide-y divide-slate-800">
-                <!-- As cidades entram aqui -->
-              </ul>
+              <ul id="dropdown-cidades" class="max-h-48 overflow-y-auto menu-scroll divide-y divide-slate-800"></ul>
             </div>
           </div>
-      </div>
-        
-        <!-- Bloco 4: Contrato, Nível e Salário -->
+        </div>
+
+        <!-- Bloco 5: Contrato, Nível e Salários Flexíveis -->
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Nível <span class="text-rose-500">*</span></label>
@@ -687,37 +708,45 @@
           </div>
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Contrato <span class="text-rose-500">*</span></label>
-            <select id="nv-contrato" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm" required><option>CLT</option><option>Estágio</option><option>Trainee</option></select>
+            <select id="nv-contrato" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm" required><option>CLT</option><option>Estágio</option><option>Trainee</option><option>PJ</option></select>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Salário Mínimo <span class="text-rose-500">*</span></label>
-            <input type="number" id="nv-sal-min" placeholder="R$ 1.500" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
+        <!-- Seção de Salários com Checkbox "A Combinar" -->
+        <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 space-y-3">
+          <div class="flex justify-between items-center">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Remuneração / Salário</label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="nv-a-combinar" onchange="alternarSalarioCombinar(this)" class="w-4 h-4 rounded border-slate-700 text-emerald-500 bg-slate-900 focus:ring-0">
+              <span class="text-xs font-bold text-emerald-400">Salário a Combinar</span>
+            </label>
           </div>
-          <div>
-            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Salário Máximo <span class="text-rose-500">*</span></label>
-            <input type="number" id="nv-sal-max" placeholder="R$ 2.500" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
+          <div class="grid grid-cols-2 gap-4" id="container-inputs-salario">
+            <div>
+              <input type="number" id="nv-sal-min" placeholder="Mínimo (R$)" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-sm outline-none focus:border-emerald-500" required>
+            </div>
+            <div>
+              <input type="number" id="nv-sal-max" placeholder="Máximo (R$)" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-sm outline-none focus:border-emerald-500" required>
+            </div>
           </div>
         </div>
 
-        <!-- Bloco 5: Avaliações e PCD -->
-        <div class="bg-indigo-950/30 border border-indigo-500/30 rounded-2xl p-4">
-          <label class="block text-xs font-bold text-indigo-400 uppercase mb-3">Avaliações Exigidas</label>
+        <!-- Bloco 6: Avaliações e PCD -->
+        <div class="bg-emerald-950/20 border border-emerald-500/20 rounded-2xl p-4">
+          <label class="block text-xs font-bold text-emerald-400 uppercase mb-3">Avaliações Exigidas (Opcional)</label>
           <div class="flex flex-wrap gap-3">
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="Fit Cultural" class="nv-testes w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-700" checked> <span class="text-sm text-slate-300">Fit Cultural</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="Raciocínio Lógico" class="nv-testes w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-700"> <span class="text-sm text-slate-300">Raciocínio Lógico</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="Comunicação" class="nv-testes w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-700"> <span class="text-sm text-slate-300">Comunicação</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="Fit Cultural" class="nv-testes w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-700" checked> <span class="text-sm text-slate-300">Fit Cultural</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="Raciocínio Lógico" class="nv-testes w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-700"> <span class="text-sm text-slate-300">Raciocínio Lógico</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="Comunicação" class="nv-testes w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-700"> <span class="text-sm text-slate-300">Comunicação</span></label>
           </div>
         </div>
 
-        <label class="flex items-center gap-2 cursor-pointer group pt-2 pb-2">
-          <input type="checkbox" id="nv-pcd" class="w-5 h-5 rounded border-slate-700 text-blue-500 focus:ring-blue-500 bg-slate-950">
-          <span class="text-sm font-bold text-slate-300 group-hover:text-blue-400 transition-colors">Vaga também para PCD?</span>
+        <label class="flex items-center gap-2 cursor-pointer group pt-1 pb-2">
+          <input type="checkbox" id="nv-pcd" class="w-5 h-5 rounded border-slate-700 text-emerald-500 focus:ring-0 bg-slate-950">
+          <span class="text-sm font-bold text-slate-300 group-hover:text-emerald-400 transition-colors">Vaga também para PCD?</span>
         </label>
 
-        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2">
+        <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex justify-center items-center gap-2">
           <i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade
         </button>
       </form>
