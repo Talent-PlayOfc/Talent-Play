@@ -284,13 +284,13 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- TELA 3: EXPLORAR MISSÕES (BUSCA DE VAGAS)                      -->
+        <!-- TELA 3: EXPLORAR OPORTUNIDADES (BUSCA DE VAGAS)                -->
         <!-- ============================================================== -->
         <section id="tela-vagas" class="app-screen hidden">
           <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-10 gap-6">
             <div>
-              <h1 class="text-4xl font-black text-white mb-2">Mural de Missões</h1>
-              <p class="text-slate-400 text-lg">Explore as oportunidades abertas no reino corporativo.</p>
+              <h1 class="text-4xl font-black text-white mb-2">Quadro de Oportunidades</h1>
+              <p class="text-slate-400 text-lg">Explore processos seletivos e avaliações práticas em aberto.</p>
             </div>
             
             <div class="w-full lg:w-auto bg-slate-900 border border-slate-700 p-2 rounded-2xl flex flex-col sm:flex-row gap-2 shadow-xl">
@@ -312,64 +312,20 @@
           </div>
           
           <div class="border-b border-slate-800 flex gap-8 mb-8 overflow-x-auto menu-scroll pb-2">
-            <button class="py-2 border-b-2 border-indigo-500 text-indigo-400 font-black tracking-wide whitespace-nowrap text-sm">TODAS AS MISSÕES</button>
+            <button class="py-2 border-b-2 border-indigo-500 text-indigo-400 font-black tracking-wide whitespace-nowrap text-sm">TODAS AS OPORTUNIDADES</button>
             <button class="py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-300 font-bold tracking-wide whitespace-nowrap transition-colors text-sm">SALVAS</button>
-            <button class="py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-300 font-bold tracking-wide whitespace-nowrap transition-colors text-sm">NO SEU NÍVEL</button>
+            <button class="py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-300 font-bold tracking-wide whitespace-nowrap transition-colors text-sm">NO SEU PERFIL</button>
           </div>
 
+          <!-- O CONTÊINER FICA VAZIO: O JavaScript vai preencher com as vagas reais! -->
           <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" id="container-todas-vagas">
             
-            <div class="vaga-card bg-slate-900 border border-slate-800 rounded-3xl p-6 relative shadow-lg flex flex-col h-full hover:border-indigo-500/50 transition-colors group" data-titulo="Auxiliar de Operações" data-empresa="Mosaic">
-              <div class="flex justify-between items-start mb-6">
-                <div>
-                  <span class="text-[9px] font-black text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-md border border-emerald-400/20 tracking-widest uppercase">FÁCIL</span>
-                  <h3 class="text-xl font-bold text-white mt-3 vaga-titulo group-hover:text-indigo-300 transition-colors leading-tight">Auxiliar de Operações</h3>
-                  <p class="text-sm text-slate-400 mt-1 vaga-empresa">Mosaic • Candeias, BA</p>
-                </div>
-                <div class="w-12 h-12 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-2xl shadow-inner shrink-0">🏢</div>
-              </div>
-              <div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between">
-                <span class="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20">+50 XP</span>
-                <button onclick="iniciarRPG('Auxiliar de Operações', 'Mosaic')" class="text-sm font-bold text-white bg-slate-800 hover:bg-indigo-600 px-5 py-2.5 rounded-xl transition-colors shadow-md">Iniciar</button>
-              </div>
-            </div>
-
-            <div class="vaga-card bg-slate-900 border border-slate-800 rounded-3xl p-6 relative shadow-lg flex flex-col h-full hover:border-indigo-500/50 transition-colors group" data-titulo="Atendimento SAC" data-empresa="Nubank">
-              <div class="flex justify-between items-start mb-6">
-                <div>
-                  <span class="text-[9px] font-black text-yellow-400 bg-yellow-400/10 px-2 py-1 rounded-md border border-yellow-400/20 tracking-widest uppercase">MÉDIO</span>
-                  <h3 class="text-xl font-bold text-white mt-3 vaga-titulo group-hover:text-indigo-300 transition-colors leading-tight">Atendimento SAC</h3>
-                  <p class="text-sm text-slate-400 mt-1 vaga-empresa">Nubank • Remoto</p>
-                </div>
-                <div class="w-12 h-12 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-2xl shadow-inner shrink-0">🎧</div>
-              </div>
-              <div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between">
-                <span class="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20">+80 XP</span>
-                <button onclick="mostrarToast('Requer Nível 3 para iniciar. Jogue outras missões antes!', 'error')" class="text-sm font-bold text-slate-400 bg-slate-950 border border-slate-800 px-5 py-2.5 rounded-xl transition-colors cursor-not-allowed flex items-center gap-2"><i class="ph ph-lock-key"></i> Bloqueada</button>
-              </div>
-            </div>
-
-            <div class="vaga-card bg-slate-900 border border-slate-800 rounded-3xl p-6 relative shadow-lg flex flex-col h-full hover:border-indigo-500/50 transition-colors group" data-titulo="Assistente de Logística" data-empresa="Amazon">
-              <div class="flex justify-between items-start mb-6">
-                <div>
-                  <span class="text-[9px] font-black text-purple-400 bg-purple-400/10 px-2 py-1 rounded-md border border-purple-400/20 tracking-widest uppercase">DIFÍCIL</span>
-                  <h3 class="text-xl font-bold text-white mt-3 vaga-titulo group-hover:text-indigo-300 transition-colors leading-tight">Assistente de Logística</h3>
-                  <p class="text-sm text-slate-400 mt-1 vaga-empresa">Amazon • Simões Filho, BA</p>
-                </div>
-                <div class="w-12 h-12 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-2xl shadow-inner shrink-0">📦</div>
-              </div>
-              <div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between">
-                <span class="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20">+120 XP</span>
-                <button onclick="mostrarToast('Requer Nível 5 para iniciar.', 'error')" class="text-sm font-bold text-slate-400 bg-slate-950 border border-slate-800 px-5 py-2.5 rounded-xl transition-colors cursor-not-allowed flex items-center gap-2"><i class="ph ph-lock-key"></i> Bloqueada</button>
-              </div>
-            </div>
-
           </div>
           
           <div id="vagas-vazio" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-20 text-center mt-6 shadow-xl">
-            <i class="ph ph-ghost text-6xl text-slate-700 mb-6 block animate-bounce"></i>
-            <h3 class="text-2xl font-black text-white">O radar não encontrou nada.</h3>
-            <p class="text-slate-400 mt-2 font-medium">Tente buscar por outros termos ou profissões.</p>
+            <i class="ph ph-magnifying-glass text-6xl text-slate-700 mb-6 block"></i>
+            <h3 class="text-2xl font-black text-white">Nenhuma vaga encontrada.</h3>
+            <p class="text-slate-400 mt-2 font-medium">Tente buscar por outros termos ou locais.</p>
           </div>
         </section>
 
@@ -509,98 +465,45 @@
         <!-- ============================================================== -->
         <!-- TELA 5: DASHBOARD DO RH (EMPRESA)                              -->
         <!-- ============================================================== -->
-        <section id="tela-home-empresa" class="app-screen hidden">
-          <div class="bg-gradient-to-br from-emerald-900/40 via-slate-900 to-slate-900 border border-emerald-500/30 rounded-[2rem] p-8 sm:p-12 relative overflow-hidden shadow-2xl mb-10 group">
-            <div class="absolute right-0 top-0 w-[500px] h-[500px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none group-hover:bg-emerald-500/20 transition-colors duration-700"></div>
-            <div class="absolute -bottom-10 -right-10 opacity-5 pointer-events-none"><i class="ph ph-radar text-[250px] text-emerald-400"></i></div>
-            
-            <div class="relative z-10 flex flex-col md:flex-row gap-8 items-center md:items-start justify-between">
-              <div class="flex-1">
-                <span class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-black uppercase tracking-widest mb-6 backdrop-blur-md">
-                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Módulo RH Ativo
-                </span>
-                <h1 class="text-4xl sm:text-5xl font-black text-white mb-6 leading-tight tracking-tight">Pare de ler currículos.<br>Comece a recrutar <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Desempenho Real.</span></h1>
-                <p class="text-emerald-100/60 max-w-2xl text-lg mb-10 font-medium leading-relaxed">Crie missões personalizadas. Deixe os candidatos resolverem problemas do dia a dia da sua empresa e receba um ranking automático dos mais preparados.</p>
-                
-                <button onclick="abrirModal('modal-nova-vaga')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-xl font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1 w-full sm:w-auto">
-                  <i class="ph ph-plus-circle text-xl"></i> Publicar Nova Missão
-                </button>
-              </div>
-              
-              <div class="w-full md:w-72 bg-slate-950/50 border border-slate-800 rounded-3xl p-6 backdrop-blur-xl shrink-0 shadow-2xl">
-                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 text-center">Funil de Talentos</p>
-                <div class="space-y-4">
-                  <div class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400"><i class="ph ph-users text-xl"></i></div>
-                    <div><p class="text-xs text-slate-400 font-bold">Talentos no Radar</p><p class="text-lg font-black text-white" id="contador-radar-total">0</p></div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400"><i class="ph ph-target text-xl"></i></div>
-                    <div><p class="text-xs text-slate-400 font-bold">Taxa de Match Média</p><p class="text-lg font-black text-white">87%</p></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <!-- ============================================================== -->
+<!-- TELA: PAINEL DA EMPRESA (HOME COMPACTO)                        -->
+<!-- ============================================================== -->
+<section id="tela-home-empresa" class="app-screen hidden">
+  
+  <div class="bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-900 border border-emerald-500/20 rounded-3xl p-5 sm:p-7 relative overflow-hidden shadow-xl mb-6">
+    <div class="absolute right-0 top-0 w-64 h-64 bg-emerald-600/10 blur-[80px] rounded-full pointer-events-none"></div>
+    <div class="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-5">
+      <div>
+        <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[9px] font-bold uppercase tracking-widest mb-2"><i class="ph ph-buildings"></i> Área do Recrutador</span>
+        <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">Gestão de <span class="text-emerald-400">Talentos.</span></h1>
+      </div>
+      
+      <div class="flex gap-3 w-full lg:w-auto shrink-0">
+        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 flex items-center gap-3 shadow-md">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400"><i class="ph ph-broadcast"></i></div>
+          <div><p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Ativas</p><p class="text-lg font-black text-white leading-none" id="metric-vagas-ativas">0</p></div>
+        </div>
+        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 flex items-center gap-3 shadow-md">
+          <div class="w-10 h-10 rounded-lg bg-slate-800/50 flex items-center justify-center border border-slate-700 text-slate-400"><i class="ph ph-archive"></i></div>
+          <div><p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Arquivadas</p><p class="text-lg font-black text-white leading-none" id="metric-vagas-arquivadas">0</p></div>
+        </div>
+      </div>
+    </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-1 space-y-6">
-              <h2 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-bell-ringing text-emerald-500"></i> Alertas Recentes</h2>
-              
-              <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl relative overflow-hidden">
-                <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
-                <div class="space-y-5">
-                  <div class="flex gap-4 items-start">
-                    <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0 border border-emerald-500/20"><i class="ph ph-check-circle text-xl"></i></div>
-                    <div>
-                      <p class="text-sm font-bold text-white leading-tight">Novo talento nível alto detectado!</p>
-                      <p class="text-xs text-slate-400 mt-1">Ana Silva concluiu a missão "Aux. Operações" com 100% de acerto.</p>
-                      <p class="text-[10px] text-slate-500 font-bold uppercase mt-2">Há 10 min</p>
-                    </div>
-                  </div>
-                  <div class="w-full h-px bg-slate-800"></div>
-                  <div class="flex gap-4 items-start">
-                    <div class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 shrink-0 border border-indigo-500/20"><i class="ph ph-rocket-launch text-xl"></i></div>
-                    <div>
-                      <p class="text-sm font-bold text-white leading-tight">Missão em Alta</p>
-                      <p class="text-xs text-slate-400 mt-1">A vaga de SAC recebeu 15 novos jogadores hoje.</p>
-                      <p class="text-[10px] text-slate-500 font-bold uppercase mt-2">Há 2 horas</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-1.5 flex gap-2 shadow-lg">
+      <button onclick="abrirModal('modal-nova-vaga')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-3 rounded-lg font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2"><i class="ph ph-plus-circle text-lg"></i> Publicar Nova Oportunidade</button>
+    </div>
+  </div>
 
-            <div class="lg:col-span-2 space-y-6">
-              <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black text-white flex items-center gap-2"><i class="ph ph-trophy text-yellow-500"></i> Top Talentos do Mês</h2>
-                <button onclick="navegarPara('tela-gerenciar-vagas')" class="text-sm font-bold text-emerald-400 hover:text-emerald-300 transition-colors">Ver missões &rarr;</button>
-              </div>
+  <div class="mb-4 flex gap-4 border-b border-slate-800 pb-2">
+    <button class="text-sm font-bold text-emerald-400 border-b-2 border-emerald-400 pb-2 outline-none">Oportunidades Ativas</button>
+    <button class="text-sm font-bold text-slate-500 hover:text-slate-300 pb-2 transition-colors outline-none">Arquivo Oculto</button>
+  </div>
 
-              <div class="bg-slate-900 border border-slate-800 rounded-3xl p-2 sm:p-4 shadow-xl">
-                <div class="overflow-x-auto">
-                  <table class="w-full text-left border-collapse min-w-[600px]">
-                    <thead>
-                      <tr>
-                        <th class="p-4 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800">Candidato / Nível</th>
-                        <th class="p-4 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 text-center">Missão Alvo</th>
-                        <th class="p-4 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 text-center">Match de XP</th>
-                        <th class="p-4 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 text-right">Ação</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-800/50" id="tabela-radar-talentos">
-                      <tr>
-                        <td colspan="4" class="p-8 text-center text-slate-500 text-sm">
-                          Carregando talentos avaliados...
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+  <div class="grid grid-cols-1 gap-4" id="container-vagas-empresa">
+    <!-- As vagas da empresa entrarão aqui com os botões de Editar/Excluir/Arquivar via JavaScript -->
+  </div>
+</section>
 
         <!-- ============================================================== -->
         <!-- TELA 6: GERENCIAR MISSÕES (VAGAS DA EMPRESA)                   -->
