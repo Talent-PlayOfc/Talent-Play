@@ -420,6 +420,18 @@ window.prepararNovaVaga = function() {
   if(document.getElementById('nv-sal-max')) document.getElementById('nv-sal-max').value = '';
   if(document.getElementById('nv-pcd')) document.getElementById('nv-pcd').checked = false;
   if(document.getElementById('nv-beneficios')) document.getElementById('nv-beneficios').checked = false;
+  
+  // Limpando os novos campos
+  if(document.getElementById('nv-jornada')) document.getElementById('nv-jornada').value = '';
+  if(document.getElementById('nv-escolaridade')) document.getElementById('nv-escolaridade').value = '';
+  
+  // Reset do Salário A Combinar
+  if(document.getElementById('nv-a-combinar')) {
+      const cbCombinar = document.getElementById('nv-a-combinar');
+      cbCombinar.checked = false;
+      alternarSalarioCombinar(cbCombinar);
+  }
+  
   if(document.getElementById('nv-logo-preview')) document.getElementById('nv-logo-preview').classList.add('hidden');
   logoVagaTemporaria = null;
   
@@ -444,10 +456,26 @@ window.editarVaga = function(vagaJsonStr) {
   document.getElementById('nv-area-input').value = vaga.area;
   document.getElementById('nv-nivel').value = vaga.nivel;
   document.getElementById('nv-contrato').value = vaga.contrato;
-  document.getElementById('nv-sal-min').value = vaga.salario_min;
-  document.getElementById('nv-sal-max').value = vaga.salario_max;
+  
+  // Lendo os novos campos
+  if(document.getElementById('nv-jornada')) document.getElementById('nv-jornada').value = vaga.jornada || '';
+  if(document.getElementById('nv-escolaridade')) document.getElementById('nv-escolaridade').value = vaga.escolaridade || '';
+  
   document.getElementById('nv-pcd').checked = vaga.pcd;
   document.getElementById('nv-beneficios').checked = vaga.tem_beneficios || false;
+  
+  // Tratando Salário A Combinar na Edição
+  const cbCombinar = document.getElementById('nv-a-combinar');
+  if (vaga.salario_min === 'A Combinar') {
+    cbCombinar.checked = true;
+    document.getElementById('nv-sal-min').value = '';
+    document.getElementById('nv-sal-max').value = '';
+  } else {
+    cbCombinar.checked = false;
+    document.getElementById('nv-sal-min').value = vaga.salario_min;
+    document.getElementById('nv-sal-max').value = vaga.salario_max;
+  }
+  alternarSalarioCombinar(cbCombinar);
   
   logoVagaTemporaria = vaga.empresa_logo || null;
   if (logoVagaTemporaria) {
@@ -492,10 +520,20 @@ window.criarNovaVaga = async function(e) {
     const modelo = document.getElementById('nv-modelo').value;
     const escala = document.getElementById('nv-escala').value;
     const local = document.getElementById('nv-local').value;
-    const salario_min = document.getElementById('nv-sal-min').value;
-    const salario_max = document.getElementById('nv-sal-max').value;
     const pcd = document.getElementById('nv-pcd').checked;
     const tem_beneficios = document.getElementById('nv-beneficios').checked;
+    
+    // Capturando os campos novos
+    const jornada = document.getElementById('nv-jornada')?.value || '';
+    const escolaridade = document.getElementById('nv-escolaridade')?.value || '';
+
+    // Lógica para salvar "A Combinar"
+    let salario_min = document.getElementById('nv-sal-min').value;
+    let salario_max = document.getElementById('nv-sal-max').value;
+    if (document.getElementById('nv-a-combinar').checked) {
+        salario_min = 'A Combinar';
+        salario_max = '';
+    }
 
     const testesMarcados = Array.from(document.querySelectorAll('.nv-testes:checked')).map(cb => cb.value).join(' + ');
     const testesFinal = testesMarcados || 'Análise Curricular';
@@ -503,7 +541,7 @@ window.criarNovaVaga = async function(e) {
     const dadosVaga = {
       empresa, titulo, area, descricao, nivel, contrato, modelo, local, escala,
       salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria,
-      criador_id: user.id, tem_beneficios
+      criador_id: user.id, tem_beneficios, jornada, escolaridade
     };
 
     if (vagaEmEdicaoId) {
@@ -553,21 +591,42 @@ window.adicionarVagaNaTela = function(vaga) {
     ? `<img src="${vaga.empresa_logo}" class="w-full h-full object-cover">` 
     : `<i class="ph ph-buildings text-slate-500"></i>`;
   
+  // Tratamento Inteligente do Salário para o Card
+  let badgeSalarioHtml = '';
+  if (vaga.salario_min === 'A Combinar') {
+     badgeSalarioHtml = `<i class="ph ph-handshake text-xs"></i> Salário A Combinar`;
+  } else {
+     badgeSalarioHtml = `R$ ${vaga.salario_min} a ${vaga.salario_max}`;
+  }
+
+  // Tags Básicas
   let tagsHtml = `
     <span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase">${vaga.nivel}</span>
     <span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase">${vaga.contrato}</span>
     <span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase">${vaga.modelo}</span>
-    <span class="text-[9px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20 tracking-widest uppercase flex items-center gap-1">
-      R$ ${vaga.salario_min} a ${vaga.salario_max}
-    </span>
   `;
+  
+  // Novas Tags Dinâmicas (Só aparecem se tiverem sido marcadas)
+  if (vaga.jornada && vaga.jornada !== 'Selecione...') {
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-clock text-xs"></i> ${vaga.jornada}</span>`;
+  }
+  
+  if (vaga.escolaridade && vaga.escolaridade !== 'Selecione...') {
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-graduation-cap text-xs"></i> ${vaga.escolaridade}</span>`;
+  }
+
+  // Tag do Salário
+  tagsHtml += `<span class="text-[9px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20 tracking-widest uppercase flex items-center gap-1">
+    ${badgeSalarioHtml}
+  </span>`;
+
   if (vaga.pcd) {
     tagsHtml += `<span class="text-[9px] font-black text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md border border-blue-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-wheelchair text-xs"></i> PCD</span>`;
   }
   if (vaga.tem_beneficios) {
     tagsHtml += `<span class="text-[9px] font-black text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-md border border-purple-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-gift text-xs"></i> + BENEFÍCIOS</span>`;
   }
-  
+
   // Guardando objeto vaga como string segura para o modal
   const vagaJsonStr = encodeURIComponent(JSON.stringify(vaga));
 
