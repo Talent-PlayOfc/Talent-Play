@@ -1155,9 +1155,15 @@ window.excluirVaga = async function(id) {
 // ----------------------------------------------------
 // INICIALIZAÇÃO DE SESSÃO AUTOMÁTICA
 // ----------------------------------------------------
+// ----------------------------------------------------
+// INICIALIZAÇÃO DE SESSÃO AUTOMÁTICA
+// ----------------------------------------------------
 window.onload = async function() {
   carregarVagasDoBanco();
   carregarCidadesIBGE();
+  
+  // 🔥 ATIVA O MOTOR DOS DROPDOWNS DE LUXO LOGO AO CARREGAR A TELA
+  transformarSelectsEmCustom();
 
   // Checa a sessão ativa imediatamente ao carregar a página
   const { data: { session } } = await supabaseClient.auth.getSession();
