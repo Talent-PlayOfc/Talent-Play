@@ -739,10 +739,20 @@
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Nível Exigido <span class="text-rose-500">*</span></label>
             <select id="nv-nivel" class="select-customizado w-full" required>
               <option value="" disabled selected>Selecione...</option>
+              <option>Jovem Aprendiz</option>
+              <option>Estágio</option>
+              <option>Trainee</option>
+              <option>Operacional</option>
+              <option>Auxliar</option>
+              <option>Assistente</option>
               <option>Júnior (Iniciante)</option>
               <option>Pleno (Intermediário)</option>
               <option>Sênior (Avançado)</option>
               <option>Master (Especialista)</option>
+              <option>Coordenador</option>
+              <option>Supervisor</option>
+              <option>Gerência</option>
+              <option>Direção</option>
             </select>
           </div>
 
@@ -916,8 +926,77 @@
 
           </div>
         </div>
+
+        <!-- Bloco 8: Experiência e Número de Vagas -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 focus-within:border-emerald-500/50 transition-colors">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Tempo de Experiência Exigido</label>
+            <div class="relative">
+              <select id="nv-experiencia" class="select-customizado w-full" required>
+                <option value="Sem experiência prévia" selected>Sem experiência prévia</option>
+                <option value="Até 1 ano">Até 1 ano</option>
+                <option value="De 1 a 3 anos">De 1 a 3 anos</option>
+                <option value="De 3 a 5 anos">De 3 a 5 anos</option>
+                <option value="Mais de 5 anos">Mais de 5 anos</option>
+              </select>
+            </div>
+          </div>
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 focus-within:border-emerald-500/50 transition-colors">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Número de Vagas</label>
+            <div class="relative">
+              <i class="ph ph-users absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
+              <input type="number" id="nv-vagas" min="1" value="1" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-11 pr-4 py-2 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 9: Top 10 Benefícios (Checkboxes Compactos) -->
+        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 space-y-4 mb-4">
+          <div class="flex items-center gap-2 border-b border-slate-800/80 pb-3 mb-2">
+            <i class="ph ph-gift text-pink-500 text-lg"></i>
+            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest m-0">Pacote de Benefícios</h4>
+          </div>
+          <div class="flex flex-wrap gap-2.5">
+            <label class="cursor-pointer group"><input type="checkbox" value="Vale Transporte" class="nv-bene-check hidden peer"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-400 bg-slate-900 border border-slate-700 rounded-lg peer-checked:bg-pink-500/10 peer-checked:border-pink-500 peer-checked:text-pink-400 transition-all shadow-sm"><i class="ph ph-bus"></i> VT</span></label>
+            <label class="cursor-pointer group"><input type="checkbox" value="Vale Refeição (VR)" class="nv-bene-check hidden peer"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-400 bg-slate-900 border border-slate-700 rounded-lg peer-checked:bg-pink-500/10 peer-checked:border-pink-500 peer-checked:text-pink-400 transition-all shadow-sm"><i class="ph ph-hamburger"></i> VR</span></label>
+            <label class="cursor-pointer group"><input type="checkbox" value="Vale Alimentação (VA)" class="nv-bene-check hidden peer"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-400 bg-slate-900 border border-slate-700 rounded-lg peer-checked:bg-pink-500/10 peer-checked:border-pink-500 peer-checked:text-pink-400 transition-all shadow-sm"><i class="ph ph-shopping-cart"></i> VA</span></label>
+            <label class="cursor-pointer group"><input type="checkbox" value="Plano de Saúde" class="nv-bene-check hidden peer"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-400 bg-slate-900 border border-slate-700 rounded-lg peer-checked:bg-pink-500/10 peer-checked:border-pink-500 peer-checked:text-pink-400 transition-all shadow-sm"><i class="ph ph-heartbeat"></i> Saúde</span></label>
+            <label class="cursor-pointer group"><input type="checkbox" value="Plano Odontológico" class="nv-bene-check hidden peer"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-400 bg-slate-900 border border-slate-700 rounded-lg peer-checked:bg-pink-500/10 peer-checked:border-pink-500 peer-checked:text-pink-400 transition-all shadow-sm"><i class="ph ph-tooth"></i> Odonto</span></label>
+            <label class="cursor-pointer group"><input type="checkbox" value="Seguro de Vida" class="nv-bene-check hidden peer"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-400 bg-slate-900 border border-slate-700 rounded-lg peer-checked:bg-pink-500/10 peer-checked:border-pink-500 peer-checked:text-pink-400 transition-all shadow-sm"><i class="ph ph-shield-check"></i> Seguro de Vida</span></label>
+            <label class="cursor-pointer group"><input type="checkbox" value="Auxílio Creche" class="nv-bene-check hidden peer"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-400 bg-slate-900 border border-slate-700 rounded-lg peer-checked:bg-pink-500/10 peer-checked:border-pink-500 peer-checked:text-pink-400 transition-all shadow-sm"><i class="ph ph-baby"></i> Creche</span></label>
+            <label class="cursor-pointer group"><input type="checkbox" value="Auxílio Home Office" class="nv-bene-check hidden peer"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-400 bg-slate-900 border border-slate-700 rounded-lg peer-checked:bg-pink-500/10 peer-checked:border-pink-500 peer-checked:text-pink-400 transition-all shadow-sm"><i class="ph ph-house-line"></i> Home Office</span></label>
+            <label class="cursor-pointer group"><input type="checkbox" value="Gympass / TotalPass" class="nv-bene-check hidden peer"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-400 bg-slate-900 border border-slate-700 rounded-lg peer-checked:bg-pink-500/10 peer-checked:border-pink-500 peer-checked:text-pink-400 transition-all shadow-sm"><i class="ph ph-barbell"></i> Gympass</span></label>
+            <label class="cursor-pointer group"><input type="checkbox" value="Bônus / PLR" class="nv-bene-check hidden peer"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-400 bg-slate-900 border border-slate-700 rounded-lg peer-checked:bg-pink-500/10 peer-checked:border-pink-500 peer-checked:text-pink-400 transition-all shadow-sm"><i class="ph ph-money"></i> Bônus/PLR</span></label>
+          </div>
+        </div>
+
+        <!-- Bloco 10: Configurações VIP -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <label class="flex items-center gap-4 cursor-pointer group p-4 bg-slate-900 border border-slate-800 rounded-2xl hover:border-blue-500/50 transition-all shadow-md">
+            <div class="relative flex items-center justify-center shrink-0">
+              <input type="checkbox" id="nv-notificacoes" class="peer appearance-none w-6 h-6 border-2 border-slate-600 rounded bg-slate-950 checked:bg-blue-500 checked:border-blue-500 transition-colors" checked>
+              <i class="ph ph-check text-white absolute opacity-0 peer-checked:opacity-100 text-base pointer-events-none transition-opacity"></i>
+            </div>
+            <div>
+              <span class="text-sm font-bold text-white block">Receber Resumo Diário</span>
+              <span class="text-xs text-slate-500 font-medium">Notificar por e-mail sobre novos inscritos.</span>
+            </div>
+          </label>
+
+          <label class="flex items-center gap-4 cursor-pointer group p-4 bg-gradient-to-r from-orange-900/20 to-slate-900 border border-orange-500/30 rounded-2xl hover:border-orange-500/70 transition-all shadow-md relative overflow-hidden">
+            <div class="absolute right-0 top-0 bg-orange-500 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded-bl-lg">Plano Pro</div>
+            <div class="relative flex items-center justify-center shrink-0">
+              <input type="checkbox" id="nv-urgente" class="peer appearance-none w-6 h-6 border-2 border-orange-700/50 rounded bg-slate-950 checked:bg-orange-500 checked:border-orange-500 transition-colors">
+              <i class="ph ph-check text-white absolute opacity-0 peer-checked:opacity-100 text-base pointer-events-none transition-opacity"></i>
+            </div>
+            <div>
+              <span class="text-sm font-bold text-orange-400 flex items-center gap-1"><i class="ph ph-rocket-launch"></i> Contratação Urgente</span>
+              <span class="text-xs text-orange-500/60 font-medium">Destacar vaga no topo do radar.</span>
+            </div>
+          </label>
+        </div>
         
-        <!-- Bloco 8: Avaliações e PCD -->
+        <!-- Bloco 11: Avaliações e PCD -->
         <div class="bg-emerald-950/20 border border-emerald-500/20 rounded-2xl p-4">
           <label class="block text-xs font-bold text-emerald-400 uppercase mb-3">Avaliações Exigidas (Opcional)</label>
           <div class="flex flex-wrap gap-3">
