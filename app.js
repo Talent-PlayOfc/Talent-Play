@@ -1127,50 +1127,15 @@ window.onload = async function() {
 // ----------------------------------------------------
 // FERRAMENTAS DO EDITOR INTELIGENTE (AURORA BOREAL)
 // ----------------------------------------------------
-<div class="flex flex-wrap items-center gap-1.5 p-3 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl border border-emerald-500/30 shadow-[0_4px_20px_rgba(16,185,129,0.15)] mb-3">
-  
-  <!-- Estilos de Texto -->
-  <button type="button" title="Negrito" onclick="formatarEditor('bold')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent rounded-xl transition-all">
-    <i class="ph ph-text-b text-lg"></i>
-  </button>
-  <button type="button" title="Itálico" onclick="formatarEditor('italic')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent rounded-xl transition-all">
-    <i class="ph ph-text-italic text-lg"></i>
-  </button>
-  <button type="button" title="Sublinhado" onclick="formatarEditor('underline')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent rounded-xl transition-all">
-    <i class="ph ph-text-underline text-lg"></i>
-  </button>
-
-  <div class="w-px h-6 bg-slate-700 mx-1"></div>
-
-  <!-- Alinhamento -->
-  <button type="button" title="Alinhar à Esquerda" onclick="formatarEditor('align-left')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent rounded-xl transition-all">
-    <i class="ph ph-text-align-left text-lg"></i>
-  </button>
-  <button type="button" title="Centralizar" onclick="formatarEditor('align-center')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent rounded-xl transition-all">
-    <i class="ph ph-text-align-center text-lg"></i>
-  </button>
-  <button type="button" title="Alinhar à Direita" onclick="formatarEditor('align-right')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent rounded-xl transition-all">
-    <i class="ph ph-text-align-right text-lg"></i>
-  </button>
-
-  <div class="w-px h-6 bg-slate-700 mx-1"></div>
-
-  <!-- Lista de Tópicos e Símbolos -->
-  <button type="button" title="Lista de Tópicos" onclick="formatarEditor('bullet')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent rounded-xl transition-all">
-    <i class="ph ph-list-bullets text-lg"></i>
-  </button>
-
-  <div class="w-px h-6 bg-slate-700 mx-1"></div>
-
-  <!-- Cor da Fonte -->
-  <div class="flex items-center gap-1.5 px-1.5">
-    <label for="textColor" class="cursor-pointer p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all" title="Cor da Fonte">
-      <i class="ph ph-palette text-lg"></i>
-    </label>
-    <input type="color" id="textColor" class="w-6 h-6 p-0 border-0 rounded cursor-pointer bg-transparent" value="#e2e8f0">
-  </div>
-
-</div>
+window.formatarEditor = function(comando) {
+  if (comando === 'bullet') {
+    // Se precisar de uma lógica específica para a lista, ela entra aqui
+    document.execCommand('insertUnorderedList', false, null);
+  } else {
+    document.execCommand(comando, false, null);
+  }
+  document.getElementById('nv-descricao').focus();
+};
 
 window.inserirTemplateEditor = function(tipo) {
   const textarea = document.getElementById('nv-descricao');
