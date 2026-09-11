@@ -691,11 +691,12 @@
           </div>
         </div>
 
-        <!-- Bloco 4: Local, Modalidade e Escala -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <!-- Bloco 4: Modalidade, Escala e Múltiplas Cidades -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Modalidade <span class="text-rose-500">*</span></label>
-            <select id="nv-modelo" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm focus:border-emerald-500 transition-colors cursor-pointer" required>
+            <select id="nv-modelo" class="select-customizado w-full" required>
+              <option value="" disabled selected>Selecione...</option>
               <option>Presencial</option>
               <option>Híbrido</option>
               <option>Remoto</option>
@@ -704,7 +705,8 @@
           
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Escala <span class="text-rose-500">*</span></label>
-            <select id="nv-escala" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm focus:border-emerald-500 transition-colors cursor-pointer" required>
+            <select id="nv-escala" class="select-customizado w-full" required>
+              <option value="" disabled selected>Selecione...</option>
               <option>5x2</option>
               <option>6x1</option>
               <option>12x36</option>
@@ -716,88 +718,76 @@
           </div>
 
           <div class="relative">
-            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Local (Cidade) <span class="text-rose-500">*</span></label>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Local (Cidades) <span class="text-rose-500">*</span></label>
             <div class="relative">
-              <input type="text" id="nv-local" autocomplete="new-password" placeholder="Ex: Salvador, BA" oninput="filtrarCidadesCustom()" onclick="filtrarCidadesCustom()" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-3 pr-10 py-2.5 outline-none text-sm focus:border-emerald-500 transition-colors cursor-text" required>
+              <input type="text" id="nv-local-input" autocomplete="off" placeholder="Ex: Salvador, BA" oninput="filtrarCidadesCustom()" onclick="filtrarCidadesCustom()" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-3 pr-10 py-2.5 outline-none text-sm focus:border-emerald-500 transition-colors cursor-text">
               <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"></i>
             </div>
             
-            <div id="dropdown-wrapper" class="absolute left-0 top-[calc(100%+8px)] w-full bg-slate-900 border border-emerald-500/50 rounded-xl shadow-[0_10px_30px_rgba(16,185,129,0.15)] hidden z-50 overflow-hidden">
+            <div id="dropdown-wrapper" class="absolute left-0 top-[calc(100%+8px)] w-full bg-slate-900 border border-emerald-500/50 rounded-xl shadow-[0_10px_30px_rgba(16,185,129,0.15)] hidden z-[60] overflow-hidden">
               <ul id="dropdown-cidades" class="max-h-48 overflow-y-auto menu-scroll divide-y divide-slate-800"></ul>
             </div>
           </div>
         </div>
+        
+        <!-- AQUI APARECEM AS TAGS DAS CIDADES SELECIONADAS -->
+        <div id="cidades-selecionadas-container" class="flex flex-wrap gap-2 mt-2 mb-4"></div>
 
         <!-- Bloco 5: Nível, Contrato, Jornada e Escolaridade -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Nível Exigido <span class="text-rose-500">*</span></label>
-            <div class="relative">
-              <select id="nv-nivel" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-4 pr-10 py-3 appearance-none outline-none text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer" required>
-                <option value="" disabled selected>Selecione...</option>
-                <option>Júnior (Iniciante)</option>
-                <option>Pleno (Intermediário)</option>
-                <option>Sênior (Avançado)</option>
-                <option>Master (Especialista)</option>
-              </select>
-              <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none text-lg"></i>
-            </div>
+            <select id="nv-nivel" class="select-customizado w-full" required>
+              <option value="" disabled selected>Selecione...</option>
+              <option>Júnior (Iniciante)</option>
+              <option>Pleno (Intermediário)</option>
+              <option>Sênior (Avançado)</option>
+              <option>Master (Especialista)</option>
+            </select>
           </div>
 
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Contrato <span class="text-rose-500">*</span></label>
-            <div class="relative">
-              <select id="nv-contrato" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-4 pr-10 py-3 appearance-none outline-none text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer" required>
-                <option value="" disabled selected>Selecione...</option>
-                <option>CLT</option>
-                <option>PJ</option>
-                <option>Estágio</option>
-                <option>Trainee</option>
-                <option>Intermitente</option>
-              </select>
-              <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none text-lg"></i>
-            </div>
+            <select id="nv-contrato" class="select-customizado w-full" required>
+              <option value="" disabled selected>Selecione...</option>
+              <option>CLT</option>
+              <option>PJ</option>
+              <option>Estágio</option>
+              <option>Trainee</option>
+              <option>Intermitente</option>
+            </select>
           </div>
 
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Jornada <span class="text-rose-500">*</span></label>
-            <div class="relative">
-              <select id="nv-jornada" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-4 pr-10 py-3 appearance-none outline-none text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer" required>
-                <option value="" disabled selected>Selecione...</option>
-                <option>Período Integral</option>
-                <option>Meio Período (Manhã)</option>
-                <option>Meio Período (Tarde)</option>
-                <option>Noturno</option>
-                <option>Flexível</option>
-              </select>
-              <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none text-lg"></i>
-            </div>
+            <select id="nv-jornada" class="select-customizado w-full" required>
+              <option value="" disabled selected>Selecione...</option>
+              <option>Período Integral</option>
+              <option>Meio Período (Manhã)</option>
+              <option>Meio Período (Tarde)</option>
+              <option>Noturno</option>
+              <option>Flexível</option>
+            </select>
           </div>
 
           <div>
             <div class="flex items-center gap-1.5 mb-2 relative group w-max">
               <label class="block text-[10px] font-bold text-slate-400 uppercase m-0">Escolaridade</label>
               <i class="ph ph-info text-indigo-400 cursor-help text-sm"></i>
-              <!-- Tooltip TalentPlay -->
               <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-indigo-600 text-white text-[10px] font-bold p-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl text-center leading-relaxed">
                 Dica TalentPlay: Foque nas competências reais. Diplomas nem sempre medem potencial prático!
                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-indigo-600"></div>
               </div>
             </div>
-            <div class="relative">
-              <select id="nv-escolaridade" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-4 pr-10 py-3 appearance-none outline-none text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer" required>
-                <option value="" disabled selected>Selecione...</option>
-                <option>Não Exigida (Foco em Skills)</option>
-                <option>Ensino Médio</option>
-                <option>Técnico / Profissionalizante</option>
-                <option>Ensino Superior</option>
-                <option>Pós / Especialização</option>
-              </select>
-              <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none text-lg"></i>
-            </div>
+            <select id="nv-escolaridade" class="select-customizado w-full" required>
+              <option value="" disabled selected>Selecione...</option>
+              <option>Não Exigida (Foco em Skills)</option>
+              <option>Ensino Médio</option>
+              <option>Técnico / Profissionalizante</option>
+              <option>Ensino Superior</option>
+              <option>Pós / Especialização</option>
+            </select>
           </div>
-
         </div>
 
         <!-- Seção de Salários com Checkbox "A Combinar" Personalizado -->
