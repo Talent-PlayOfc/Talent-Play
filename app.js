@@ -1006,11 +1006,12 @@ window.filtrarAreasCustom = function() {
 };
 
 window.filtrarCidadesCustom = async function() {
-  const input = document.getElementById('nv-local');
+  // AQUI FOI CORRIGIDO PARA O NOME NOVO: nv-local-input
+  const input = document.getElementById('nv-local-input');
   const wrapper = document.getElementById('dropdown-wrapper');
   const dropdown = document.getElementById('dropdown-cidades');
   
-  if (!dropdown || !wrapper) return;
+  if (!dropdown || !wrapper || !input) return;
 
   if (listaCidadesGlobal.length === 0) {
     dropdown.innerHTML = `<li class="px-4 py-3 text-sm text-emerald-400 font-bold text-center flex flex-col items-center justify-center gap-2"><i class="ph ph-spinner-gap animate-spin text-2xl"></i> Conectando...</li>`;
@@ -1032,8 +1033,8 @@ window.filtrarCidadesCustom = async function() {
       li.innerText = cidade;
       
       li.onclick = function() {
-      adicionarCidade(cidade); // ISSO MUDA AQUI!
-        };
+        adicionarCidade(cidade); // Chama a função que cria o "chip" verde
+      };
       dropdown.appendChild(li);
     });
   }
@@ -1043,8 +1044,8 @@ window.filtrarCidadesCustom = async function() {
 
 // 1. Fecha a lista se clicar fora
 document.addEventListener('click', function(e) {
-  // Fecha dropdown de cidade
-  const inputLocal = document.getElementById('nv-local');
+  // Fecha dropdown de cidade (Atualizado para nv-local-input)
+  const inputLocal = document.getElementById('nv-local-input');
   const wrapperLocal = document.getElementById('dropdown-wrapper');
   if (inputLocal && wrapperLocal && e.target !== inputLocal && !wrapperLocal.contains(e.target)) {
     wrapperLocal.classList.add('hidden');
@@ -1059,15 +1060,15 @@ document.addEventListener('click', function(e) {
 });
 
 // 2. Trava de Segurança: Apaga se digitar cidade que não existe
-document.getElementById('nv-local')?.addEventListener('blur', function() {
+document.getElementById('nv-local-input')?.addEventListener('blur', function() {
   setTimeout(() => {
     const val = this.value;
     if (val && !listaCidadesGlobal.includes(val)) {
       this.value = '';
       mostrarToast('Por favor, selecione uma cidade válida da lista.', 'error');
     }
-  }, 250); // Timeout para dar tempo de registrar o clique na lista
-}); 
+  }, 250);
+});
 
 // ----------------------------------------------------
 // GESTÃO DO PAINEL DO RECRUTADOR (RH)
