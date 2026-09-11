@@ -1164,9 +1164,116 @@ window.excluirVaga = async function(id) {
     carregarVagasDoBanco();
   }
 };
-// ----------------------------------------------------
-// INICIALIZAÇÃO DE SESSÃO AUTOMÁTICA
-// ----------------------------------------------------
+
+// ==========================================
+// MOTOR: MÚLTIPLAS CIDADES & DROPDOWNS LUXO
+// ==========================================
+let cidadesSelecionadas = [];
+
+window.adicionarCidade = function(cidade) {
+  if (!cidadesSelecionadas.includes(cidade)) {
+    cidadesSelecionadas.push(cidade);
+    renderizarCidades();
+  }
+  document.getElementById('nv-local-input').value = '';
+  document.getElementById('dropdown-wrapper').classList.add('hidden');
+};
+
+window.removerCidade = function(cidade) {
+  cidadesSelecionadas = cidadesSelecionadas.filter(c => c !== cidade);
+  renderizarCidades();
+};
+
+window.renderizarCidades = function() {
+  const container = document.getElementById('cidades-selecionadas-container');
+  if (!container) return;
+  container.innerHTML = '';
+  cidadesSelecionadas.forEach(cidade => {
+    container.innerHTML += `
+      <span class="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
+        ${cidade}
+        <button type="button" onclick="removerCidade('${cidade}')" class="hover:text-rose-400 transition-colors ml-1"><i class="ph ph-x text-sm"></i></button>
+      </span>`;
+  });
+};
+
+// Motor automático que transforma os <select> normais no visual de luxo
+window.transformarSelectsEmCustom = function() {
+  document.querySelectorAll('.select-customizado').forEach(select => {
+    if (select.dataset.customizado === 'true') return;
+    select.dataset.customizado = 'true';
+    
+    // Esconde o feio, mas mantém para o banco validar
+    select.classList.add('opacity-0', 'absolute', 'w-0', 'h-0', '-z-10');
+    
+    const wrapper = document.createElement('div');
+    wrapper.className = 'relative w-full';
+    select.parentNode.insertBefore(wrapper, select);
+    wrapper.appendChild(select);
+    
+    const trigger = document.createElement('div');
+    trigger.className = 'w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-4 pr-10 py-3 text-sm focus-within:border-emerald-500 transition-all cursor-pointer flex items-center justify-between shadow-inner hover:border-emerald-500/50';
+    
+    const valorAtual = select.options[select.selectedIndex]?.text || 'Selecione...';
+    const corTexto = select.value ? 'text-white font-bold' : 'text-slate-500';
+    trigger.innerHTML = `<span class="select-value truncate ${corTexto}">${valorAtual}</span> <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg pointer-events-none"></i>`;
+    
+    const dropdown = document.createElement('div');
+    dropdown.className = 'absolute left-0 top-[calc(100%+8px)] w-full bg-slate-900 border border-emerald-500/50 rounded-xl shadow-[0_10px_30px_rgba(16,185,129,0.15)] hidden z-[60] overflow-hidden custom-dropdown-box';
+    
+    const ul = document.createElement('ul');
+    ul.className = 'max-h-48 overflow-y-auto menu-scroll divide-y divide-slate-800';
+    
+    Array.from(select.options).forEach(opt => {
+      if (opt.disabled) return;
+      const li = document.createElement('li');
+      li.className = 'px-4 py-2.5 text-sm font-bold text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-400 cursor-pointer transition-colors';
+      li.innerText = opt.text;
+      li.onclick = (e) => {
+        e.stopPropagation();
+        select.value = opt.value;
+        trigger.querySelector('.select-value').innerText = opt.text;
+        trigger.querySelector('.select-value').classList.remove('text-slate-500');
+        trigger.querySelector('.select-value').classList.add('text-white', 'font-bold');
+        dropdown.classList.add('hidden');
+        select.dispatchEvent(new Event('change'));
+      };
+      ul.appendChild(li);
+    });
+    
+    dropdown.appendChild(ul);
+    wrapper.appendChild(trigger);
+    wrapper.appendChild(dropdown);
+    
+    trigger.onclick = (e) => {
+      e.stopPropagation();
+      document.querySelectorAll('.custom-dropdown-box').forEach(d => {
+         if(d !== dropdown) d.classList.add('hidden');
+      });
+      dropdown.classList.toggle('hidden');
+    };
+    
+    // Sincroniza via código (se editar a vaga)
+    select.addEventListener('change', () => {
+      const opt = select.options[select.selectedIndex];
+      if(opt && opt.value) {
+        trigger.querySelector('.select-value').innerText = opt.text;
+        trigger.querySelector('.select-value').classList.remove('text-slate-500');
+        trigger.querySelector('.select-value').classList.add('text-white', 'font-bold');
+      } else {
+        trigger.querySelector('.select-value').innerText = 'Selecione...';
+        trigger.querySelector('.select-value').classList.remove('text-white', 'font-bold');
+        trigger.querySelector('.select-value').classList.add('text-slate-500');
+      }
+    });
+  });
+  
+  // Fecha ao clicar fora
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.custom-dropdown-box').forEach(d => d.classList.add('hidden'));
+  });
+};
+
 // ----------------------------------------------------
 // INICIALIZAÇÃO DE SESSÃO AUTOMÁTICA
 // ----------------------------------------------------
@@ -1238,7 +1345,6 @@ window.inserirTemplateEditor = function(tipo) {
     textarea.value += templates[tipo];
     textarea.focus();
   }
-  transformarSelectsEmCustom();
 };
 
 // ----------------------------------------------------
