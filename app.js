@@ -519,9 +519,11 @@ window.criarNovaVaga = async function(e) {
     const contrato = document.getElementById('nv-contrato').value;
     const modelo = document.getElementById('nv-modelo').value;
     const escala = document.getElementById('nv-escala').value;
-    const local = document.getElementById('nv-local').value;
     const pcd = document.getElementById('nv-pcd').checked;
     const tem_beneficios = document.getElementById('nv-beneficios').checked;
+
+    const local = cidadesSelecionadas.join(';'); // Salva as cidades separadas por ponto e vírgula
+    if (!local) { mostrarToast("Adicione pelo menos uma cidade!", "error"); return; }
     
     // Capturando os campos novos
     const jornada = document.getElementById('nv-jornada')?.value || '';
@@ -627,6 +629,17 @@ window.adicionarVagaNaTela = function(vaga) {
     tagsHtml += `<span class="text-[9px] font-black text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-md border border-purple-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-gift text-xs"></i> + BENEFÍCIOS</span>`;
   }
 
+  // 🔥 Tratamento para Múltiplas Localidades (NOVO)
+  let localTexto = vaga.local || '';
+  if (localTexto.includes(';')) {
+    const arrayCidades = localTexto.split(';');
+    if (arrayCidades.length > 2) {
+       localTexto = `Várias Localidades <span class="bg-indigo-500/20 text-indigo-400 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ml-1">+${arrayCidades.length} Cidades</span>`;
+    } else {
+       localTexto = arrayCidades.join(' • '); // Se forem só duas, mostra as duas separadas por um pontinho
+    }
+  }
+
   // Guardando objeto vaga como string segura para o modal
   const vagaJsonStr = encodeURIComponent(JSON.stringify(vaga));
 
@@ -651,8 +664,8 @@ window.adicionarVagaNaTela = function(vaga) {
       <h3 class="text-xl font-black text-white group-hover:text-indigo-300 transition-colors leading-tight flex items-center gap-2">
         ${vaga.titulo} <i class="ph ${iconArea} text-xl" title="${vaga.area}"></i>
       </h3>
-      <p class="text-xs text-slate-400 font-medium flex items-center gap-1.5 mt-2">
-        <i class="ph ph-map-pin text-indigo-400 text-sm"></i> ${vaga.local} <span class="text-slate-600">•</span> <span class="text-indigo-400 font-bold">A 2,5km de você</span>
+      <p class="text-xs text-slate-400 font-medium flex items-center gap-1.5 mt-2 flex-wrap">
+        <i class="ph ph-map-pin text-indigo-400 text-sm"></i> ${localTexto} <span class="text-slate-600 hidden sm:inline">•</span> <span class="text-indigo-400 font-bold hidden sm:inline">A 2,5km de você</span>
       </p>
     </div>
 
@@ -1019,9 +1032,8 @@ window.filtrarCidadesCustom = async function() {
       li.innerText = cidade;
       
       li.onclick = function() {
-        input.value = cidade;
-        wrapper.classList.add('hidden');
-      };
+      adicionarCidade(cidade); // ISSO MUDA AQUI!
+        };
       dropdown.appendChild(li);
     });
   }
@@ -1226,6 +1238,7 @@ window.inserirTemplateEditor = function(tipo) {
     textarea.value += templates[tipo];
     textarea.focus();
   }
+  transformarSelectsEmCustom();
 };
 
 // ----------------------------------------------------
