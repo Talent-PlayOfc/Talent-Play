@@ -1148,7 +1148,7 @@ window.inserirTemplateEditor = function(tipo) {
   let template = '';
 
   const templates = {
-    'quem_somos': `🏢 Quem Somos:\nNossa cultura, nossa missão e por que você vai amar trabalhar aqui.\n`,
+    'quem_somos': `\n\n🏢 Quem Somos:\nNossa cultura, nossa missão e por que você vai amar trabalhar aqui.\n`,
     'responsalidades': `\n\n📌 Principais Responsabilidades:\n• \n• `,
     'desafios': `\n\n🚀 Desafios da Posição:\n• O que você vai resolver nos primeiros 90 dias...\n• `,
     'requisitos': `\n\n🎯 Requisitos (O que você precisa saber):\n• \n• `,
