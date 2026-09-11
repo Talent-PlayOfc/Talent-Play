@@ -571,6 +571,12 @@ window.criarNovaVaga = async function(e) {
     const idiomas = document.getElementById('nv-idiomas')?.value || '';
     const hard_skills = document.getElementById('nv-hard-skills')?.value || '';
     const soft_skills = document.getElementById('nv-soft-skills')?.value || '';
+    const numero_vagas = parseInt(document.getElementById('nv-vagas')?.value) || 1;
+    const tempo_experiencia = document.getElementById('nv-experiencia')?.value || '';
+    const receber_notificacoes = document.getElementById('nv-notificacoes')?.checked || false;
+    const vaga_urgente = document.getElementById('nv-urgente')?.checked || false;
+    
+    const lista_beneficios = Array.from(document.querySelectorAll('.nv-bene-check:checked')).map(cb => cb.value).join(' • ');
     
     const local = cidadesSelecionadas.join(';'); // Salva as cidades separadas por ponto e vírgula
     if (!local) { mostrarToast("Adicione pelo menos uma cidade!", "error"); return; }
@@ -593,8 +599,9 @@ window.criarNovaVaga = async function(e) {
     const dadosVaga = {
       empresa, titulo, area, descricao, nivel, contrato, modelo, local, escala,
       salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria,
-      criador_id: user.id, tem_beneficios, jornada, escolaridade, cnh, veiculo, viagens, mudanca,
-      idiomas, hard_skills, soft_skills
+      criador_id: user.id, jornada, escolaridade, cnh, veiculo, viagens, mudanca,
+      idiomas, hard_skills, soft_skills, 
+      numero_vagas, tempo_experiencia, lista_beneficios, receber_notificacoes, vaga_urgente
     };
 
     if (vagaEmEdicaoId) {
@@ -643,6 +650,12 @@ window.adicionarVagaNaTela = function(vaga) {
   const logoHtml = vaga.empresa_logo 
     ? `<img src="${vaga.empresa_logo}" class="w-full h-full object-cover">` 
     : `<i class="ph ph-buildings text-slate-500"></i>`;
+
+  // 🔥 LÓGICA DO BADGE URGENTE (NOVO)
+  let badgeUrgenteHtml = '<div class="absolute -right-12 top-6 w-40 bg-emerald-500 text-white text-[10px] font-black py-1.5 text-center uppercase tracking-widest rotate-45 shadow-lg z-10 pointer-events-none">Nova</div>';
+  if (vaga.vaga_urgente) {
+      badgeUrgenteHtml = `<div class="absolute -left-12 top-6 w-40 bg-gradient-to-r from-orange-600 to-amber-500 text-white text-[10px] font-black py-1.5 text-center uppercase tracking-widest -rotate-45 shadow-[0_0_20px_rgba(249,115,22,0.5)] z-10 pointer-events-none flex items-center justify-center gap-1"><i class="ph ph-rocket-launch"></i> Urgente</div>`;
+  }
   
   // Tratamento Inteligente do Salário para o Card
   let badgeSalarioHtml = '';
