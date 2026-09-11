@@ -419,6 +419,7 @@ window.prepararNovaVaga = function() {
   document.getElementById('nv-area-input').value = '';
   document.getElementById('nv-sal-max').value = '';
   document.getElementById('nv-pcd').checked = false;
+  document.getElementById('nv-beneficios').checked = false;
   document.getElementById('nv-logo-preview').classList.add('hidden');
   logoVagaTemporaria = null;
   
@@ -446,6 +447,7 @@ window.editarVaga = function(vagaJsonStr) {
   document.getElementById('nv-sal-min').value = vaga.salario_min;
   document.getElementById('nv-sal-max').value = vaga.salario_max;
   document.getElementById('nv-pcd').checked = vaga.pcd;
+  document.getElementById('nv-beneficios').checked = vaga.tem_beneficios || false;
   
   logoVagaTemporaria = vaga.empresa_logo || null;
   if (logoVagaTemporaria) {
@@ -493,6 +495,7 @@ window.criarNovaVaga = async function(e) {
     const salario_min = document.getElementById('nv-sal-min').value;
     const salario_max = document.getElementById('nv-sal-max').value;
     const pcd = document.getElementById('nv-pcd').checked;
+    const tem_beneficios = document.getElementById('nv-beneficios').checked;
 
     const testesMarcados = Array.from(document.querySelectorAll('.nv-testes:checked')).map(cb => cb.value).join(' + ');
     const testesFinal = testesMarcados || 'Análise Curricular';
@@ -500,7 +503,7 @@ window.criarNovaVaga = async function(e) {
     const dadosVaga = {
       empresa, titulo, area, descricao, nivel, contrato, modelo, local, escala,
       salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria,
-      criador_id: user.id
+      criador_id: user.id, tem_beneficios
     };
 
     if (vagaEmEdicaoId) {
@@ -560,6 +563,9 @@ window.adicionarVagaNaTela = function(vaga) {
   `;
   if (vaga.pcd) {
     tagsHtml += `<span class="text-[9px] font-black text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md border border-blue-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-wheelchair text-xs"></i> PCD</span>`;
+  if (vaga.tem_beneficios) {
+  tagsHtml += `<span class="text-[9px] font-black text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-md border border-purple-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-gift text-xs"></i> + BENEFÍCIOS</span>`;
+}
   }
 
   // Guardando objeto vaga como string segura para o modal
