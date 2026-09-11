@@ -652,14 +652,51 @@
           <div class="bg-slate-950 border border-slate-700 focus-within:border-emerald-500 rounded-2xl overflow-hidden transition-all shadow-inner">
             
             <!-- Barra de Ferramentas Aurora Boreal (Verdes/Esmeralda) -->
-            <div class="bg-gradient-to-r from-slate-900 via-emerald-950/40 to-slate-900 px-3 py-2 border-b border-slate-800 flex flex-wrap items-center gap-1.5">
-              <button type="button" onclick="formatarEditor('bold')" title="Negrito" class="p-1.5 rounded-lg text-slate-300 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors"><i class="ph ph-text-b text-base font-bold"></i></button>
-              <button type="button" onclick="formatarEditor('bullet')" title="Lista de Tópicos" class="p-1.5 rounded-lg text-slate-300 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors"><i class="ph ph-list-bullets text-base"></i></button>
-              <div class="h-4 w-px bg-slate-800 mx-1"></div>
-              <button type="button" onclick="inserirTemplateEditor('responsalidades')" class="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 px-2 py-1 rounded-md transition-all">+ Responsabilidades</button>
-              <button type="button" onclick="inserirTemplateEditor('requisitos')" class="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 px-2 py-1 rounded-md transition-all">+ Requisitos</button>
-              <button type="button" onclick="inserirTemplateEditor('beneficios')" class="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 px-2 py-1 rounded-md transition-all">+ Benefícios</button>
-            </div>
+            <!-- Barra de Ferramentas do Editor Inteligente -->
+<div class="flex flex-wrap items-center gap-2 mb-2 p-2 bg-slate-800 rounded-lg border border-slate-700">
+  
+  <!-- Negrito, Itálico e Sublinhado -->
+  <button type="button" title="Negrito" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition-colors">
+    <i class="ph ph-text-b text-lg"></i>
+  </button>
+  <button type="button" title="Itálico" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition-colors">
+    <i class="ph ph-text-italic text-lg"></i>
+  </button>
+  <button type="button" title="Sublinhado" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition-colors">
+    <i class="ph ph-text-underline text-lg"></i>
+  </button>
+
+  <div class="w-px h-6 bg-slate-600 mx-1"></div> <!-- Divisor -->
+
+  <!-- Alinhamento de Texto -->
+  <button type="button" title="Alinhar à Esquerda" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition-colors">
+    <i class="ph ph-text-align-left text-lg"></i>
+  </button>
+  <button type="button" title="Centralizar" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition-colors">
+    <i class="ph ph-text-align-center text-lg"></i>
+  </button>
+  <button type="button" title="Alinhar à Direita" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition-colors">
+    <i class="ph ph-text-align-right text-lg"></i>
+  </button>
+
+  <div class="w-px h-6 bg-slate-600 mx-1"></div> <!-- Divisor -->
+
+  <!-- Lista de Tópicos -->
+  <button type="button" title="Lista de Tópicos" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition-colors">
+    <i class="ph ph-list-bullets text-lg"></i>
+  </button>
+
+  <div class="w-px h-6 bg-slate-600 mx-1"></div> <!-- Divisor -->
+
+  <!-- Cor da Fonte -->
+  <div class="flex items-center gap-1 px-1">
+    <label for="textColor" class="cursor-pointer p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition-colors" title="Cor da Fonte">
+      <i class="ph ph-palette text-lg"></i>
+    </label>
+    <input type="color" id="textColor" class="w-6 h-6 p-0 border-0 rounded cursor-pointer bg-transparent" value="#e2e8f0">
+  </div>
+
+</div>
 
             <!-- Textarea que expande naturalmente -->
             <textarea id="nv-descricao" rows="5" placeholder="Descreva os detalhes da oportunidade..." class="w-full bg-transparent text-white p-4 outline-none resize-y text-sm leading-relaxed" required></textarea>
