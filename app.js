@@ -1154,7 +1154,7 @@ window.inserirTemplateEditor = function(tipo) {
     'requisitos': `\n\n🎯 Requisitos (O que você precisa saber):\n• \n• `,
     'experiencias': `\n\n💡 Experiências que Valorizamos (Não é regra, mas ajuda):\n• \n• `,
     'beneficios': `\n\n🎁 Benefícios Oferecidos:\n• \n• `,
-    'diversidade': `\n\n🌈 Diversidade & Inclusão:\nAcreditamos que times plurais também constroem os melhores produtos. Todas as pessoas são bem-vindas...\n`
+    'diversidade': `\n\n🌈 Diversidade & Inclusão:\nAcreditamos que times plurais também constroem os melhores produtos. Todas as pessoas são bem-vindas.\n`
   };
 
   if (templates[tipo]) {
