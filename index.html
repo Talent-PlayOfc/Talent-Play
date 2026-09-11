@@ -1051,40 +1051,34 @@
   <!-- Modal: Detalhes da Vaga (Visão do Candidato) -->
   <div id="modal-detalhes-vaga" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[150] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity">
     <div class="absolute inset-0" onclick="fecharModal('modal-detalhes-vaga')"></div>
-    <div class="max-w-xl w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-8 transform scale-95 transition-transform" id="card-modal-detalhes-vaga">
+    
+    <!-- AQUI FOI ALTERADO: max-w-4xl, max-h-[90vh], overflow-y-auto e menu-scroll -->
+    <div class="max-w-4xl w-full bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl relative z-10 p-6 sm:p-8 transform scale-95 transition-transform max-h-[90vh] overflow-y-auto menu-scroll" id="card-modal-detalhes-vaga">
       
+      <!-- Cabeçalho Fixo do Modal -->
       <div class="flex justify-between items-start mb-6">
         <div class="flex items-center gap-4">
           <div class="w-14 h-14 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-3xl shadow-inner shrink-0">🏢</div>
           <div>
-            <h3 class="text-2xl font-black text-white leading-tight" id="detalhes-titulo">Nome da Vaga</h3>
+            <h3 class="text-2xl sm:text-3xl font-black text-white leading-tight" id="detalhes-titulo">Nome da Vaga</h3>
             <p class="text-sm font-bold text-slate-400 mt-1" id="detalhes-empresa">Nome da Empresa</p>
           </div>
         </div>
-        <button onclick="fecharModal('modal-detalhes-vaga')" class="text-slate-500 hover:text-white bg-slate-800 p-2 rounded-xl"><i class="ph ph-x font-bold"></i></button>
+        <button onclick="fecharModal('modal-detalhes-vaga')" class="text-slate-500 hover:text-white bg-slate-800 p-2 rounded-xl shrink-0"><i class="ph ph-x font-bold"></i></button>
       </div>
 
-      <div class="space-y-6">
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5">
-          <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Requisitos da Missão</p>
-          <ul class="text-sm text-slate-300 font-medium space-y-2">
-            <li class="flex items-center gap-2"><i class="ph ph-check text-emerald-400"></i> Avaliação de rotinas práticas da área.</li>
-            <li class="flex items-center gap-2"><i class="ph ph-check text-emerald-400"></i> Análise de tomada de decisão sob pressão.</li>
-          </ul>
-        </div>
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5">
-          <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">O que você ganha</p>
-          <div class="flex flex-wrap gap-2" id="detalhes-tags">
-            <!-- As tags entram aqui via Javascript -->
-          </div>
-        </div>
+      <!-- Onde o Javascript Injeta tudo (Tags, Benefícios, Descrição, etc) -->
+      <div class="space-y-6" id="detalhes-tags">
+        
       </div>
 
+      <!-- Rodapé com Botão -->
       <div class="mt-8 border-t border-slate-800 pt-6">
         <button id="btn-iniciar-missao-detalhe" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] flex items-center justify-center gap-2">
-          <i class="ph ph-play-circle text-xl"></i> Aceitar Missão e Iniciar Simulação
+          <i class="ph ph-check-square-offset text-xl"></i> Realizar Avaliações e Candidatar-se
         </button>
       </div>
+      
     </div>
   </div>
   
