@@ -1147,22 +1147,20 @@ window.inserirTemplateEditor = function(tipo) {
   const textarea = document.getElementById('nv-descricao');
   let template = '';
 
-  if (tipo === 'responsalidades') {
-    template = `\n\n📌 Principais Responsabilidades:\n• \n• `;
-  } else if (tipo === 'requisitos') {
-    template = `\n\n🎯 Requisitos e Habilidades:\n• \n• `;
-  } else if (tipo === 'beneficios') {
-    template = `\n\n🎁 Benefícios:\n• \n• `;
-  } else if (tipo === 'tecnologias') {
-    template = `\n\n💻 Tecnologias Utilizadas:\n• \n• `;
-  } else if (tipo === 'diferenciais') {
-    template = `\n\n⭐ Diferenciais:\n• \n• `;
-  } else if (tipo === 'adicionais') {
-    template = `\n\nℹ️ Informações Adicionais:\n• \n• `;
-  }
+  const templates = {
+    'quem_somos': `\n\n🏢 Quem Somos:\nNossa cultura, nossa missão e por que você vai amar trabalhar aqui...\n`,
+    'responsalidades': `\n\n📌 Principais Responsabilidades:\n• \n• `,
+    'desafios': `\n\n🚀 Desafios da Posição:\n• O que você vai resolver nos primeiros 90 dias...\n• `,
+    'requisitos': `\n\n🎯 Requisitos (O que você precisa saber):\n• \n• `,
+    'experiencias': `\n\n💡 Experiências que Valorizamos (Não é regra, mas ajuda):\n• \n• `,
+    'beneficios': `\n\n🎁 Benefícios Oferecidos:\n• \n• `,
+    'diversidade': `\n\n🌈 Diversidade & Inclusão:\nAcreditamos que times plurais constroem os melhores produtos. Todas as pessoas são bem-vindas...\n`
+  };
 
-  textarea.value += template;
-  textarea.focus();
+  if (templates[tipo]) {
+    textarea.value += templates[tipo];
+    textarea.focus();
+  }
 };
 
 // ----------------------------------------------------
