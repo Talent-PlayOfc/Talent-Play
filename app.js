@@ -479,6 +479,7 @@ window.prepararNovaVaga = function() {
   abrirModal('modal-nova-vaga');
 };
 
+
 // Preenche o modal com os dados da vaga existente
 window.editarVaga = function(vagaJsonStr) {
   const vaga = JSON.parse(decodeURIComponent(vagaJsonStr));
@@ -506,6 +507,21 @@ window.editarVaga = function(vagaJsonStr) {
   
   document.getElementById('nv-pcd').checked = vaga.pcd;
   document.getElementById('nv-beneficios').checked = vaga.tem_beneficios || false;
+
+  // Carregando os blocos novos (Experiência, Vagas, VIP)
+  if(document.getElementById('nv-experiencia')) document.getElementById('nv-experiencia').value = vaga.tempo_experiencia || 'Sem experiência prévia';
+  if(document.getElementById('nv-vagas')) document.getElementById('nv-vagas').value = vaga.numero_vagas || 1;
+  if(document.getElementById('nv-notificacoes')) document.getElementById('nv-notificacoes').checked = vaga.receber_notificacoes !== false;
+  if(document.getElementById('nv-urgente')) document.getElementById('nv-urgente').checked = vaga.vaga_urgente || false;
+
+  // Carregando os Benefícios (Marcando os checkboxes certos)
+  document.querySelectorAll('.nv-bene-check').forEach(cb => {
+    if (vaga.lista_beneficios && vaga.lista_beneficios.includes(cb.value)) {
+      cb.checked = true;
+    } else {
+      cb.checked = false;
+    }
+  });
   
   // Tratando Salário A Combinar na Edição
   const cbCombinar = document.getElementById('nv-a-combinar');
@@ -537,6 +553,7 @@ window.editarVaga = function(vagaJsonStr) {
   document.querySelector('#modal-nova-vaga button[type="submit"]').innerHTML = '<i class="ph ph-floppy-disk text-xl"></i> Salvar Alterações';
   
   abrirModal('modal-nova-vaga');
+  transformarSelectsEmCustom();
 };
 
 // Salva no Supabase (Serve tanto para UPDATE quanto INSERT)
@@ -797,15 +814,55 @@ window.abrirModalVagaDinamicamente = function(vagaJsonStr) {
   const urlVaga = `?vaga=${vaga.id}`;
   window.history.pushState({vagaId: vaga.id}, "", urlVaga);
   
+  // Montando as tags do modal (Salário, Modelo, Contrato, Nível, Experiência)
+  let tags = `
+    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">${vaga.nivel}</span>
+    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">${vaga.modelo}</span>
+    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">${vaga.contrato}</span>
+    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700"><i class="ph ph-briefcase"></i> ${vaga.tempo_experiencia || 'Sem XP Exigida'}</span>
+  `;
+
+  if (vaga.salario_min === 'A Combinar') {
+    tags += `<span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg"><i class="ph ph-handshake"></i> Salário A Combinar</span>`;
+  } else {
+    tags += `<span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg">R$ ${vaga.salario_min} - R$ ${vaga.salario_max}</span>`;
+  }
+
+  // Lista de Benefícios, se houver
+  let beneficiosHtml = '';
+  if (vaga.lista_beneficios) {
+    const benList = vaga.lista_beneficios.split(' • ').map(b => `<span class="text-xs font-bold text-pink-400 bg-pink-500/10 border border-pink-500/20 px-2 py-1 rounded-md"><i class="ph ph-check text-[10px]"></i> ${b}</span>`).join('');
+    beneficiosHtml = `
+      <div class="mt-6 pt-5 border-t border-slate-800">
+        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Benefícios Oferecidos</p>
+        <div class="flex flex-wrap gap-2">${benList}</div>
+      </div>
+    `;
+  }
+
+  // Competências Exigidas (Hard, Soft, Idiomas, CNH)
+  let extrasHtml = '';
+  if (vaga.hard_skills) extrasHtml += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><p class="text-[9px] font-black text-slate-500 uppercase mb-1">Hard Skills</p><p class="text-xs text-white font-medium">${vaga.hard_skills}</p></div>`;
+  if (vaga.soft_skills) extrasHtml += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><p class="text-[9px] font-black text-slate-500 uppercase mb-1">Soft Skills</p><p class="text-xs text-white font-medium">${vaga.soft_skills}</p></div>`;
+  if (vaga.idiomas) extrasHtml += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><p class="text-[9px] font-black text-slate-500 uppercase mb-1">Idiomas</p><p class="text-xs text-white font-medium">${vaga.idiomas}</p></div>`;
+  if (vaga.cnh && vaga.cnh !== 'Não Exigida') extrasHtml += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><p class="text-[9px] font-black text-slate-500 uppercase mb-1">CNH</p><p class="text-xs text-white font-medium">${vaga.cnh}</p></div>`;
+
+  let gridExtras = extrasHtml ? `
+    <div class="mt-6 pt-5 border-t border-slate-800">
+      <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Requisitos & Competências</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">${extrasHtml}</div>
+    </div>
+  ` : '';
+
+  // Substituindo o HTML interno
   document.getElementById('detalhes-tags').innerHTML = `
-    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg">${vaga.modelo}</span>
-    <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg">${vaga.contrato}</span>
-    <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg">R$ ${vaga.salario_min} - R$ ${vaga.salario_max}</span>
-    <div class="w-full mt-2 text-sm text-slate-400 leading-relaxed">${vaga.descricao}</div>
+    <div class="flex flex-wrap gap-2 mb-6">${tags}</div>
+    <div class="w-full text-sm text-slate-300 leading-relaxed font-medium whitespace-pre-wrap px-4 py-3 bg-slate-950/50 rounded-xl border border-slate-800/50">${vaga.descricao}</div>
+    ${gridExtras}
+    ${beneficiosHtml}
   `;
 
   const btnIniciar = document.getElementById('btn-iniciar-missao-detalhe');
-  // NOVO TEXTO DO BOTÃO!
   btnIniciar.innerHTML = `<i class="ph ph-check-square-offset text-xl"></i> Realizar Avaliações e Candidatar-se`;
   btnIniciar.onclick = function() {
     fecharModal('modal-detalhes-vaga');
