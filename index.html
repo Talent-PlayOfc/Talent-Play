@@ -641,40 +641,48 @@
           </div>
         </div>
 
-        <!-- FERRAMENTAS DO EDITOR INTELIGENTE (AURORA BOREAL) -->
-<div class="flex flex-wrap items-center gap-2 p-3 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl border border-emerald-500/30 shadow-[0_4px_20px_rgba(16,185,129,0.15)] mb-3">
-  
-  <!-- Estilos Básicos -->
-  <button type="button" title="Negrito" onclick="formatarEditor('bold')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-text-b text-lg"></i></button>
-  <button type="button" title="Itálico" onclick="formatarEditor('italic')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-text-italic text-lg"></i></button>
-  <button type="button" title="Sublinhado" onclick="formatarEditor('underline')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-text-underline text-lg"></i></button>
+        <!-- Bloco 3: Descrição e Editor Aurora Boreal -->
+        <div class="space-y-2 mt-4 mb-4">
+          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Descrição da Oportunidade <span class="text-rose-500">*</span></label>
+          
+          <!-- FERRAMENTAS DO EDITOR INTELIGENTE (AURORA BOREAL) -->
+          <div class="flex flex-wrap items-center gap-2 p-3 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl border border-emerald-500/30 shadow-[0_4px_20px_rgba(16,185,129,0.15)] mb-1">
+            
+            <!-- Estilos Básicos -->
+            <button type="button" title="Negrito" onclick="formatarEditor('bold')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-text-b text-lg"></i></button>
+            <button type="button" title="Itálico" onclick="formatarEditor('italic')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-text-italic text-lg"></i></button>
+            <button type="button" title="Sublinhado" onclick="formatarEditor('underline')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-text-underline text-lg"></i></button>
 
-  <div class="w-px h-6 bg-slate-700 mx-1"></div>
+            <div class="w-px h-6 bg-slate-700 mx-1"></div>
 
-  <!-- Alinhamento -->
-  <button type="button" title="Alinhar à Esquerda" onclick="formatarEditor('justifyLeft')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-text-align-left text-lg"></i></button>
-  <button type="button" title="Centralizar" onclick="formatarEditor('justifyCenter')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-text-align-center text-lg"></i></button>
-  
-  <div class="w-px h-6 bg-slate-700 mx-1"></div>
+            <!-- Alinhamento -->
+            <button type="button" title="Alinhar à Esquerda" onclick="formatarEditor('justifyLeft')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-text-align-left text-lg"></i></button>
+            <button type="button" title="Centralizar" onclick="formatarEditor('justifyCenter')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-text-align-center text-lg"></i></button>
+            
+            <div class="w-px h-6 bg-slate-700 mx-1"></div>
 
-  <!-- Lista -->
-  <button type="button" title="Lista de Tópicos" onclick="formatarEditor('bullet')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-list-bullets text-lg"></i></button>
-  
-  <div class="w-px h-6 bg-slate-700 mx-1 hidden md:block"></div>
+            <!-- Lista -->
+            <button type="button" title="Lista de Tópicos" onclick="formatarEditor('bullet')" class="p-2 text-slate-400 hover:text-white hover:bg-emerald-500/10 border border-transparent rounded-xl transition-all"><i class="ph ph-list-bullets text-lg"></i></button>
+            
+            <div class="w-px h-6 bg-slate-700 mx-1 hidden md:block"></div>
 
-  <!-- TEMPLATES INTELIGENTES -->
-  <span class="text-[10px] font-black text-emerald-400 uppercase tracking-widest ml-1 mr-1 hidden md:inline">Templates:</span>
-  
-  <button type="button" onclick="inserirTemplateEditor('responsalidades')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Responsabilidades</button>
-  <button type="button" onclick="inserirTemplateEditor('requisitos')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Requisitos</button>
-  <button type="button" onclick="inserirTemplateEditor('beneficios')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Benefícios</button>
-  <button type="button" onclick="inserirTemplateEditor('tecnologias')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Tecnologias</button>
-  <button type="button" onclick="inserirTemplateEditor('diferenciais')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Diferenciais</button>
-  <button type="button" onclick="inserirTemplateEditor('adicionais')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Adicionais</button>
+            <!-- TEMPLATES INTELIGENTES -->
+            <span class="text-[10px] font-black text-emerald-400 uppercase tracking-widest ml-1 mr-1 hidden md:inline">Templates:</span>
+            
+            <button type="button" onclick="inserirTemplateEditor('responsalidades')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Responsabilidades</button>
+            <button type="button" onclick="inserirTemplateEditor('requisitos')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Requisitos</button>
+            <button type="button" onclick="inserirTemplateEditor('beneficios')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Benefícios</button>
+            <button type="button" onclick="inserirTemplateEditor('tecnologias')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Tecnologias</button>
+            <button type="button" onclick="inserirTemplateEditor('diferenciais')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Diferenciais</button>
+            <button type="button" onclick="inserirTemplateEditor('adicionais')" class="px-2.5 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/30 rounded-lg transition-all">Adicionais</button>
 
-  <!-- Botão Expandir -->
-  <button type="button" onclick="abrirEditorDescricao()" class="ml-auto p-2 text-indigo-400 hover:text-white hover:bg-indigo-500/20 border border-indigo-500/30 rounded-xl transition-all shadow-md" title="Modo Foco"><i class="ph ph-arrows-out-simple text-lg"></i></button>
-</div>
+            <!-- Botão Expandir -->
+            <button type="button" onclick="abrirEditorDescricao()" class="ml-auto p-2 text-indigo-400 hover:text-white hover:bg-indigo-500/20 border border-indigo-500/30 rounded-xl transition-all shadow-md" title="Modo Foco"><i class="ph ph-arrows-out-simple text-lg"></i></button>
+          </div>
+          
+          <!-- O TEXTAREA QUE HAVIA SUMIDO -->
+          <textarea id="nv-descricao" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 h-32 focus:border-emerald-500 outline-none resize-none" placeholder="Descreva os detalhes da oportunidade..." required></textarea>
+        </div>
 
         <!-- Bloco 4: Local, Modalidade e Escala -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -754,19 +762,23 @@
           </div>
         </div>
 
-        <label class="flex items-center gap-2 cursor-pointer group pt-1 pb-2">
-          <input type="checkbox" id="nv-pcd" class="w-5 h-5 rounded border-slate-700 text-emerald-500 focus:ring-0 bg-slate-950">
-          <span class="text-sm font-bold text-slate-300 group-hover:text-emerald-400 transition-colors">Vaga também para PCD?</span>
-          <label class="flex items-center gap-2 cursor-pointer group mb-2 ml-4">
-  <div class="relative flex items-center justify-center">
-    <input type="checkbox" id="nv-beneficios" class="peer appearance-none w-5 h-5 border-2 border-slate-600 rounded bg-slate-900 checked:bg-purple-500 checked:border-purple-500 transition-colors">
-    <i class="ph ph-check text-white absolute opacity-0 peer-checked:opacity-100 text-sm pointer-events-none transition-opacity"></i>
-  </div>
-  <span class="text-sm font-bold text-slate-300 group-hover:text-white transition-colors flex items-center gap-1">
-    <i class="ph ph-gift text-purple-400"></i> Oferece Benefícios
-  </span>
-</label>
-   </label>
+        <!-- Checkboxes Finais (PCD e Benefícios lado a lado) -->
+<div class="flex flex-col sm:flex-row sm:items-center gap-6 pt-3 pb-4">
+  <label class="flex items-center gap-2 cursor-pointer group">
+    <input type="checkbox" id="nv-pcd" class="w-5 h-5 rounded border-slate-700 text-emerald-500 focus:ring-0 bg-slate-950">
+    <span class="text-sm font-bold text-slate-300 group-hover:text-emerald-400 transition-colors">Vaga também para PCD?</span>
+  </label>
+  
+  <label class="flex items-center gap-2 cursor-pointer group">
+    <div class="relative flex items-center justify-center">
+      <input type="checkbox" id="nv-beneficios" class="peer appearance-none w-5 h-5 border-2 border-slate-600 rounded bg-slate-900 checked:bg-purple-500 checked:border-purple-500 transition-colors">
+      <i class="ph ph-check text-white absolute opacity-0 peer-checked:opacity-100 text-sm pointer-events-none transition-opacity"></i>
+    </div>
+    <span class="text-sm font-bold text-slate-300 group-hover:text-white transition-colors flex items-center gap-1">
+      <i class="ph ph-gift text-purple-400"></i> Oferece Benefícios
+    </span>
+  </label>
+</div>
 
         <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex justify-center items-center gap-2">
           <i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade
