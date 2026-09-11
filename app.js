@@ -968,10 +968,16 @@ window.carregarCidadesIBGE = async function() {
 
 // Lista de áreas para o dropdown customizado
 const listaAreasGlobal = [
-  "Administrativo", "Tecnologia (TI)", "Saúde", "Logística / Operações",
-  "Vendas / Comercial", "Atendimento / Suporte", "Educação / Ensino",
-  "Finanças / Contabilidade", "Marketing / Comunicação", "Engenharia / Arquitetura",
-  "Recursos Humanos", "Jurídico / Compliance", "Indústria / Produção"
+  "Administração / Gestão", "Agricultura", "Veterinária", "Alimentação / Gastronomia", 
+  "Arquitetura / Design / Arte", "Atendimento", "Customer Success", "Auditoria", 
+  "Qualidade", "Ciências / Pesquisa", "Comercial / Vendas", "Comércio Exterior",  
+  "Compras / Suprimentos", "Comunicação / Mídia / TV", "Construção / Manutenção", 
+  "Contábil / Finanças / Economia", "Educação / Ensino / Idiomas", "Engenharia",  
+  "Estética / Beleza / Moda", "Hotelaria / Turismo", "Industrial / Produção / Fábrica",  
+  "Informática / TI / Tecnologia", "Jurídico", "Logística / Transportes",
+  "Marketing / Growth", "Química / Petroquímica", "Recursos Humanos (RH)",  
+  "Saúde", "Segurança", "Serviços Sociais / Comunitários", "Serviços Gerais / Operacionais",  
+  "Telemarketing / Call Center", "Outros"
 ];
 
 window.filtrarAreasCustom = function() {
