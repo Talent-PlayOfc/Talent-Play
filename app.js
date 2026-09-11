@@ -657,17 +657,27 @@ window.adicionarVagaNaTela = function(vaga) {
   if (vaga.escolaridade && vaga.escolaridade !== 'Selecione...') {
     tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-graduation-cap text-xs"></i> ${vaga.escolaridade}</span>`;
   }
+  // Lógica Inteligente para os Ícones de CNH e Operacionais
   if (vaga.cnh && vaga.cnh !== 'Não Exigida') {
-    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Habilitação Exigida"><i class="ph ph-identification-card text-xs"></i> CNH ${vaga.cnh.replace('Categoria ', '')}</span>`;
+    let iconeCnh = 'ph-identification-card';
+    if (vaga.cnh.includes('A')) iconeCnh = 'ph-motorcycle';
+    if (vaga.cnh.includes('B') && !vaga.cnh.includes('AB')) iconeCnh = 'ph-car';
+    if (vaga.cnh.includes('AB')) iconeCnh = 'ph-steering-wheel';
+    if (vaga.cnh.includes('C') || vaga.cnh.includes('D') || vaga.cnh.includes('E')) iconeCnh = 'ph-truck';
+    
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Habilitação Exigida"><i class="ph ${iconeCnh} text-xs text-indigo-400"></i> CNH ${vaga.cnh.replace('Categoria ', '')}</span>`;
   }
+  
   if (vaga.veiculo) {
-    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Exige Veículo Próprio"><i class="ph ph-car text-xs"></i> Veículo Próprio</span>`;
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Exige Veículo Próprio"><i class="ph ph-car-profile text-xs text-emerald-400"></i> Veículo Próprio</span>`;
   }
+  
   if (vaga.viagens) {
-    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Disponibilidade para Viagens"><i class="ph ph-airplane text-xs"></i> Viagens</span>`;
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Disponibilidade para Viagens"><i class="ph ph-airplane-tilt text-xs text-blue-400"></i> Viagens</span>`;
   }
+  
   if (vaga.mudanca) {
-    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Disponibilidade para Mudar de Residência"><i class="ph ph-house-line text-xs"></i> Mudança</span>`;
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Disponibilidade para Mudar de Residência"><i class="ph ph-house-line text-xs text-orange-400"></i> Mudança</span>`;
   }
   // Tag do Salário
   tagsHtml += `<span class="text-[9px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20 tracking-widest uppercase flex items-center gap-1">
