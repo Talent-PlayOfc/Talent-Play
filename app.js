@@ -1175,15 +1175,21 @@ window.onload = async function() {
 window.inserirTemplateEditor = function(tipo) {
   const textarea = document.getElementById('nv-descricao');
   let template = '';
-  
+
   if (tipo === 'responsalidades') {
-    template = `\n\n📌 Principais Responsabilidades:\n- \n- `;
+    template = `\n\n📌 Principais Responsabilidades:\n• \n• `;
   } else if (tipo === 'requisitos') {
-    template = `\n\n🎯 Requisitos e Habilidades:\n- \n- `;
+    template = `\n\n🎯 Requisitos e Habilidades:\n• \n• `;
   } else if (tipo === 'beneficios') {
-    template = `\n\n🎁 Benefícios:\n- \n- `;
+    template = `\n\n🎁 Benefícios:\n• \n• `;
+  } else if (tipo === 'tecnologias') {
+    template = `\n\n💻 Tecnologias Utilizadas:\n• \n• `;
+  } else if (tipo === 'diferenciais') {
+    template = `\n\n⭐ Diferenciais:\n• \n• `;
+  } else if (tipo === 'adicionais') {
+    template = `\n\nℹ️ Informações Adicionais:\n• \n• `;
   }
-  
+
   textarea.value += template;
   textarea.focus();
 };
