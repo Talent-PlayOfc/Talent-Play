@@ -453,6 +453,9 @@ window.prepararNovaVaga = function() {
   if(document.getElementById('nv-veiculo')) document.getElementById('nv-veiculo').checked = false;
   if(document.getElementById('nv-viagens')) document.getElementById('nv-viagens').checked = false;
   if(document.getElementById('nv-mudanca')) document.getElementById('nv-mudanca').checked = false;
+  if(document.getElementById('nv-idiomas')) document.getElementById('nv-idiomas').value = '';
+  if(document.getElementById('nv-hard-skills')) document.getElementById('nv-hard-skills').value = '';
+  if(document.getElementById('nv-soft-skills')) document.getElementById('nv-soft-skills').value = '';
   
   // Limpando os novos campos
   if(document.getElementById('nv-jornada')) document.getElementById('nv-jornada').value = '';
@@ -497,6 +500,9 @@ window.editarVaga = function(vagaJsonStr) {
   if(document.getElementById('nv-veiculo')) document.getElementById('nv-veiculo').checked = vaga.veiculo || false;
   if(document.getElementById('nv-viagens')) document.getElementById('nv-viagens').checked = vaga.viagens || false;
   if(document.getElementById('nv-mudanca')) document.getElementById('nv-mudanca').checked = vaga.mudanca || false;
+  if(document.getElementById('nv-idiomas')) document.getElementById('nv-idiomas').value = vaga.idiomas || '';
+  if(document.getElementById('nv-hard-skills')) document.getElementById('nv-hard-skills').value = vaga.hard_skills || '';
+  if(document.getElementById('nv-soft-skills')) document.getElementById('nv-soft-skills').value = vaga.soft_skills || '';
   
   document.getElementById('nv-pcd').checked = vaga.pcd;
   document.getElementById('nv-beneficios').checked = vaga.tem_beneficios || false;
@@ -562,6 +568,9 @@ window.criarNovaVaga = async function(e) {
     const veiculo = document.getElementById('nv-veiculo')?.checked || false;
     const viagens = document.getElementById('nv-viagens')?.checked || false;
     const mudanca = document.getElementById('nv-mudanca')?.checked || false;
+    const idiomas = document.getElementById('nv-idiomas')?.value || '';
+    const hard_skills = document.getElementById('nv-hard-skills')?.value || '';
+    const soft_skills = document.getElementById('nv-soft-skills')?.value || '';
     
     const local = cidadesSelecionadas.join(';'); // Salva as cidades separadas por ponto e vírgula
     if (!local) { mostrarToast("Adicione pelo menos uma cidade!", "error"); return; }
@@ -584,7 +593,8 @@ window.criarNovaVaga = async function(e) {
     const dadosVaga = {
       empresa, titulo, area, descricao, nivel, contrato, modelo, local, escala,
       salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria,
-      criador_id: user.id, tem_beneficios, jornada, escolaridade, cnh, veiculo, viagens, mudanca
+      criador_id: user.id, tem_beneficios, jornada, escolaridade, cnh, veiculo, viagens, mudanca,
+      idiomas, hard_skills, soft_skills
     };
 
     if (vagaEmEdicaoId) {
@@ -679,6 +689,17 @@ window.adicionarVagaNaTela = function(vaga) {
   if (vaga.mudanca) {
     tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Disponibilidade para Mudar de Residência"><i class="ph ph-house-line text-xs text-orange-400"></i> Mudança</span>`;
   }
+  // Tags de Idiomas e Skills
+  if (vaga.idiomas) {
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Idiomas Exigidos"><i class="ph ph-translate text-xs text-indigo-400"></i> ${vaga.idiomas}</span>`;
+  }
+  if (vaga.hard_skills) {
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Hard Skills Exigidas"><i class="ph ph-wrench text-xs text-emerald-400"></i> ${vaga.hard_skills}</span>`;
+  }
+  if (vaga.soft_skills) {
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Soft Skills Exigidas"><i class="ph ph-brain text-xs text-purple-400"></i> ${vaga.soft_skills}</span>`;
+  }
+  
   // Tag do Salário
   tagsHtml += `<span class="text-[9px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20 tracking-widest uppercase flex items-center gap-1">
     ${badgeSalarioHtml}
