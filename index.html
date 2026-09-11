@@ -728,33 +728,99 @@
           </div>
         </div>
 
-        <!-- Bloco 5: Contrato, Nível e Salários Flexíveis -->
-        <div class="grid grid-cols-2 gap-4">
+        <!-- Bloco 5: Nível, Contrato, Jornada e Escolaridade -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Nível Exigido <span class="text-rose-500">*</span></label>
-            <select id="nv-nivel" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm" required><option>Júnior (Iniciante)</option><option>Pleno (Intermediário)</option><option>Sênior (Avançado)</option></select>Master (Especialista)</option></select>
+            <div class="relative">
+              <select id="nv-nivel" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-4 pr-10 py-3 appearance-none outline-none text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer" required>
+                <option value="" disabled selected>Selecione...</option>
+                <option>Júnior (Iniciante)</option>
+                <option>Pleno (Intermediário)</option>
+                <option>Sênior (Avançado)</option>
+                <option>Master (Especialista)</option>
+              </select>
+              <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none text-lg"></i>
+            </div>
           </div>
+
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Contrato <span class="text-rose-500">*</span></label>
-            <select id="nv-contrato" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2.5 outline-none text-sm" required><option>CLT</option><option>Estágio</option><option>Trainee</option><option>PJ</option></select>Intermitente</option></select>
+            <div class="relative">
+              <select id="nv-contrato" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-4 pr-10 py-3 appearance-none outline-none text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer" required>
+                <option value="" disabled selected>Selecione...</option>
+                <option>CLT</option>
+                <option>PJ</option>
+                <option>Estágio</option>
+                <option>Trainee</option>
+                <option>Intermitente</option>
+              </select>
+              <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none text-lg"></i>
+            </div>
           </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Jornada <span class="text-rose-500">*</span></label>
+            <div class="relative">
+              <select id="nv-jornada" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-4 pr-10 py-3 appearance-none outline-none text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer" required>
+                <option value="" disabled selected>Selecione...</option>
+                <option>Período Integral</option>
+                <option>Meio Período (Manhã)</option>
+                <option>Meio Período (Tarde)</option>
+                <option>Noturno</option>
+                <option>Flexível</option>
+              </select>
+              <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none text-lg"></i>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center gap-1.5 mb-2 relative group w-max">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase m-0">Escolaridade</label>
+              <i class="ph ph-info text-indigo-400 cursor-help text-sm"></i>
+              <!-- Tooltip TalentPlay -->
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-indigo-600 text-white text-[10px] font-bold p-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl text-center leading-relaxed">
+                Dica TalentPlay: Foque nas competências reais. Diplomas nem sempre medem potencial prático!
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-indigo-600"></div>
+              </div>
+            </div>
+            <div class="relative">
+              <select id="nv-escolaridade" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-4 pr-10 py-3 appearance-none outline-none text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer" required>
+                <option value="" disabled selected>Selecione...</option>
+                <option>Não Exigida (Foco em Skills)</option>
+                <option>Ensino Médio</option>
+                <option>Técnico / Profissionalizante</option>
+                <option>Ensino Superior</option>
+                <option>Pós / Especialização</option>
+              </select>
+              <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none text-lg"></i>
+            </div>
+          </div>
+
         </div>
 
-        <!-- Seção de Salários com Checkbox "A Combinar" -->
-        <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 space-y-3">
+        <!-- Seção de Salários com Checkbox "A Combinar" Personalizado -->
+        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 space-y-4 mb-4">
           <div class="flex justify-between items-center">
-            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Salário / Remuneração</label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" id="nv-a-combinar" onchange="alternarSalarioCombinar(this)" class="w-4 h-4 rounded border-slate-700 text-emerald-500 bg-slate-900 focus:ring-0">
-              <span class="text-xs font-bold text-emerald-400">Salário a Combinar</span>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Salário / Remuneração <span class="text-rose-500">*</span></label>
+            <label class="flex items-center gap-2 cursor-pointer group">
+              <div class="relative flex items-center justify-center">
+                <input type="checkbox" id="nv-a-combinar" onchange="alternarSalarioCombinar(this)" class="peer appearance-none w-5 h-5 border-2 border-slate-600 rounded bg-slate-900 checked:bg-emerald-500 checked:border-emerald-500 transition-colors">
+                <i class="ph ph-check text-white absolute opacity-0 peer-checked:opacity-100 text-sm pointer-events-none transition-opacity"></i>
+              </div>
+              <span class="text-xs font-bold text-slate-300 group-hover:text-emerald-400 transition-colors">A Combinar</span>
             </label>
           </div>
-          <div class="grid grid-cols-2 gap-4" id="container-inputs-salario">
-            <div>
-              <input type="number" id="nv-sal-min" placeholder="Mínimo (R$)" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-sm outline-none focus:border-emerald-500" required>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="container-inputs-salario">
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">R$</span>
+              <input type="number" id="nv-sal-min" placeholder="Mínimo" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-11 pr-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all" required>
             </div>
-            <div>
-              <input type="number" id="nv-sal-max" placeholder="Máximo (R$)" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-sm outline-none focus:border-emerald-500" required>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">R$</span>
+              <input type="number" id="nv-sal-max" placeholder="Máximo" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-11 pr-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all" required>
             </div>
           </div>
         </div>
