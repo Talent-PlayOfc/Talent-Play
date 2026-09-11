@@ -1148,13 +1148,13 @@ window.inserirTemplateEditor = function(tipo) {
   let template = '';
 
   const templates = {
-    'quem_somos': `\n\n🏢 Quem Somos:\nNossa cultura, nossa missão e por que você vai amar trabalhar aqui...\n`,
+    'quem_somos': `🏢 Quem Somos:\nNossa cultura, nossa missão e por que você vai amar trabalhar aqui.\n`,
     'responsalidades': `\n\n📌 Principais Responsabilidades:\n• \n• `,
     'desafios': `\n\n🚀 Desafios da Posição:\n• O que você vai resolver nos primeiros 90 dias...\n• `,
     'requisitos': `\n\n🎯 Requisitos (O que você precisa saber):\n• \n• `,
     'experiencias': `\n\n💡 Experiências que Valorizamos (Não é regra, mas ajuda):\n• \n• `,
     'beneficios': `\n\n🎁 Benefícios Oferecidos:\n• \n• `,
-    'diversidade': `\n\n🌈 Diversidade & Inclusão:\nAcreditamos que times plurais constroem os melhores produtos. Todas as pessoas são bem-vindas...\n`
+    'diversidade': `\n\n🌈 Diversidade & Inclusão:\nAcreditamos que times plurais também constroem os melhores produtos. Todas as pessoas são bem-vindas...\n`
   };
 
   if (templates[tipo]) {
