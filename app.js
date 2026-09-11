@@ -416,6 +416,7 @@ window.prepararNovaVaga = function() {
   document.getElementById('nv-descricao').value = '';
   document.getElementById('nv-local').value = '';
   document.getElementById('nv-sal-min').value = '';
+  document.getElementById('nv-area-input').value = '';
   document.getElementById('nv-sal-max').value = '';
   document.getElementById('nv-pcd').checked = false;
   document.getElementById('nv-logo-preview').classList.add('hidden');
@@ -436,11 +437,10 @@ window.editarVaga = function(vagaJsonStr) {
   
   document.getElementById('nv-empresa').value = vaga.empresa;
   document.getElementById('nv-titulo').value = vaga.titulo;
-  document.getElementById('nv-area').value = vaga.area;
   document.getElementById('nv-descricao').value = vaga.descricao;
   document.getElementById('nv-modelo').value = vaga.modelo;
   document.getElementById('nv-local').value = vaga.local;
-  
+  document.getElementById('nv-area-input').value = vaga.area;
   document.getElementById('nv-nivel').value = vaga.nivel;
   document.getElementById('nv-contrato').value = vaga.contrato;
   document.getElementById('nv-sal-min').value = vaga.salario_min;
@@ -483,7 +483,7 @@ window.criarNovaVaga = async function(e) {
 
     const empresa = document.getElementById('nv-empresa').value;
     const titulo = document.getElementById('nv-titulo').value;
-    const area = document.getElementById('nv-area').value;
+    const area = document.getElementById('nv-area-input').value;
     const descricao = document.getElementById('nv-descricao').value;
     const nivel = document.getElementById('nv-nivel').value;
     const contrato = document.getElementById('nv-contrato').value;
@@ -888,6 +888,45 @@ window.carregarCidadesIBGE = async function() {
   }
 };
 
+// Lista de áreas para o dropdown customizado
+const listaAreasGlobal = [
+  "Administrativo", "Tecnologia (TI)", "Saúde", "Logística / Operações",
+  "Vendas / Comercial", "Atendimento / Suporte", "Educação / Ensino",
+  "Finanças / Contabilidade", "Marketing / Comunicação", "Engenharia / Arquitetura",
+  "Recursos Humanos", "Jurídico / Compliance", "Indústria / Produção"
+];
+
+window.filtrarAreasCustom = function() {
+  const input = document.getElementById('nv-area-input');
+  const wrapper = document.getElementById('dropdown-area-wrapper');
+  const dropdown = document.getElementById('dropdown-areas');
+  
+  if (!dropdown || !wrapper || !input) return;
+  
+  const valorDigitado = removerAcentos(input.value);
+  dropdown.innerHTML = '';
+  
+  const filtradas = listaAreasGlobal.filter(a => removerAcentos(a).includes(valorDigitado));
+  
+  if (filtradas.length === 0) {
+    dropdown.innerHTML = `<li class="px-4 py-3 text-sm text-slate-500 italic text-center">Nenhuma área encontrada</li>`;
+  } else {
+    filtradas.forEach(area => {
+      const li = document.createElement('li');
+      li.className = "px-4 py-2.5 text-sm font-bold text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-400 cursor-pointer transition-colors";
+      li.innerText = area;
+      
+      li.onclick = function() {
+        input.value = area;
+        wrapper.classList.add('hidden');
+      };
+      dropdown.appendChild(li);
+    });
+  }
+  
+  wrapper.classList.remove('hidden');
+};
+
 window.filtrarCidadesCustom = async function() {
   const input = document.getElementById('nv-local');
   const wrapper = document.getElementById('dropdown-wrapper');
@@ -927,10 +966,18 @@ window.filtrarCidadesCustom = async function() {
 
 // 1. Fecha a lista se clicar fora
 document.addEventListener('click', function(e) {
-  const input = document.getElementById('nv-local');
-  const wrapper = document.getElementById('dropdown-wrapper');
-  if (input && wrapper && e.target !== input && !wrapper.contains(e.target)) {
-    wrapper.classList.add('hidden');
+  // Fecha dropdown de cidade
+  const inputLocal = document.getElementById('nv-local');
+  const wrapperLocal = document.getElementById('dropdown-wrapper');
+  if (inputLocal && wrapperLocal && e.target !== inputLocal && !wrapperLocal.contains(e.target)) {
+    wrapperLocal.classList.add('hidden');
+  }
+  
+  // Fecha dropdown de área
+  const inputArea = document.getElementById('nv-area-input');
+  const wrapperArea = document.getElementById('dropdown-area-wrapper');
+  if (inputArea && wrapperArea && e.target !== inputArea && !wrapperArea.contains(e.target)) {
+    wrapperArea.classList.add('hidden');
   }
 });
 
