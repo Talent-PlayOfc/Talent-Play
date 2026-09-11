@@ -857,7 +857,62 @@
 
         </div>
 
-        <!-- Bloco 7: Avaliações e PCD -->
+        <!-- Bloco 7: Habilidades e Idiomas -->
+        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 space-y-4 mb-4">
+          <div class="flex items-center gap-2 border-b border-slate-800/80 pb-3 mb-2">
+            <i class="ph ph-brain text-indigo-500 text-lg"></i>
+            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest m-0">Competências & Idiomas</h4>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            
+            <!-- Idiomas -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Idiomas Exigidos</label>
+              <div class="relative">
+                <i class="ph ph-translate absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                <input type="text" id="nv-idiomas" placeholder="Ex: Inglês Intermediário" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+              </div>
+            </div>
+
+            <!-- Hard Skills com Tooltip -->
+            <div>
+              <div class="flex items-center gap-1.5 mb-2 relative group w-max">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase m-0">Hard Skills</label>
+                <i class="ph ph-info text-emerald-400 cursor-help text-sm"></i>
+                <!-- Tooltip Educativo -->
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-slate-800 text-white text-[10px] font-medium p-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl leading-relaxed border border-slate-600">
+                  <strong class="text-emerald-400 block mb-1">Competências Técnicas:</strong> Ferramentas, softwares e conhecimentos teóricos (Ex: Excel, Python, CorelDraw).
+                  <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-600"></div>
+                </div>
+              </div>
+              <div class="relative">
+                 <i class="ph ph-wrench absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                 <input type="text" id="nv-hard-skills" placeholder="Ex: Pacote Office, Power BI" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
+              </div>
+            </div>
+
+            <!-- Soft Skills com Tooltip -->
+            <div>
+              <div class="flex items-center gap-1.5 mb-2 relative group w-max">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase m-0">Soft Skills</label>
+                <i class="ph ph-info text-purple-400 cursor-help text-sm"></i>
+                <!-- Tooltip Educativo -->
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-slate-800 text-white text-[10px] font-medium p-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl leading-relaxed border border-slate-600">
+                  <strong class="text-purple-400 block mb-1">Habilidades Comportamentais:</strong> Relacionamento, inteligência emocional e atitudes (Ex: Liderança, Comunicação, Resiliência).
+                  <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-600"></div>
+                </div>
+              </div>
+              <div class="relative">
+                 <i class="ph ph-users-three absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                 <input type="text" id="nv-soft-skills" placeholder="Ex: Comunicação, Liderança" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
+              </div>
+            </div>
+
+          </div>
+        </div>
+        
+        <!-- Bloco 8: Avaliações e PCD -->
         <div class="bg-emerald-950/20 border border-emerald-500/20 rounded-2xl p-4">
           <label class="block text-xs font-bold text-emerald-400 uppercase mb-3">Avaliações Exigidas (Opcional)</label>
           <div class="flex flex-wrap gap-3">
