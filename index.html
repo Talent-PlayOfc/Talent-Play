@@ -629,7 +629,16 @@
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Área / Setor <span class="text-rose-500">*</span></label>
-           <select id="nv-area" class="w-full bg-slate-950 border border-emerald-500/50 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none transition-colors" required>
+           <div class="relative">
+  <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Área / Setor <span class="text-rose-500">*</span></label>
+  <div class="relative">
+    <input type="text" id="nv-area-input" autocomplete="off" placeholder="Selecione ou digite a área..." class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-4 pr-10 py-3 focus:border-emerald-500 outline-none transition-colors cursor-text focus:ring-1 focus:ring-emerald-500" required>
+    <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"></i>
+  </div>
+  <div id="dropdown-area-wrapper" class="absolute left-0 top-[calc(100%+8px)] w-full bg-slate-900 border border-emerald-500/50 rounded-xl shadow-[0_10px_30px_rgba(16,185,129,0.15)] hidden z-50 overflow-hidden">
+    <ul id="dropdown-areas" class="max-h-48 overflow-y-auto menu-scroll divide-y divide-slate-800"></ul>
+  </div>
+</div>
               <option value="Administrativo">Administrativo</option>
               <option value="Tecnologia">Tecnologia (TI)</option>
               <option value="Saúde">Saúde</option>
