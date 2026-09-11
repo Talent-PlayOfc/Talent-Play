@@ -815,55 +815,46 @@
           </div>
         </div>
 
-        <!-- Bloco 6: Filtros Operacionais (CNH, Veículo, Viagens) -->
-        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 space-y-4 mb-4">
-          <div class="flex items-center gap-2 border-b border-slate-800/80 pb-3 mb-2">
-            <i class="ph ph-steering-wheel text-emerald-500 text-lg"></i>
-            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest m-0">Filtros Operacionais</h4>
+        <!-- Bloco 6: Filtros Operacionais (COMPACTO COM ÍCONES) -->
+        <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800 mb-4 flex flex-col xl:flex-row gap-4 items-start xl:items-center">
+          
+          <div class="flex items-center gap-1.5 shrink-0">
+            <i class="ph ph-sliders text-emerald-500 text-base"></i>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Filtros:</span>
           </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-            
-            <!-- CNH Inteligente -->
-            <div>
-              <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Habilitação (CNH)</label>
-              <select id="nv-cnh" class="select-customizado w-full" required>
-                <option value="Não Exigida" selected>Não Exigida</option>
-                <option value="Categoria A">Categoria A (Moto)</option>
-                <option value="Categoria B">Categoria B (Carro)</option>
-                <option value="Categoria AB">Categoria AB (Moto e Carro)</option>
-                <option value="Categoria C">Categoria C (Caminhão)</option>
-                <option value="Categoria D">Categoria D (Ônibus/Van)</option>
-                <option value="Categoria E">Categoria E (Carreta pesada)</option>
+          
+          <div class="flex flex-wrap items-center gap-3 w-full">
+            <!-- CNH Compacta -->
+            <div class="w-full sm:w-48 relative">
+              <select id="nv-cnh" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg pl-3 pr-8 py-2 appearance-none outline-none text-xs focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer" required>
+                <option value="Não Exigida" selected>CNH: Não Exige</option>
+                <option value="Categoria A">CNH A (Moto)</option>
+                <option value="Categoria B">CNH B (Carro)</option>
+                <option value="Categoria AB">CNH AB (Moto/Carro)</option>
+                <option value="Categoria C">CNH C (Caminhão)</option>
+                <option value="Categoria D">CNH D (Ônibus/Van)</option>
+                <option value="Categoria E">CNH E (Carreta)</option>
               </select>
+              <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none text-sm"></i>
             </div>
 
-            <!-- Botões Toggle de Luxo -->
-            <label class="flex items-center gap-3 cursor-pointer group p-3 bg-slate-900 border border-slate-700 rounded-xl hover:border-emerald-500/50 transition-all h-[46px]">
-              <div class="relative flex items-center justify-center">
-                <input type="checkbox" id="nv-veiculo" class="peer appearance-none w-5 h-5 border-2 border-slate-600 rounded bg-slate-950 checked:bg-emerald-500 checked:border-emerald-500 transition-colors">
-                <i class="ph ph-check text-white absolute opacity-0 peer-checked:opacity-100 text-sm pointer-events-none transition-opacity"></i>
-              </div>
-              <span class="text-xs font-bold text-slate-300 group-hover:text-emerald-400 transition-colors">Veículo Próprio</span>
+            <!-- Botões Compactos Modernos -->
+            <label class="flex items-center gap-1.5 cursor-pointer group px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg hover:border-emerald-500/50 transition-all">
+              <input type="checkbox" id="nv-veiculo" class="w-3.5 h-3.5 rounded border-slate-600 text-emerald-500 bg-slate-900 focus:ring-0">
+              <span class="text-[11px] font-bold text-slate-300 group-hover:text-emerald-400 flex items-center gap-1"><i class="ph ph-car text-sm"></i> Veículo</span>
             </label>
 
-            <label class="flex items-center gap-3 cursor-pointer group p-3 bg-slate-900 border border-slate-700 rounded-xl hover:border-emerald-500/50 transition-all h-[46px]">
-              <div class="relative flex items-center justify-center">
-                <input type="checkbox" id="nv-viagens" class="peer appearance-none w-5 h-5 border-2 border-slate-600 rounded bg-slate-950 checked:bg-emerald-500 checked:border-emerald-500 transition-colors">
-                <i class="ph ph-check text-white absolute opacity-0 peer-checked:opacity-100 text-sm pointer-events-none transition-opacity"></i>
-              </div>
-              <span class="text-xs font-bold text-slate-300 group-hover:text-emerald-400 transition-colors">Disp. p/ Viagens</span>
+            <label class="flex items-center gap-1.5 cursor-pointer group px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg hover:border-emerald-500/50 transition-all">
+              <input type="checkbox" id="nv-viagens" class="w-3.5 h-3.5 rounded border-slate-600 text-emerald-500 bg-slate-900 focus:ring-0">
+              <span class="text-[11px] font-bold text-slate-300 group-hover:text-emerald-400 flex items-center gap-1"><i class="ph ph-airplane-tilt text-sm"></i> Viagens</span>
             </label>
 
-            <label class="flex items-center gap-3 cursor-pointer group p-3 bg-slate-900 border border-slate-700 rounded-xl hover:border-emerald-500/50 transition-all h-[46px]">
-              <div class="relative flex items-center justify-center">
-                <input type="checkbox" id="nv-mudanca" class="peer appearance-none w-5 h-5 border-2 border-slate-600 rounded bg-slate-950 checked:bg-emerald-500 checked:border-emerald-500 transition-colors">
-                <i class="ph ph-check text-white absolute opacity-0 peer-checked:opacity-100 text-sm pointer-events-none transition-opacity"></i>
-              </div>
-              <span class="text-xs font-bold text-slate-300 group-hover:text-emerald-400 transition-colors">Disp. p/ Mudança</span>
+            <label class="flex items-center gap-1.5 cursor-pointer group px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg hover:border-emerald-500/50 transition-all">
+              <input type="checkbox" id="nv-mudanca" class="w-3.5 h-3.5 rounded border-slate-600 text-emerald-500 bg-slate-900 focus:ring-0">
+              <span class="text-[11px] font-bold text-slate-300 group-hover:text-emerald-400 flex items-center gap-1"><i class="ph ph-house-line text-sm"></i> Mudança</span>
             </label>
-
           </div>
+
         </div>
 
         <!-- Bloco 7: Avaliações e PCD -->
