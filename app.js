@@ -449,6 +449,10 @@ window.prepararNovaVaga = function() {
   if(document.getElementById('nv-sal-max')) document.getElementById('nv-sal-max').value = '';
   if(document.getElementById('nv-pcd')) document.getElementById('nv-pcd').checked = false;
   if(document.getElementById('nv-beneficios')) document.getElementById('nv-beneficios').checked = false;
+  if(document.getElementById('nv-cnh')) document.getElementById('nv-cnh').value = 'Não Exigida';
+  if(document.getElementById('nv-veiculo')) document.getElementById('nv-veiculo').checked = false;
+  if(document.getElementById('nv-viagens')) document.getElementById('nv-viagens').checked = false;
+  if(document.getElementById('nv-mudanca')) document.getElementById('nv-mudanca').checked = false;
   
   // Limpando os novos campos
   if(document.getElementById('nv-jornada')) document.getElementById('nv-jornada').value = '';
@@ -489,6 +493,10 @@ window.editarVaga = function(vagaJsonStr) {
   // Lendo os novos campos
   if(document.getElementById('nv-jornada')) document.getElementById('nv-jornada').value = vaga.jornada || '';
   if(document.getElementById('nv-escolaridade')) document.getElementById('nv-escolaridade').value = vaga.escolaridade || '';
+  if(document.getElementById('nv-cnh')) document.getElementById('nv-cnh').value = vaga.cnh || 'Não Exigida';
+  if(document.getElementById('nv-veiculo')) document.getElementById('nv-veiculo').checked = vaga.veiculo || false;
+  if(document.getElementById('nv-viagens')) document.getElementById('nv-viagens').checked = vaga.viagens || false;
+  if(document.getElementById('nv-mudanca')) document.getElementById('nv-mudanca').checked = vaga.mudanca || false;
   
   document.getElementById('nv-pcd').checked = vaga.pcd;
   document.getElementById('nv-beneficios').checked = vaga.tem_beneficios || false;
@@ -550,7 +558,11 @@ window.criarNovaVaga = async function(e) {
     const escala = document.getElementById('nv-escala').value;
     const pcd = document.getElementById('nv-pcd').checked;
     const tem_beneficios = document.getElementById('nv-beneficios').checked;
-
+    const cnh = document.getElementById('nv-cnh')?.value || 'Não Exigida';
+    const veiculo = document.getElementById('nv-veiculo')?.checked || false;
+    const viagens = document.getElementById('nv-viagens')?.checked || false;
+    const mudanca = document.getElementById('nv-mudanca')?.checked || false;
+    
     const local = cidadesSelecionadas.join(';'); // Salva as cidades separadas por ponto e vírgula
     if (!local) { mostrarToast("Adicione pelo menos uma cidade!", "error"); return; }
     
@@ -572,7 +584,7 @@ window.criarNovaVaga = async function(e) {
     const dadosVaga = {
       empresa, titulo, area, descricao, nivel, contrato, modelo, local, escala,
       salario_min, salario_max, pcd, testes: testesFinal, empresa_logo: logoVagaTemporaria,
-      criador_id: user.id, tem_beneficios, jornada, escolaridade
+      criador_id: user.id, tem_beneficios, jornada, escolaridade, cnh, veiculo, viagens, mudanca
     };
 
     if (vagaEmEdicaoId) {
@@ -645,7 +657,18 @@ window.adicionarVagaNaTela = function(vaga) {
   if (vaga.escolaridade && vaga.escolaridade !== 'Selecione...') {
     tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-graduation-cap text-xs"></i> ${vaga.escolaridade}</span>`;
   }
-
+  if (vaga.cnh && vaga.cnh !== 'Não Exigida') {
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Habilitação Exigida"><i class="ph ph-identification-card text-xs"></i> CNH ${vaga.cnh.replace('Categoria ', '')}</span>`;
+  }
+  if (vaga.veiculo) {
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Exige Veículo Próprio"><i class="ph ph-car text-xs"></i> Veículo Próprio</span>`;
+  }
+  if (vaga.viagens) {
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Disponibilidade para Viagens"><i class="ph ph-airplane text-xs"></i> Viagens</span>`;
+  }
+  if (vaga.mudanca) {
+    tagsHtml += `<span class="text-[9px] font-black text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1" title="Disponibilidade para Mudar de Residência"><i class="ph ph-house-line text-xs"></i> Mudança</span>`;
+  }
   // Tag do Salário
   tagsHtml += `<span class="text-[9px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20 tracking-widest uppercase flex items-center gap-1">
     ${badgeSalarioHtml}
