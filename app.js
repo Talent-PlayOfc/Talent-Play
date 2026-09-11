@@ -3,7 +3,7 @@
 // =======================================================================
 
 const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45'; 
+const SUPABASE_KEY = ''; 
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -411,22 +411,22 @@ let vagaEmEdicaoId = null;
 // Prepara o modal para criar uma vaga do zero
 window.prepararNovaVaga = function() {
   vagaEmEdicaoId = null;
-  document.getElementById('nv-empresa').value = '';
-  document.getElementById('nv-titulo').value = '';
-  document.getElementById('nv-descricao').value = '';
-  document.getElementById('nv-local').value = '';
-  document.getElementById('nv-sal-min').value = '';
-  document.getElementById('nv-area-input').value = '';
-  document.getElementById('nv-sal-max').value = '';
-  document.getElementById('nv-pcd').checked = false;
-  document.getElementById('nv-beneficios').checked = false;
-  document.getElementById('nv-logo-preview').classList.add('hidden');
+  if(document.getElementById('nv-empresa')) document.getElementById('nv-empresa').value = '';
+  if(document.getElementById('nv-titulo')) document.getElementById('nv-titulo').value = '';
+  if(document.getElementById('nv-descricao')) document.getElementById('nv-descricao').value = '';
+  if(document.getElementById('nv-local')) document.getElementById('nv-local').value = '';
+  if(document.getElementById('nv-sal-min')) document.getElementById('nv-sal-min').value = '';
+  if(document.getElementById('nv-area-input')) document.getElementById('nv-area-input').value = '';
+  if(document.getElementById('nv-sal-max')) document.getElementById('nv-sal-max').value = '';
+  if(document.getElementById('nv-pcd')) document.getElementById('nv-pcd').checked = false;
+  if(document.getElementById('nv-beneficios')) document.getElementById('nv-beneficios').checked = false;
+  if(document.getElementById('nv-logo-preview')) document.getElementById('nv-logo-preview').classList.add('hidden');
   logoVagaTemporaria = null;
   
   document.querySelectorAll('.nv-testes').forEach(cb => cb.checked = false);
   
-  document.querySelector('#modal-nova-vaga h3').innerHTML = '<i class="ph ph-plus-circle text-emerald-500"></i> Publicar Oportunidade';
-  document.querySelector('#modal-nova-vaga button[type="submit"]').innerHTML = '<i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
+  if(document.querySelector('#modal-nova-vaga h3')) document.querySelector('#modal-nova-vaga h3').innerHTML = '<i class="ph ph-plus-circle text-emerald-500"></i> Publicar Oportunidade';
+  if(document.querySelector('#modal-nova-vaga button[type="submit"]')) document.querySelector('#modal-nova-vaga button[type="submit"]').innerHTML = '<i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
   
   abrirModal('modal-nova-vaga');
 };
@@ -563,11 +563,11 @@ window.adicionarVagaNaTela = function(vaga) {
   `;
   if (vaga.pcd) {
     tagsHtml += `<span class="text-[9px] font-black text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md border border-blue-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-wheelchair text-xs"></i> PCD</span>`;
-  if (vaga.tem_beneficios) {
-  tagsHtml += `<span class="text-[9px] font-black text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-md border border-purple-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-gift text-xs"></i> + BENEFÍCIOS</span>`;
-}
   }
-
+  if (vaga.tem_beneficios) {
+    tagsHtml += `<span class="text-[9px] font-black text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-md border border-purple-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-gift text-xs"></i> + BENEFÍCIOS</span>`;
+  }
+  
   // Guardando objeto vaga como string segura para o modal
   const vagaJsonStr = encodeURIComponent(JSON.stringify(vaga));
 
