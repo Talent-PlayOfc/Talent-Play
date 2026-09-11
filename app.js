@@ -394,15 +394,44 @@ window.previewLogoEmpresa = function(event) {
 };
 
 function obterIconePorArea(area) {
-  const icones = {
-    'Administrativo': 'ph-briefcase text-blue-400',
-    'Tecnologia': 'ph-desktop text-indigo-400',
-    'Saúde': 'ph-heartbeat text-rose-400',
-    'Logística': 'ph-package text-orange-400',
-    'Vendas': 'ph-storefront text-emerald-400',
-    'Atendimento': 'ph-headset text-yellow-400'
-  };
-  return icones[area] || 'ph-star text-slate-400';
+  if (!area) return 'ph-star text-slate-400';
+  const a = area.toLowerCase();
+  
+  if(a.includes('admin') || a.includes('gestão')) return 'ph-briefcase text-blue-400';
+  if(a.includes('agri')) return 'ph-plant text-emerald-500';
+  if(a.includes('veterin')) return 'ph-paw-print text-orange-400';
+  if(a.includes('alimentação') || a.includes('gastro')) return 'ph-fork-knife text-orange-500';
+  if(a.includes('arquit') || a.includes('design') || a.includes('arte')) return 'ph-pen-nib text-pink-400';
+  if(a.includes('customer success')) return 'ph-handshake text-indigo-400';
+  if(a.includes('atendimento')) return 'ph-headset text-yellow-400';
+  if(a.includes('telemarketing') || a.includes('call center')) return 'ph-phone-call text-yellow-500';
+  if(a.includes('audi')) return 'ph-magnifying-glass text-slate-400';
+  if(a.includes('qualidade')) return 'ph-check-circle text-emerald-500';
+  if(a.includes('ciência') || a.includes('pesquisa')) return 'ph-flask text-purple-500';
+  if(a.includes('comercial') || a.includes('venda')) return 'ph-storefront text-emerald-400';
+  if(a.includes('exterior')) return 'ph-globe-hemisphere-west text-blue-500';
+  if(a.includes('compras') || a.includes('suprimentos')) return 'ph-shopping-cart text-orange-400';
+  if(a.includes('comunica') || a.includes('mídia') || a.includes('tv')) return 'ph-megaphone text-rose-400';
+  if(a.includes('constru') || a.includes('manuten')) return 'ph-wrench text-yellow-600';
+  if(a.includes('contábil') || a.includes('finança') || a.includes('econo')) return 'ph-coin text-yellow-500';
+  if(a.includes('educa') || a.includes('ensino') || a.includes('idioma')) return 'ph-graduation-cap text-blue-400';
+  if(a.includes('engenh')) return 'ph-ruler text-indigo-500';
+  if(a.includes('estética') || a.includes('moda') || a.includes('beleza')) return 'ph-scissors text-pink-500';
+  if(a.includes('hotel') || a.includes('turismo')) return 'ph-airplane-in-flight text-cyan-400';
+  if(a.includes('indust') || a.includes('produção') || a.includes('fábrica')) return 'ph-factory text-slate-400';
+  if(a.includes('informática') || a.includes('ti') || a.includes('tecno')) return 'ph-desktop text-indigo-400';
+  if(a.includes('jurídi')) return 'ph-scales text-purple-400';
+  if(a.includes('logísti') || a.includes('transp')) return 'ph-package text-orange-400';
+  if(a.includes('marketing') || a.includes('growth')) return 'ph-rocket-launch text-rose-500';
+  if(a.includes('química') || a.includes('petro')) return 'ph-test-tube text-teal-500';
+  if(a.includes('rh') || a.includes('recursos')) return 'ph-users text-orange-500';
+  if(a.includes('saúde')) return 'ph-heartbeat text-rose-500';
+  if(a.includes('segurança')) return 'ph-shield-check text-slate-500';
+  if(a.includes('sociais') || a.includes('comunitário')) return 'ph-hands-clapping text-blue-400';
+  if(a.includes('gerais') || a.includes('operacionais')) return 'ph-broom text-slate-400';
+  if(a.includes('outros')) return 'ph-dots-three-circle text-slate-400';
+  
+  return 'ph-star text-slate-400';
 }
 
 // Variável global para rastrear se estamos criando ou editando
