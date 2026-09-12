@@ -213,8 +213,8 @@ async function atualizarInfoTela(perfil) {
   document.getElementById('sidebar-name').innerText = perfil.nome;
   atualizarExibicaoAvatar(perfil.avatar_url);
 
-  // 🔥 Verifica se o usuário JÁ ESTÁ navegando em alguma tela
-  const telaJaEstaAtiva = document.querySelector('.app-screen.active');
+  // Descobre qual tela está ativa no HTML neste exato momento
+  const idTelaAtiva = document.querySelector('.app-screen.active')?.id || '';
 
   if (perfil.tipo_conta === 'candidato') {
     document.getElementById('sidebar-role').innerText = "Candidato";
@@ -244,8 +244,10 @@ async function atualizarInfoTela(perfil) {
     document.getElementById('menu-candidato').classList.remove('hidden');
     document.getElementById('menu-empresa').classList.add('hidden');
     
-    // 🔥 Só joga pra Home se ele tiver acabado de entrar no site!
-    if (!telaJaEstaAtiva) navegarPara('tela-home-candidato');
+    // Se o HTML travou o candidato na tela da empresa, nós corrigimos:
+    if (idTelaAtiva.includes('empresa') || idTelaAtiva === '') {
+      navegarPara('tela-home-candidato');
+    }
 
   } else {
     // Se for Recrutador / Empresa
@@ -257,8 +259,8 @@ async function atualizarInfoTela(perfil) {
     document.getElementById('menu-candidato').classList.add('hidden');
     document.getElementById('menu-empresa').classList.remove('hidden');
     
-    // 🔥 Só joga pra Home se ele tiver acabado de entrar no site!
-    if (!telaJaEstaAtiva) {
+    // Se o HTML travou o recrutador na tela de candidato (padrão), nós corrigimos para a tela dele:
+    if (idTelaAtiva.includes('candidato') || idTelaAtiva === '') {
       if (typeof carregarRadarTalentos === 'function') carregarRadarTalentos();
       navegarPara('tela-home-empresa');
     }
