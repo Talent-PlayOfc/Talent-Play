@@ -1480,7 +1480,7 @@ window.renderizarCidades = function() {
     container.innerHTML = '';
     cidadesSelecionadas.forEach(cidade => {
       container.innerHTML += `
-       <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/50 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-sm transition-all hover:bg-emerald-500/30">
+       <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-black uppercase tracking-widest rounded-lg shadow-sm transition-all hover:bg-emerald-500/20">
           ${cidade}
           <button type="button" onclick="removerCidade('${cidade}')" class="hover:text-white transition-colors ml-1"><i class="ph ph-x text-sm"></i></button>
         </span>`;
