@@ -731,12 +731,40 @@ window.criarNovaVaga = async function(e) {
 };
 
 window.carregarVagasDoBanco = async function() {
+  const cGeral = document.getElementById('container-todas-vagas');
+  
+  // 1. Injeta o Loading bonitão antes de chamar o banco
+  if (cGeral) {
+    cGeral.innerHTML = `
+      <div class="col-span-full flex flex-col items-center justify-center py-20 space-y-4">
+        <i class="ph ph-spinner-gap animate-spin text-5xl text-indigo-500"></i>
+        <p class="text-slate-400 font-bold uppercase tracking-widest text-xs animate-pulse">Sincronizando Oportunidades...</p>
+      </div>
+    `;
+  }
+
+  // 2. Faz a busca no banco
   const { data: vagas, error } = await supabaseClient
     .from('vagas')
     .select('*')
     .eq('status_vaga', 'Ativa')
     .order('created_at', { ascending: false });
-  if (!error && vagas) vagas.forEach(v => adicionarVagaNaTela(v));
+
+  // 3. Limpa o Loading
+  if (cGeral) cGeral.innerHTML = '';
+
+  // 4. Mostra as vagas ou mensagem de vazio
+  if (!error && vagas && vagas.length > 0) {
+    vagas.forEach(v => adicionarVagaNaTela(v));
+  } else if (cGeral) {
+    cGeral.innerHTML = `
+      <div class="col-span-full bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg">
+        <i class="ph ph-magnifying-glass text-5xl text-slate-600 mb-4 block"></i>
+        <h3 class="text-xl font-black text-white mb-2">Nenhuma vaga encontrada</h3>
+        <p class="text-slate-400 font-medium text-sm">Não há oportunidades ativas no momento. Volte mais tarde!</p>
+      </div>
+    `;
+  }
 };
 
 window.adicionarVagaNaTela = function(vaga) {
