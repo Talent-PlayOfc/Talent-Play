@@ -1347,6 +1347,15 @@ window.carregarRadarTalentos = async function() {
   const container = document.getElementById('container-vagas-empresa');
   if (!container) return;
 
+  // 1. Injeta o Loading do RH antes de chamar o banco
+  container.innerHTML = `
+    <div class="flex flex-col items-center justify-center py-16 space-y-4 w-full">
+      <i class="ph ph-spinner-gap animate-spin text-5xl text-emerald-500"></i>
+      <p class="text-slate-400 font-bold uppercase tracking-widest text-xs animate-pulse">Carregando Radar de Talentos...</p>
+    </div>
+  `;
+
+  // 2. Busca os dados
   const { data: vagas, error } = await supabaseClient
     .from('vagas')
     .select('*')
@@ -1355,9 +1364,11 @@ window.carregarRadarTalentos = async function() {
 
   if (error) {
     mostrarToast("Erro ao carregar suas vagas.", "error");
+    container.innerHTML = '';
     return;
   }
 
+  // 3. Limpa o Loading para exibir o conteúdo real
   container.innerHTML = '';
   let ativas = 0;
   let arquivadas = 0;
@@ -1393,7 +1404,6 @@ window.carregarRadarTalentos = async function() {
           <button onclick="editarVaga('${encodeURIComponent(JSON.stringify(vaga))}')" class="flex-1 md:flex-none bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 px-4 py-2.5 rounded-lg font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
             <i class="ph ph-pencil-simple text-lg"></i> Editar
           </button>
-        <div class="flex flex-wrap gap-2 w-full md:w-auto mt-4 md:mt-0">
           <button onclick="alternarStatusVaga(${vaga.id}, '${vaga.status_vaga || 'Ativa'}')" class="flex-1 md:flex-none bg-slate-950 hover:bg-slate-800 border border-slate-700 text-slate-300 px-4 py-2.5 rounded-lg font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
             <i class="ph ${isArquivada ? 'ph-upload-simple' : 'ph-archive'} text-lg"></i> ${isArquivada ? 'Reativar' : 'Arquivar'}
           </button>
@@ -1411,7 +1421,6 @@ window.carregarRadarTalentos = async function() {
   if (metricAtivas) metricAtivas.innerText = ativas;
   if (metricArq) metricArq.innerText = arquivadas;
 
-  // Atualiza o contador de vagas no Menu Lateral do RH
   const badgeRH = document.getElementById('contador-vagas-sidebar');
   if (badgeRH) {
     if (vagas.length > 0) {
