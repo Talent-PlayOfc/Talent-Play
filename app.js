@@ -1649,5 +1649,29 @@ window.alternarSalarioCombinar = function(checkbox) {
     inputMax.required = true;
     inputMin.classList.remove('opacity-40', 'cursor-not-allowed');
     inputMax.classList.remove('opacity-40', 'cursor-not-allowed');
+
   }
+};
+
+// ==============================================================
+// FORMATADOR INTELIGENTE DE TÍTULO (Title Case)
+// ==============================================================
+window.formatarTituloVaga = function(campo) {
+  // Transforma tudo em minúsculo primeiro e separa as palavras
+  let palavras = campo.value.toLowerCase().split(' ');
+  
+  // Lista de palavras que devem continuar minúsculas (se não forem a primeira palavra)
+  const conectivos = ['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'na', 'no', 'com', 'para', 'ou'];
+  
+  for (let i = 0; i < palavras.length; i++) {
+      if (palavras[i].length > 0) {
+          if (conectivos.includes(palavras[i]) && i !== 0) {
+              continue; // Pula a formatação e deixa minúsculo
+          }
+          // Pega a primeira letra, converte para maiúscula e junta com o resto da palavra
+          palavras[i] = palavras[i][0].toUpperCase() + palavras[i].substr(1);
+      }
+  }
+  
+  campo.value = palavras.join(' ');
 };
