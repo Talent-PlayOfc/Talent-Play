@@ -3,7 +3,7 @@
 // =======================================================================
 
 const SUPABASE_URL = 'https://puymwjoolxlaqvwregad.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_hQ0sLZG9tHSdMOFEBlurEg_FrmnlT45'; 
+const SUPABASE_KEY = ''; 
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -1450,11 +1450,21 @@ let cidadesSelecionadas = [];
 
 window.adicionarCidade = function(cidade) {
   if (!cidadesSelecionadas.includes(cidade)) {
+    if (cidadesSelecionadas.length >= 15) {
+      mostrarToast("Limite máximo de cidades atingido.", "error");
+      return;
+    }
     cidadesSelecionadas.push(cidade);
     renderizarCidades();
   }
-  document.getElementById('nv-local-input').value = '';
-  document.getElementById('dropdown-wrapper').classList.add('hidden');
+  
+  // Limpa a digitação, mas foca no input para digitar a próxima rápido
+  const input = document.getElementById('nv-local-input');
+  if (input) {
+    input.value = '';
+    input.focus();
+    if (typeof filtrarCidadesCustom === 'function') filtrarCidadesCustom();
+  }
 };
 
 window.removerCidade = function(cidade) {
@@ -1464,15 +1474,32 @@ window.removerCidade = function(cidade) {
 
 window.renderizarCidades = function() {
   const container = document.getElementById('cidades-selecionadas-container');
-  if (!container) return;
-  container.innerHTML = '';
-  cidadesSelecionadas.forEach(cidade => {
-    container.innerHTML += `
-      <span class="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
-        ${cidade}
-        <button type="button" onclick="removerCidade('${cidade}')" class="hover:text-rose-400 transition-colors ml-1"><i class="ph ph-x text-sm"></i></button>
-      </span>`;
-  });
+  const input = document.getElementById('nv-local-input');
+  
+  if (container) {
+    container.innerHTML = '';
+    cidadesSelecionadas.forEach(cidade => {
+      container.innerHTML += `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-pink-500/10 border border-pink-500/30 text-pink-400 text-[10px] font-black uppercase tracking-widest rounded-lg shadow-sm transition-all hover:bg-pink-500/20">
+          ${cidade}
+          <button type="button" onclick="removerCidade('${cidade}')" class="hover:text-white transition-colors ml-1"><i class="ph ph-x text-sm"></i></button>
+        </span>`;
+    });
+  }
+
+  // A Mágica do Resumo com os "..." dentro do Input
+  if (input) {
+    if (cidadesSelecionadas.length > 0) {
+      let resumo = cidadesSelecionadas.join(', ');
+      // Se o texto for maior que 35 letras, corta e coloca os 3 pontinhos
+      if (resumo.length > 35) {
+        resumo = resumo.substring(0, 35) + '...';
+      }
+      input.placeholder = resumo;
+    } else {
+      input.placeholder = "Ex: Salvador, BA";
+    }
+  }
 };
 
 // Motor automático que transforma os <select> normais no visual de luxo
