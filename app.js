@@ -199,7 +199,7 @@ window.fazerLogout = async function() {
 };
 
 // ----------------------------------------------------
-// ATUALIZAÇÃO DA INTERFACE & SESSÃO (COM MATCH E RADAR REAIS)
+// ATUALIZAÇÃO DA INTERFACE & SESSÃO
 // ----------------------------------------------------
 async function atualizarInfoTela(perfil) {
   appState.perfilAtual = perfil;
@@ -212,6 +212,9 @@ async function atualizarInfoTela(perfil) {
 
   document.getElementById('sidebar-name').innerText = perfil.nome;
   atualizarExibicaoAvatar(perfil.avatar_url);
+
+  // 🔥 Verifica se o usuário JÁ ESTÁ navegando em alguma tela
+  const telaJaEstaAtiva = document.querySelector('.app-screen.active');
 
   if (perfil.tipo_conta === 'candidato') {
     document.getElementById('sidebar-role').innerText = "Candidato";
@@ -230,24 +233,19 @@ async function atualizarInfoTela(perfil) {
     const fnivel = document.getElementById('ficha-nivel');
     if(fnivel) fnivel.innerText = `Lvl. ${perfil.nivel || 1}`;
 
-    // --- CÁLCULO REAL DO MATCH DO CANDIDATO ---
-    // Exemplo de regra: Baseado no XP e Nível, o poder de match sobe (ex: Nível 1 = 70%, cada XP a mais dá um bônus)
     let matchReal = Math.min(98, 65 + (perfil.nivel * 5) + Math.floor(xpAtual / 10));
     const metricMatch = document.getElementById('metric-match');
     if (metricMatch) metricMatch.innerText = matchReal;
 
-    // --- BUSCA REAL DE RHs NO RADAR ---
-    const { count: totalRhs } = await supabaseClient
-      .from('perfis')
-      .select('*', { count: 'exact', head: true })
-      .eq('tipo_conta', 'empresa');
-    
+    const { count: totalRhs } = await supabaseClient.from('perfis').select('*', { count: 'exact', head: true }).eq('tipo_conta', 'empresa');
     const metricRadar = document.getElementById('metric-radar');
     if (metricRadar) metricRadar.innerText = totalRhs || 1;
 
     document.getElementById('menu-candidato').classList.remove('hidden');
     document.getElementById('menu-empresa').classList.add('hidden');
-    navegarPara('tela-home-candidato');
+    
+    // 🔥 Só joga pra Home se ele tiver acabado de entrar no site!
+    if (!telaJaEstaAtiva) navegarPara('tela-home-candidato');
 
   } else {
     // Se for Recrutador / Empresa
@@ -256,14 +254,14 @@ async function atualizarInfoTela(perfil) {
     document.getElementById('sidebar-level-badge').classList.add('hidden');
     document.getElementById('sidebar-xp-container').classList.add('hidden');
     
-    // Carrega o Radar de Talentos do RH em tempo real do banco
-    if (typeof carregarRadarTalentos === 'function') {
-      carregarRadarTalentos();
-    }
-
     document.getElementById('menu-candidato').classList.add('hidden');
     document.getElementById('menu-empresa').classList.remove('hidden');
-    navegarPara('tela-home-empresa');
+    
+    // 🔥 Só joga pra Home se ele tiver acabado de entrar no site!
+    if (!telaJaEstaAtiva) {
+      if (typeof carregarRadarTalentos === 'function') carregarRadarTalentos();
+      navegarPara('tela-home-empresa');
+    }
   }
 }
 
@@ -1559,10 +1557,9 @@ window.onload = async function() {
   carregarVagasDoBanco();
   carregarCidadesIBGE();
   
-  // 🔥 ATIVA O MOTOR DOS DROPDOWNS DE LUXO LOGO AO CARREGAR A TELA
+  // ATIVA O MOTOR DOS DROPDOWNS DE LUXO LOGO AO CARREGAR A TELA
   transformarSelectsEmCustom();
 
-  // Checa a sessão ativa imediatamente ao carregar a página
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) {
     const { data } = await supabaseClient.from('perfis').select('*').eq('id', session.user.id).single();
@@ -1576,7 +1573,13 @@ window.onload = async function() {
   }
 
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
-    if (session) {
+    // 🔥 A MÁGICA: Só recarrega se for um LOGIN NOVO ou um LOGOUT. 
+    // Ignora as atualizações de segurança em segundo plano do navegador!
+    if (event === 'SIGNED_OUT') {
+      appState.usuarioLogado = false;
+      appState.perfilAtual = null;
+      window.location.reload();
+    } else if (event === 'SIGNED_IN' && !appState.usuarioLogado) {
       const { data } = await supabaseClient.from('perfis').select('*').eq('id', session.user.id).single();
       if (data) {
         atualizarInfoTela(data);
@@ -1585,9 +1588,6 @@ window.onload = async function() {
           carregarMinhasCandidaturas(session.user.id);
         }
       }
-    } else {
-      appState.usuarioLogado = false;
-      appState.perfilAtual = null;
     }
   });
 };
