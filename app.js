@@ -644,17 +644,34 @@ window.criarNovaVaga = async function(e) {
 
   // Função auxiliar para destacar o erro visualmente e rolar a tela até ele
   const destacarErro = (idElemento, mensagem) => {
-    mostrarToast(mensagem, 'error');
     const el = document.getElementById(idElemento);
-    if (el) {
-      el.classList.add('border-rose-500', 'ring-2', 'ring-rose-500/50');
-      el.focus();
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
-      setTimeout(() => {
-        el.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/50');
-      }, 4000);
-    }
+    if (!el) return;
+
+    // 1. Aplica o foco, a rolagem suave e a borda vermelha de destaque
+    el.classList.add('border-rose-500', 'ring-2', 'ring-rose-500/50');
+    el.focus();
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // 2. Cria ou atualiza a mensagem de erro personalizada logo abaixo do campo
+    let wrapper = el.parentElement;
+    let erroAntigo = wrapper.querySelector('.custom-error-msg');
+    if (erroAntigo) erroAntigo.remove();
+
+    const msgEl = document.createElement('div');
+    msgEl.className = 'custom-error-msg text-rose-400 text-[11px] font-bold mt-1.5 flex items-center gap-1 animate-pulse';
+    msgEl.innerHTML = `<i class="ph ph-warning-circle text-sm"></i> ${mensagem}`;
+    wrapper.appendChild(msgEl);
+
+    // 3. Remove o erro automaticamente assim que o usuário começar a corrigir o campo
+    const limparErro = () => {
+      el.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/50');
+      msgEl.remove();
+      el.removeEventListener('input', limparErro);
+      el.removeEventListener('change', limparErro);
+    };
+
+    el.addEventListener('input', limparErro);
+    el.addEventListener('change', limparErro);
   };
 
   // Captura dos valores do formulário
