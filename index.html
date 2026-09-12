@@ -625,7 +625,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Título da Vaga <span class="text-rose-500">*</span></label>
-            <input type="text" id="nv-titulo" autocomplete="off" placeholder="Ex: Auxiliar de Logística" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
+            <input type="text" id="nv-titulo" oninput="formatarTituloVaga(this)" autocomplete="off" placeholder="Ex: Auxiliar de Logística" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-emerald-500 outline-none" required>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Área / Setor <span class="text-rose-500">*</span></label>
@@ -687,8 +687,7 @@
             </div>
             
             <!-- Área de Digitação (100% Transparente sem bordas internas) -->
-            <textarea id="nv-descricao" class="w-full bg-transparent border-none text-white px-5 py-4 h-40 focus:ring-0 outline-none resize-none placeholder-slate-500 text-sm leading-relaxed" placeholder="Descreva os detalhes da oportunidade..." required></textarea>
-          </div>
+            <textarea id="nv-descricao" class="w-full bg-transparent border-none text-white px-5 py-4 h-40 focus:ring-0 outline-none resize-none placeholder-slate-500 text-sm leading-relaxed" placeholder="Descreva a vaga detalhadamente... &#10;&#10;⚠️ Aviso Legal: É proibido por lei (Art. 373-A da CLT) exigir idade, gênero, estado civil, religião ou comprovação de ausência de gravidez na descrição da vaga. Também evite solicitar CPF/RG nesta etapa." required></textarea>
         </div>
 
         <!-- Bloco 4: Modalidade, Escala e Múltiplas Cidades -->
@@ -1028,7 +1027,7 @@
       </button>
     </div>
     <div class="max-w-5xl mx-auto w-full flex-1 flex flex-col pb-10">
-      <textarea id="nv-descricao-expandida" class="w-full flex-1 bg-slate-900 border border-slate-700 text-white rounded-3xl p-6 sm:p-10 focus:border-indigo-500 outline-none resize-none text-base sm:text-lg leading-relaxed shadow-inner" placeholder="Digite todos os detalhes da vaga, como:
+     <textarea id="nv-descricao-expandida" class="w-full flex-1 bg-slate-900 border border-slate-700 text-white rounded-3xl p-6 sm:p-10 focus:border-indigo-500 outline-none resize-none text-base sm:text-lg leading-relaxed shadow-inner" placeholder="Descreva a vaga detalhadamente... &#10;&#10;⚠️ Aviso Legal: É proibido por lei (Art. 373-A da CLT) exigir idade, gênero, estado civil, religião ou comprovação de ausência de gravidez na descrição da vaga. Também evite solicitar CPF/RG nesta etapa. Concentre-se nas competências do talento!"></textarea>
 - Responsabilidades do dia a dia
 - Requisitos obrigatórios e diferenciais
 - Benefícios extras
