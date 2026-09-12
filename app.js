@@ -641,6 +641,55 @@ window.editarVaga = function(vagaJsonStr) {
 // Salva no Supabase (Serve tanto para UPDATE quanto INSERT)
 window.criarNovaVaga = async function(e) {
   e.preventDefault();
+
+  // Função auxiliar para destacar o erro visualmente e rolar a tela até ele
+  const destacarErro = (idElemento, mensagem) => {
+    mostrarToast(mensagem, 'error');
+    const el = document.getElementById(idElemento);
+    if (el) {
+      el.classList.add('border-rose-500', 'ring-2', 'ring-rose-500/50');
+      el.focus();
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      setTimeout(() => {
+        el.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/50');
+      }, 4000);
+    }
+  };
+
+  // Captura dos valores do formulário
+  const empresa = document.getElementById('nv-empresa').value.trim();
+  const titulo = document.getElementById('nv-titulo').value.trim();
+  const area = document.getElementById('nv-area-input').value.trim();
+  const descricao = document.getElementById('nv-descricao').value.trim();
+  const modelo = document.getElementById('nv-modelo').value;
+  const escala = document.getElementById('nv-escala').value;
+  const nivel = document.getElementById('nv-nivel').value;
+  const contrato = document.getElementById('nv-contrato').value;
+  const jornada = document.getElementById('nv-jornada').value;
+
+  // 🔥 DEFINA AQUI QUEM É OBRIGATÓRIO OU NÃO (Basta adicionar ou remover as linhas abaixo)
+  if (!empresa) { destacarErro('nv-empresa', 'Por favor, informe o nome da empresa.'); return; }
+  if (!titulo) { destacarErro('nv-titulo', 'Por favor, informe o título da vaga.'); return; }
+  if (!area) { destacarErro('nv-area-input', 'Por favor, selecione ou digite a área da vaga.'); return; }
+  if (!descricao) { destacarErro('nv-descricao', 'A descrição da oportunidade não pode estar vazia.'); return; }
+  if (!modelo) { destacarErro('nv-modelo', 'Selecione a modalidade da vaga.'); return; }
+  if (!escala) { destacarErro('nv-escala', 'Selecione a escala de trabalho.'); return; }
+  if (cidadesSelecionadas.length === 0) { destacarErro('nv-local-input', 'Adicione pelo menos uma cidade.'); return; }
+  if (!nivel) { destacarErro('nv-nivel', 'Selecione o nível exigido.'); return; }
+  if (!contrato) { destacarErro('nv-contrato', 'Selecione o tipo de contrato.'); return; }
+  if (!jornada) { destacarErro('nv-jornada', 'Selecione a jornada de trabalho.'); return; }
+
+  // Validação Dinâmica do Salário
+  const aCombinarChecked = document.getElementById('nv-a-combinar').checked;
+  const salMin = document.getElementById('nv-sal-min').value;
+  const salMax = document.getElementById('nv-sal-max').value;
+  
+  if (!aCombinarChecked && (!salMin || !salMax)) {
+    destacarErro('nv-sal-min', 'Informe a faixa salarial ou marque "A Combinar".');
+    return;
+  }
+
   const btn = e.target.querySelector('button[type="submit"]');
   const textoOriginal = btn.innerHTML;
   btn.disabled = true; 
@@ -653,15 +702,6 @@ window.criarNovaVaga = async function(e) {
       return;
     }
 
-    const empresa = document.getElementById('nv-empresa').value;
-    const titulo = document.getElementById('nv-titulo').value;
-    const area = document.getElementById('nv-area-input').value;
-    const descricao = document.getElementById('nv-descricao').value;
-    const nivel = document.getElementById('nv-nivel').value;
-    const contrato = document.getElementById('nv-contrato').value;
-    const modelo = document.getElementById('nv-modelo').value;
-    const escala = document.getElementById('nv-escala').value;
-    const pcd = document.getElementById('nv-pcd').checked;
     const cnh = document.getElementById('nv-cnh')?.value || 'Não Exigida';
     const veiculo = document.getElementById('nv-veiculo')?.checked || false;
     const viagens = document.getElementById('nv-viagens')?.checked || false;
@@ -673,28 +713,21 @@ window.criarNovaVaga = async function(e) {
     const tempo_experiencia = document.getElementById('nv-experiencia')?.value || '';
     const receber_notificacoes = document.getElementById('nv-notificacoes')?.checked || false;
     const vaga_urgente = document.getElementById('nv-urgente')?.checked || false;
-    
+    const escolaridade = document.getElementById('nv-escolaridade')?.value || '';
     
     const lista_beneficios = Array.from(document.querySelectorAll('.nv-bene-check:checked')).map(cb => cb.value).join(' • ');
-    const tem_beneficios = lista_beneficios.length > 0;
-    
-    const local = cidadesSelecionadas.join(';'); // Salva as cidades separadas por ponto e vírgula
-    if (!local) { mostrarToast("Adicione pelo menos uma cidade!", "error"); return; }
-    
-    // Capturando os campos novos
-    const jornada = document.getElementById('nv-jornada')?.value || '';
-    const escolaridade = document.getElementById('nv-escolaridade')?.value || '';
+    const local = cidadesSelecionadas.join(';');
 
-    // Lógica para salvar "A Combinar"
-    let salario_min = document.getElementById('nv-sal-min').value;
-    let salario_max = document.getElementById('nv-sal-max').value;
-    if (document.getElementById('nv-a-combinar').checked) {
+    let salario_min = salMin;
+    let salario_max = salMax;
+    if (aCombinarChecked) {
         salario_min = 'A Combinar';
         salario_max = '';
     }
 
     const testesMarcados = Array.from(document.querySelectorAll('.nv-testes:checked')).map(cb => cb.value).join(' + ');
     const testesFinal = testesMarcados || 'Análise Curricular';
+    const pcd = document.getElementById('nv-pcd').checked;
 
     const dadosVaga = {
       empresa, titulo, area, descricao, nivel, contrato, modelo, local, escala,
@@ -705,12 +738,10 @@ window.criarNovaVaga = async function(e) {
     };
 
     if (vagaEmEdicaoId) {
-      // É UMA EDIÇÃO (UPDATE)
       const { error } = await supabaseClient.from('vagas').update(dadosVaga).eq('id', vagaEmEdicaoId);
       if (error) throw error;
       mostrarToast('Oportunidade atualizada com sucesso!', 'success');
     } else {
-      // É UMA VAGA NOVA (INSERT)
       dadosVaga.status_vaga = 'Ativa';
       const { error } = await supabaseClient.from('vagas').insert([dadosVaga]);
       if (error) throw error;
