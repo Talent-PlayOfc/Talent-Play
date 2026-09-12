@@ -1550,8 +1550,13 @@ window.transformarSelectsEmCustom = function() {
     wrapper.appendChild(trigger);
     wrapper.appendChild(dropdown);
     
-    trigger.onclick = (e) => {
+   trigger.onclick = (e) => {
       e.stopPropagation();
+      
+      // 🔥 Força o fechamento das caixas de Local e Área ao abrir um Dropdown de Luxo
+      if(document.getElementById('dropdown-wrapper')) document.getElementById('dropdown-wrapper').classList.add('hidden');
+      if(document.getElementById('dropdown-area-wrapper')) document.getElementById('dropdown-area-wrapper').classList.add('hidden');
+
       document.querySelectorAll('.custom-dropdown-box').forEach(d => {
          if(d !== dropdown) d.classList.add('hidden');
       });
