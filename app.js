@@ -1491,16 +1491,18 @@ window.renderizarCidades = function() {
   if (input) {
     if (cidadesSelecionadas.length > 0) {
       let resumo = cidadesSelecionadas.join(', ');
-      // Se o texto for maior que 35 letras, corta e coloca os 3 pontinhos
       if (resumo.length > 35) {
         resumo = resumo.substring(0, 35) + '...';
       }
       input.placeholder = resumo;
+      // 🔥 ACENDE O TEXTO: Deixa o fundo (placeholder) branco e forte, como se estivesse preenchido
+      input.classList.add('placeholder-white', 'font-bold');
     } else {
       input.placeholder = "Ex: Salvador, BA";
+      // 🧊 APAGA O TEXTO: Retorna ao visual cinza apagado quando está vazio
+      input.classList.remove('placeholder-white', 'font-bold');
     }
   }
-};
 
 // Motor automático que transforma os <select> normais no visual de luxo
 window.transformarSelectsEmCustom = function() {
