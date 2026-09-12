@@ -849,7 +849,68 @@ window.adicionarVagaNaTela = function(vaga) {
   if (vaga.pcd) {
     tagsHtml += `<span class="text-[9px] font-black text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md border border-blue-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-wheelchair text-xs"></i> PCD</span>`;
   }
- 
+
+  // 🔥 MOTOR DE RANQUEAMENTO COMPLETO DE BENEFÍCIOS (Top 3 Inteligentes + Contador)
+  if (vaga.lista_beneficios) {
+    const arrayBeneficios = vaga.lista_beneficios.split(' • ');
+
+    // Dicionário Oficial com TODOS os benefícios mapeados e ranqueados por peso real
+    const rankingBen = {
+      // Peso Máximo (Os mais desejados pelo mercado)
+      'Plano de Saúde': { icone: 'ph-heartbeat', curto: 'Saúde', rank: 1 },
+      'Plano Odontológico': { icone: 'ph-tooth', curto: 'Odonto', rank: 2 },
+      'Plano de Saúde / Odontológico': { icone: 'ph-heartbeat', curto: 'Saúde/Odonto', rank: 2 },
+      'Vale Refeição (VR)': { icone: 'ph-hamburger', curto: 'VR', rank: 3 },
+      'Vale Alimentação (VA)': { icone: 'ph-shopping-cart', curto: 'VA', rank: 4 },
+      'Refeição no Local': { icone: 'ph-cooking-pot', curto: 'Refeição Local', rank: 5 },
+      
+      // Peso Intermediário (Financeiro e Carreira)
+      'Bônus/PLR': { icone: 'ph-money', curto: 'PLR', rank: 6 },
+      'Comissões': { icone: 'ph-chart-line-up', curto: 'Comissões', rank: 7 },
+      'Previdência Privada': { icone: 'ph-piggy-bank', curto: 'Previdência', rank: 8 },
+      'Seguro de Vida': { icone: 'ph-shield-check', curto: 'Seguro Vida', rank: 9 },
+      
+      // Peso Flexibilidade e Desenvolvimento
+      'Day Off': { icone: 'ph-calendar-star', curto: 'Day Off', rank: 10 },
+      'Home Office': { icone: 'ph-house-line', curto: 'Home Office', rank: 11 },
+      'Horário Flexível': { icone: 'ph-clock-user', curto: 'Flexível', rank: 12 },
+      'Auxílio Educação': { icone: 'ph-graduation-cap', curto: 'Aux. Educação', rank: 13 },
+      'Treinamento e Desenvolvimento': { icone: 'ph-certificate', curto: 'Treinamentos', rank: 14 },
+      'Wellhub/Totalpass': { icone: 'ph-barbell', curto: 'Gympass', rank: 15 },
+      
+      // Peso Operacional e Auxílios
+      'Auxílio Farmácia': { icone: 'ph-pill', curto: 'Aux. Farmácia', rank: 16 },
+      'Auxílio Creche': { icone: 'ph-baby', curto: 'Aux. Creche', rank: 17 },
+      'Licença Estendida': { icone: 'ph-heart', curto: 'Licença Estendida', rank: 18 },
+      'Ajuda de Custo': { icone: 'ph-wallet', curto: 'Ajuda Custo', rank: 19 },
+      'Auxílio Combustível': { icone: 'ph-gas-pump', curto: 'Combustível', rank: 20 },
+      'Estacionamento': { icone: 'ph-car', curto: 'Estacionamento', rank: 21 },
+      'Veículo da Empresa': { icone: 'ph-car-profile', curto: 'Carro Empresa', rank: 22 },
+      'Celular Corporativo': { icone: 'ph-device-mobile', curto: 'Celular Corp.', rank: 23 },
+      'Vale Transporte': { icone: 'ph-bus', curto: 'VT', rank: 24 },
+      'Clube de Vantagens': { icone: 'ph-tag', curto: 'Parcerias', rank: 25 }
+    };
+
+    // Mapeia e organiza os benefícios do RH pela ordem de importância do dicionário
+    let benOrdenados = arrayBeneficios.map(b => {
+      let info = rankingBen[b] || { icone: 'ph-gift', curto: b.substring(0, 12), rank: 50 };
+      return { nomeOriginal: b, ...info };
+    }).sort((a, b) => a.rank - b.rank);
+
+    // Separa os 3 melhores e conta o resto
+    let top3 = benOrdenados.slice(0, 3);
+    let sobrou = benOrdenados.length - 3;
+
+    // Desenha as 3 tags principais com ícone e texto elegante
+    top3.forEach(b => {
+      tagsHtml += `<span class="text-[9px] font-black text-pink-400 bg-pink-500/10 px-2.5 py-1 rounded-md border border-pink-500/20 tracking-widest uppercase flex items-center gap-1" title="${b.nomeOriginal}"><i class="ph ${b.icone} text-xs"></i> ${b.curto}</span>`;
+    });
+
+    // Se sobrou algum, exibe o contador inteligente
+    if (sobrou > 0) {
+      tagsHtml += `<span class="text-[9px] font-black text-slate-400 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 tracking-widest uppercase flex items-center gap-1">+${sobrou} Benefícios</span>`;
+    }
+  }
 
   // 🔥 Tratamento para Múltiplas Localidades (NOVO)
   let localTexto = vaga.local || '';
