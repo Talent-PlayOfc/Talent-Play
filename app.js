@@ -1503,6 +1503,7 @@ window.renderizarCidades = function() {
       input.classList.remove('placeholder-white', 'font-bold');
     }
   }
+};
 
 // Motor automático que transforma os <select> normais no visual de luxo
 window.transformarSelectsEmCustom = function() {
