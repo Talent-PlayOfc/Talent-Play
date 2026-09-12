@@ -480,24 +480,96 @@ window.prepararNovaVaga = function() {
 };
 
 
-// Preenche o modal com os dados da vaga existente
+// Prepara o modal para criar uma vaga do zero (Tudo limpo)
+window.prepararNovaVaga = function() {
+  vagaEmEdicaoId = null;
+  if(document.getElementById('nv-empresa')) document.getElementById('nv-empresa').value = '';
+  if(document.getElementById('nv-titulo')) document.getElementById('nv-titulo').value = '';
+  if(document.getElementById('nv-descricao')) document.getElementById('nv-descricao').value = '';
+  if(document.getElementById('nv-area-input')) document.getElementById('nv-area-input').value = '';
+  if(document.getElementById('nv-sal-min')) document.getElementById('nv-sal-min').value = '';
+  if(document.getElementById('nv-sal-max')) document.getElementById('nv-sal-max').value = '';
+  if(document.getElementById('nv-pcd')) document.getElementById('nv-pcd').checked = false;
+  
+  // Limpando Cidades Múltiplas
+  cidadesSelecionadas = [];
+  if (typeof renderizarCidades === 'function') renderizarCidades();
+  if(document.getElementById('nv-local-input')) document.getElementById('nv-local-input').value = '';
+
+  // Reset dos selects
+  if(document.getElementById('nv-modelo')) document.getElementById('nv-modelo').value = '';
+  if(document.getElementById('nv-escala')) document.getElementById('nv-escala').value = '';
+  if(document.getElementById('nv-nivel')) document.getElementById('nv-nivel').value = '';
+  if(document.getElementById('nv-contrato')) document.getElementById('nv-contrato').value = '';
+  if(document.getElementById('nv-jornada')) document.getElementById('nv-jornada').value = '';
+  if(document.getElementById('nv-escolaridade')) document.getElementById('nv-escolaridade').value = '';
+  if(document.getElementById('nv-experiencia')) document.getElementById('nv-experiencia').value = 'Sem experiência prévia';
+  if(document.getElementById('nv-vagas')) document.getElementById('nv-vagas').value = '1';
+  if(document.getElementById('nv-cnh')) document.getElementById('nv-cnh').value = 'Não Exigida';
+  
+  // Reset Operacionais, Idiomas, Skills e VIP
+  if(document.getElementById('nv-veiculo')) document.getElementById('nv-veiculo').checked = false;
+  if(document.getElementById('nv-viagens')) document.getElementById('nv-viagens').checked = false;
+  if(document.getElementById('nv-mudanca')) document.getElementById('nv-mudanca').checked = false;
+  if(document.getElementById('nv-idiomas')) document.getElementById('nv-idiomas').value = '';
+  if(document.getElementById('nv-hard-skills')) document.getElementById('nv-hard-skills').value = '';
+  if(document.getElementById('nv-soft-skills')) document.getElementById('nv-soft-skills').value = '';
+  if(document.getElementById('nv-notificacoes')) document.getElementById('nv-notificacoes').checked = true;
+  if(document.getElementById('nv-urgente')) document.getElementById('nv-urgente').checked = false;
+
+  document.querySelectorAll('.nv-bene-check').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.nv-testes').forEach(cb => cb.checked = false);
+  
+  // Reset Salário A Combinar
+  if(document.getElementById('nv-a-combinar')) {
+      const cbCombinar = document.getElementById('nv-a-combinar');
+      cbCombinar.checked = false;
+      alternarSalarioCombinar(cbCombinar);
+  }
+  
+  if(document.getElementById('nv-logo-preview')) document.getElementById('nv-logo-preview').classList.add('hidden');
+  logoVagaTemporaria = null;
+  
+  if(document.querySelector('#modal-nova-vaga h3')) document.querySelector('#modal-nova-vaga h3').innerHTML = '<i class="ph ph-plus-circle text-emerald-500"></i> Publicar Oportunidade';
+  if(document.querySelector('#modal-nova-vaga button[type="submit"]')) document.querySelector('#modal-nova-vaga button[type="submit"]').innerHTML = '<i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
+  
+  abrirModal('modal-nova-vaga');
+  transformarSelectsEmCustom();
+};
+
+// Preenche o modal com os dados da vaga existente para Editar
 window.editarVaga = function(vagaJsonStr) {
   const vaga = JSON.parse(decodeURIComponent(vagaJsonStr));
   vagaEmEdicaoId = vaga.id;
   
-  document.getElementById('nv-empresa').value = vaga.empresa;
-  document.getElementById('nv-titulo').value = vaga.titulo;
-  document.getElementById('nv-descricao').value = vaga.descricao;
-  document.getElementById('nv-modelo').value = vaga.modelo;
-  document.getElementById('nv-local').value = vaga.local;
-  document.getElementById('nv-area-input').value = vaga.area;
-  document.getElementById('nv-nivel').value = vaga.nivel;
-  document.getElementById('nv-contrato').value = vaga.contrato;
+  // Campos Básicos
+  if(document.getElementById('nv-empresa')) document.getElementById('nv-empresa').value = vaga.empresa || '';
+  if(document.getElementById('nv-titulo')) document.getElementById('nv-titulo').value = vaga.titulo || '';
+  if(document.getElementById('nv-descricao')) document.getElementById('nv-descricao').value = vaga.descricao || '';
+  if(document.getElementById('nv-area-input')) document.getElementById('nv-area-input').value = vaga.area || '';
   
-  // Lendo os novos campos
+  // Selects (Modelo, Escala, Nível, etc)
+  if(document.getElementById('nv-modelo')) document.getElementById('nv-modelo').value = vaga.modelo || '';
+  if(document.getElementById('nv-escala')) document.getElementById('nv-escala').value = vaga.escala || '';
+  if(document.getElementById('nv-nivel')) document.getElementById('nv-nivel').value = vaga.nivel || '';
+  if(document.getElementById('nv-contrato')) document.getElementById('nv-contrato').value = vaga.contrato || '';
   if(document.getElementById('nv-jornada')) document.getElementById('nv-jornada').value = vaga.jornada || '';
   if(document.getElementById('nv-escolaridade')) document.getElementById('nv-escolaridade').value = vaga.escolaridade || '';
+  if(document.getElementById('nv-experiencia')) document.getElementById('nv-experiencia').value = vaga.tempo_experiencia || 'Sem experiência prévia';
+  if(document.getElementById('nv-vagas')) document.getElementById('nv-vagas').value = vaga.numero_vagas || 1;
   if(document.getElementById('nv-cnh')) document.getElementById('nv-cnh').value = vaga.cnh || 'Não Exigida';
+
+  // Cidades Múltiplas (Lê as tags salvadas e joga na tela)
+  cidadesSelecionadas = [];
+  if (vaga.local && vaga.local.includes(';')) {
+    cidadesSelecionadas = vaga.local.split(';');
+  } else if (vaga.local) {
+    cidadesSelecionadas = [vaga.local];
+  }
+  if (typeof renderizarCidades === 'function') renderizarCidades();
+
+  // Operacionais e Competências
+  if(document.getElementById('nv-pcd')) document.getElementById('nv-pcd').checked = vaga.pcd || false;
   if(document.getElementById('nv-veiculo')) document.getElementById('nv-veiculo').checked = vaga.veiculo || false;
   if(document.getElementById('nv-viagens')) document.getElementById('nv-viagens').checked = vaga.viagens || false;
   if(document.getElementById('nv-mudanca')) document.getElementById('nv-mudanca').checked = vaga.mudanca || false;
@@ -505,16 +577,11 @@ window.editarVaga = function(vagaJsonStr) {
   if(document.getElementById('nv-hard-skills')) document.getElementById('nv-hard-skills').value = vaga.hard_skills || '';
   if(document.getElementById('nv-soft-skills')) document.getElementById('nv-soft-skills').value = vaga.soft_skills || '';
   
-  document.getElementById('nv-pcd').checked = vaga.pcd;
-  document.getElementById('nv-beneficios').checked = vaga.tem_beneficios || false;
-
-  // Carregando os blocos novos (Experiência, Vagas, VIP)
-  if(document.getElementById('nv-experiencia')) document.getElementById('nv-experiencia').value = vaga.tempo_experiencia || 'Sem experiência prévia';
-  if(document.getElementById('nv-vagas')) document.getElementById('nv-vagas').value = vaga.numero_vagas || 1;
+  // VIP
   if(document.getElementById('nv-notificacoes')) document.getElementById('nv-notificacoes').checked = vaga.receber_notificacoes !== false;
   if(document.getElementById('nv-urgente')) document.getElementById('nv-urgente').checked = vaga.vaga_urgente || false;
-
-  // Carregando os Benefícios (Marcando os checkboxes certos)
+  
+  // Benefícios (Marca o checkbox correspondente)
   document.querySelectorAll('.nv-bene-check').forEach(cb => {
     if (vaga.lista_beneficios && vaga.lista_beneficios.includes(cb.value)) {
       cb.checked = true;
@@ -523,36 +590,45 @@ window.editarVaga = function(vagaJsonStr) {
     }
   });
   
-  // Tratando Salário A Combinar na Edição
-  const cbCombinar = document.getElementById('nv-a-combinar');
-  if (vaga.salario_min === 'A Combinar') {
-    cbCombinar.checked = true;
-    document.getElementById('nv-sal-min').value = '';
-    document.getElementById('nv-sal-max').value = '';
-  } else {
-    cbCombinar.checked = false;
-    document.getElementById('nv-sal-min').value = vaga.salario_min;
-    document.getElementById('nv-sal-max').value = vaga.salario_max;
+  // Salário A Combinar
+  if (document.getElementById('nv-a-combinar')) {
+      const cbCombinar = document.getElementById('nv-a-combinar');
+      if (vaga.salario_min === 'A Combinar') {
+        cbCombinar.checked = true;
+        document.getElementById('nv-sal-min').value = '';
+        document.getElementById('nv-sal-max').value = '';
+      } else {
+        cbCombinar.checked = false;
+        document.getElementById('nv-sal-min').value = vaga.salario_min || '';
+        document.getElementById('nv-sal-max').value = vaga.salario_max || '';
+      }
+      alternarSalarioCombinar(cbCombinar);
   }
-  alternarSalarioCombinar(cbCombinar);
   
+  // Logo
   logoVagaTemporaria = vaga.empresa_logo || null;
   if (logoVagaTemporaria) {
-    document.getElementById('nv-logo-preview').src = logoVagaTemporaria;
-    document.getElementById('nv-logo-preview').classList.remove('hidden');
+    if(document.getElementById('nv-logo-preview')) {
+        document.getElementById('nv-logo-preview').src = logoVagaTemporaria;
+        document.getElementById('nv-logo-preview').classList.remove('hidden');
+    }
   } else {
-    document.getElementById('nv-logo-preview').classList.add('hidden');
+    if(document.getElementById('nv-logo-preview')) document.getElementById('nv-logo-preview').classList.add('hidden');
   }
   
+  // Testes Exigidos
   const testes = vaga.testes ? vaga.testes.split(' + ') : [];
   document.querySelectorAll('.nv-testes').forEach(cb => {
     cb.checked = testes.includes(cb.value);
   });
   
-  document.querySelector('#modal-nova-vaga h3').innerHTML = '<i class="ph ph-pencil-simple text-indigo-400"></i> Editar Oportunidade';
-  document.querySelector('#modal-nova-vaga button[type="submit"]').innerHTML = '<i class="ph ph-floppy-disk text-xl"></i> Salvar Alterações';
+  // Visual do Modal
+  if(document.querySelector('#modal-nova-vaga h3')) document.querySelector('#modal-nova-vaga h3').innerHTML = '<i class="ph ph-pencil-simple text-indigo-400"></i> Editar Oportunidade';
+  if(document.querySelector('#modal-nova-vaga button[type="submit"]')) document.querySelector('#modal-nova-vaga button[type="submit"]').innerHTML = '<i class="ph ph-floppy-disk text-xl"></i> Salvar Alterações';
   
   abrirModal('modal-nova-vaga');
+  
+  // Ativa os selects chiques
   transformarSelectsEmCustom();
 };
 
