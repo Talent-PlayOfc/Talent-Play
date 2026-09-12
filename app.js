@@ -647,8 +647,9 @@ window.criarNovaVaga = async function(e) {
     const el = document.getElementById(idElemento);
     if (!el) return;
 
-    // 1. Aplica o foco, a rolagem suave e a borda vermelha de destaque
-    el.classList.add('border-rose-500', 'ring-2', 'ring-rose-500/50');
+    // 1. Aplica o foco, a rolagem suave e substitui a borda verde pela vermelha
+    el.classList.remove('border-emerald-500', 'focus:border-emerald-500', 'border-slate-700');
+    el.classList.add('border-rose-500', 'ring-2', 'ring-rose-500/50', 'text-rose-200');
     el.focus();
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
@@ -662,9 +663,10 @@ window.criarNovaVaga = async function(e) {
     msgEl.innerHTML = `<i class="ph ph-warning-circle text-sm"></i> ${mensagem}`;
     wrapper.appendChild(msgEl);
 
-    // 3. Remove o erro automaticamente assim que o usuário começar a corrigir o campo
+    // 3. Restaura o visual original assim que o usuário começar a corrigir o campo
     const limparErro = () => {
-      el.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/50');
+      el.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/50', 'text-rose-200');
+      el.classList.add('border-slate-700');
       msgEl.remove();
       el.removeEventListener('input', limparErro);
       el.removeEventListener('change', limparErro);
