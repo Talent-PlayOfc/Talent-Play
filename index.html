@@ -694,7 +694,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Modalidade <span class="text-rose-500">*</span></label>
-            <select id="nv-modelo" class="select-customizado w-full" required>
+            <select id="nv-modelo" class="select-customizado w-full">
               <option value="" disabled selected>Selecione...</option>
               <option>Presencial</option>
               <option>Híbrido</option>
@@ -704,7 +704,7 @@
           
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Escala <span class="text-rose-500">*</span></label>
-            <select id="nv-escala" class="select-customizado w-full" required>
+            <select id="nv-escala" class="select-customizado w-full">
               <option value="" disabled selected>Selecione...</option>
               <option>5x2</option>
               <option>6x1</option>
@@ -736,7 +736,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Nível Exigido <span class="text-rose-500">*</span></label>
-            <select id="nv-nivel" class="select-customizado w-full" required>
+            <select id="nv-nivel" class="select-customizado w-full">
               <option value="" disabled selected>Selecione...</option>
               <option>Operacional</option>
               <option>Auxliar</option>
@@ -755,7 +755,7 @@
 
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Contrato <span class="text-rose-500">*</span></label>
-            <select id="nv-contrato" class="select-customizado w-full" required>
+            <select id="nv-contrato" class="select-customizado w-full">
               <option value="" disabled selected>Selecione...</option>
               <option>CLT</option>
               <option>PJ</option>
@@ -768,7 +768,7 @@
 
           <div>
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Jornada <span class="text-rose-500">*</span></label>
-            <select id="nv-jornada" class="select-customizado w-full" required>
+            <select id="nv-jornada" class="select-customizado w-full">
               <option value="" disabled selected>Selecione...</option>
               <option>Período Integral</option>
               <option>Meio Período (Manhã)</option>
@@ -787,7 +787,7 @@
                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-indigo-600"></div>
               </div>
             </div>
-            <select id="nv-escolaridade" class="select-customizado w-full" required>
+            <select id="nv-escolaridade" class="select-customizado w-full">
               <option value="" disabled selected>Selecione...</option>
               <option>Não Exigida (Foco em Skills)</option>
               <option>Ensino Fundamental</option>
@@ -818,11 +818,11 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="container-inputs-salario">
             <div class="relative">
               <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">R$</span>
-              <input type="number" id="nv-sal-min" placeholder="Mínimo" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-11 pr-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all" required>
+              <input type="number" id="nv-sal-min" placeholder="Mínimo" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-11 pr-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
             </div>
             <div class="relative">
               <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">R$</span>
-              <input type="number" id="nv-sal-max" placeholder="Máximo" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-11 pr-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all" required>
+              <input type="number" id="nv-sal-max" placeholder="Máximo" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-11 pr-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all" >
             </div>
           </div>
         </div>
@@ -838,7 +838,7 @@
           <div class="flex flex-wrap items-center gap-3 w-full">
             <!-- CNH Compacta -->
             <div class="w-full sm:w-48 relative">
-              <select id="nv-cnh" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg pl-3 pr-8 py-2 appearance-none outline-none text-xs focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer" required>
+              <select id="nv-cnh" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg pl-3 pr-8 py-2 appearance-none outline-none text-xs focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer">
                 <option value="Não Exigida" selected>CNH: Não Exige</option>
                 <option value="Categoria A">CNH A (Moto)</option>
                 <option value="Categoria B">CNH B (Carro)</option>
@@ -929,7 +929,7 @@
           <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 focus-within:border-emerald-500/50 transition-colors">
             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Tempo de Experiência Exigido</label>
             <div class="relative">
-              <select id="nv-experiencia" class="select-customizado w-full" required>
+              <select id="nv-experiencia" class="select-customizado w-full">
                 <option value="Sem experiência prévia" selected>Sem experiência prévia</option>
                 <option value="Até 1 ano">Até 1 ano</option>
                 <option value="De 1 a 3 anos">De 1 a 3 anos</option>
@@ -1109,7 +1109,7 @@
       <form onsubmit="adicionarHabilidade(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Nome da Habilidade</label>
-          <input type="text" id="ah-nome" placeholder="Ex: Gestão de Tempo" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-indigo-500 outline-none" required>
+          <input type="text" id="ah-nome" placeholder="Ex: Gestão de Tempo" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-3 focus:border-indigo-500 outline-none">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Nível de Proficiência</label>
