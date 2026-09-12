@@ -448,7 +448,6 @@ window.prepararNovaVaga = function() {
   if(document.getElementById('nv-area-input')) document.getElementById('nv-area-input').value = '';
   if(document.getElementById('nv-sal-max')) document.getElementById('nv-sal-max').value = '';
   if(document.getElementById('nv-pcd')) document.getElementById('nv-pcd').checked = false;
-  if(document.getElementById('nv-beneficios')) document.getElementById('nv-beneficios').checked = false;
   if(document.getElementById('nv-cnh')) document.getElementById('nv-cnh').value = 'Não Exigida';
   if(document.getElementById('nv-veiculo')) document.getElementById('nv-veiculo').checked = false;
   if(document.getElementById('nv-viagens')) document.getElementById('nv-viagens').checked = false;
@@ -532,6 +531,13 @@ window.prepararNovaVaga = function() {
   
   if(document.querySelector('#modal-nova-vaga h3')) document.querySelector('#modal-nova-vaga h3').innerHTML = '<i class="ph ph-plus-circle text-emerald-500"></i> Publicar Oportunidade';
   if(document.querySelector('#modal-nova-vaga button[type="submit"]')) document.querySelector('#modal-nova-vaga button[type="submit"]').innerHTML = '<i class="ph ph-paper-plane-tilt text-xl"></i> Publicar Oportunidade';
+
+  // Dispara um aviso para os selects de luxo atualizarem o visual
+  setTimeout(() => {
+    document.querySelectorAll('.select-customizado').forEach(select => {
+      select.dispatchEvent(new Event('change'));
+    });
+  }, 10);
   
   abrirModal('modal-nova-vaga');
   transformarSelectsEmCustom();
@@ -656,7 +662,6 @@ window.criarNovaVaga = async function(e) {
     const modelo = document.getElementById('nv-modelo').value;
     const escala = document.getElementById('nv-escala').value;
     const pcd = document.getElementById('nv-pcd').checked;
-    const tem_beneficios = document.getElementById('nv-beneficios').checked;
     const cnh = document.getElementById('nv-cnh')?.value || 'Não Exigida';
     const veiculo = document.getElementById('nv-veiculo')?.checked || false;
     const viagens = document.getElementById('nv-viagens')?.checked || false;
@@ -669,7 +674,9 @@ window.criarNovaVaga = async function(e) {
     const receber_notificacoes = document.getElementById('nv-notificacoes')?.checked || false;
     const vaga_urgente = document.getElementById('nv-urgente')?.checked || false;
     
+    
     const lista_beneficios = Array.from(document.querySelectorAll('.nv-bene-check:checked')).map(cb => cb.value).join(' • ');
+    const tem_beneficios = lista_beneficios.length > 0;
     
     const local = cidadesSelecionadas.join(';'); // Salva as cidades separadas por ponto e vírgula
     if (!local) { mostrarToast("Adicione pelo menos uma cidade!", "error"); return; }
@@ -814,9 +821,7 @@ window.adicionarVagaNaTela = function(vaga) {
   if (vaga.pcd) {
     tagsHtml += `<span class="text-[9px] font-black text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md border border-blue-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-wheelchair text-xs"></i> PCD</span>`;
   }
-  if (vaga.tem_beneficios) {
-    tagsHtml += `<span class="text-[9px] font-black text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-md border border-purple-500/20 tracking-widest uppercase flex items-center gap-1"><i class="ph ph-gift text-xs"></i> + BENEFÍCIOS</span>`;
-  }
+ 
 
   // 🔥 Tratamento para Múltiplas Localidades (NOVO)
   let localTexto = vaga.local || '';
@@ -1573,7 +1578,6 @@ window.inserirTemplateEditor = function(tipo) {
     'desafios': `\n\n🚀 Desafios da Posição:\n• O que você vai resolver nos primeiros 90 dias...\n• `,
     'requisitos': `\n\n🎯 Requisitos (O que você precisa saber):\n• \n• `,
     'experiencias': `\n\n💡 Experiências que Valorizamos (Não é regra, mas ajuda):\n• \n• `,
-    'beneficios': `\n\n🎁 Benefícios Oferecidos:\n• \n• `,
     'diversidade': `\n\n🌈 Diversidade & Inclusão:\nAcreditamos que times plurais também constroem os melhores produtos. Todas as pessoas são bem-vindas.\n`
   };
 
