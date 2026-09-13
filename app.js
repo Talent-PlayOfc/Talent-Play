@@ -2029,3 +2029,85 @@ window.gerarCandidatosDemonstracao = function() {
         `;
     }
 };
+
+// ==============================================================
+// CONSTRUTOR DINÂMICO DE IDIOMAS
+// ==============================================================
+let idiomasVagaTemporarios = [];
+
+window.adicionarIdiomaVaga = function() {
+    const selectNome = document.getElementById('builder-idioma-nome');
+    const selectNivel = document.getElementById('builder-idioma-nivel');
+    const checkObrig = document.getElementById('builder-idioma-obrig');
+
+    const nome = selectNome.value;
+    const nivel = selectNivel.value;
+    const obrigatorio = checkObrig.checked;
+
+    if (!nome || !nivel) {
+        mostrarToast('Selecione o Idioma e o Nível antes de adicionar.', 'error');
+        return;
+    }
+
+    // Verifica se já não adicionou esse idioma
+    const jaExiste = idiomasVagaTemporarios.find(i => i.nome === nome);
+    if (jaExiste) {
+        mostrarToast('Este idioma já foi adicionado.', 'error');
+        return;
+    }
+
+    idiomasVagaTemporarios.push({ nome, nivel, obrigatorio });
+    
+    // Reseta os campos para o recrutador adicionar outro
+    selectNome.value = '';
+    selectNivel.value = '';
+    checkObrig.checked = false;
+
+    renderizarIdiomasVaga();
+};
+
+window.removerIdiomaVaga = function(nomeRemover) {
+    idiomasVagaTemporarios = idiomasVagaTemporarios.filter(i => i.nome !== nomeRemover);
+    renderizarIdiomasVaga();
+};
+
+window.renderizarIdiomasVaga = function() {
+    const container = document.getElementById('container-idiomas-tags');
+    const inputHidden = document.getElementById('nv-idiomas');
+    
+    if (!container || !inputHidden) return;
+
+    container.innerHTML = '';
+    let stringFinalBanco = [];
+
+    idiomasVagaTemporarios.forEach(idioma => {
+        // Tag vermelha se for obrigatório, verde se for diferencial
+        const badgeStatus = idioma.obrigatorio 
+            ? `<span class="bg-rose-500/20 text-rose-400 text-[9px] px-1.5 py-0.5 rounded uppercase tracking-widest ml-1">Obrigatório</span>`
+            : `<span class="bg-emerald-500/20 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded uppercase tracking-widest ml-1">Diferencial</span>`;
+
+        container.innerHTML += `
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-[11px] font-bold rounded-xl shadow-sm transition-all hover:bg-indigo-500/20">
+                <i class="ph ph-translate text-sm"></i> ${idioma.nome} - ${idioma.nivel}
+                ${badgeStatus}
+                <button type="button" onclick="removerIdiomaVaga('${idioma.nome}')" class="hover:text-white transition-colors ml-1"><i class="ph ph-x text-sm"></i></button>
+            </span>
+        `;
+        
+        // Constrói a string do jeito que o banco e o Card de vaga leem perfeitamente
+        const statusTexto = idioma.obrigatorio ? 'Obrigatório' : 'Diferencial';
+        stringFinalBanco.push(`${idioma.nome} (${idioma.nivel} / ${statusTexto})`);
+    });
+
+    // Atualiza o input invisível que vai ser sugado pelo Supabase
+    inputHidden.value = stringFinalBanco.join(' • ');
+};
+
+// Limpa a lista quando o modal for aberto para criar uma NOVA vaga
+const btnNovaOportunidade = document.querySelector('button[onclick="prepararNovaVaga()"]');
+if (btnNovaOportunidade) {
+    btnNovaOportunidade.addEventListener('click', () => {
+        idiomasVagaTemporarios = [];
+        if(document.getElementById('container-idiomas-tags')) document.getElementById('container-idiomas-tags').innerHTML = '';
+    });
+}
