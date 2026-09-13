@@ -934,37 +934,81 @@
         </div>
 
         <!-- Bloco 7: Habilidades e Idiomas -->
-        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 space-y-4 mb-4">
-          <div class="flex items-center gap-2 border-b border-slate-800/80 pb-3 mb-2">
+        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 space-y-5 mb-4">
+          <div class="flex items-center gap-2 border-b border-slate-800/80 pb-3">
             <i class="ph ph-brain text-indigo-500 text-lg"></i>
             <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest m-0">Competências & Idiomas</h4>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            
-            <!-- Idiomas -->
-            <div>
-              <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Idiomas Exigidos</label>
-              <div class="relative">
+          <!-- CONSTRUTOR DE IDIOMAS (Revolucionário) -->
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Idiomas Exigidos</label>
+            <div class="flex flex-col md:flex-row gap-2 items-start md:items-center">
+              
+              <!-- Select Idioma -->
+              <div class="relative w-full md:w-1/3">
                 <i class="ph ph-translate absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                <input type="text" id="nv-idiomas" placeholder="Ex: Inglês Intermediário" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                <select id="builder-idioma-nome" class="w-full bg-slate-900 border border-slate-700 text-slate-300 rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointer">
+                  <option value="" disabled selected>Selecione o idioma...</option>
+                  <option value="Inglês">Inglês</option>
+                  <option value="Espanhol">Espanhol</option>
+                  <option value="Francês">Francês</option>
+                  <option value="Alemão">Alemão</option>
+                  <option value="Italiano">Italiano</option>
+                  <option value="Mandarim">Mandarim</option>
+                  <option value="Libras">Libras</option>
+                </select>
+                <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"></i>
               </div>
+
+              <!-- Select Nível -->
+              <div class="relative w-full md:w-1/3">
+                <i class="ph ph-chart-bar absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                <select id="builder-idioma-nivel" class="w-full bg-slate-900 border border-slate-700 text-slate-300 rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointer">
+                  <option value="" disabled selected>Qual o nível?</option>
+                  <option value="Básico">Básico</option>
+                  <option value="Intermediário">Intermediário</option>
+                  <option value="Avançado">Avançado</option>
+                  <option value="Fluente/Nativo">Fluente/Nativo</option>
+                </select>
+                <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"></i>
+              </div>
+
+              <!-- Checkbox Obrigatório -->
+              <label class="flex items-center justify-center gap-2 cursor-pointer group w-full md:w-auto bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 hover:border-indigo-500/50 transition-all shadow-sm">
+                <input type="checkbox" id="builder-idioma-obrig" class="w-4 h-4 rounded border-slate-600 text-indigo-500 bg-slate-950 focus:ring-0">
+                <span class="text-[11px] font-bold text-slate-300 group-hover:text-indigo-400 transition-colors uppercase tracking-wider">Obrigatório</span>
+              </label>
+
+              <!-- Botão Adicionar -->
+              <button type="button" onclick="adicionarIdiomaVaga()" class="w-full md:w-auto bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 p-2.5 rounded-xl transition-colors shrink-0 flex items-center justify-center gap-1 shadow-sm">
+                <i class="ph ph-plus-circle text-lg"></i> <span class="md:hidden font-bold text-sm">Adicionar</span>
+              </button>
             </div>
 
+            <!-- Aqui aparecem os idiomas selecionados -->
+            <div id="container-idiomas-tags" class="flex flex-wrap gap-2 mt-3 empty:hidden"></div>
+            
+            <!-- Campo Oculto (Ele guarda a lista final para o Banco de Dados) -->
+            <input type="hidden" id="nv-idiomas" value="">
+          </div>
+
+          <!-- HARD E SOFT SKILLS (Lado a Lado) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-800/80 pt-4">
+            
             <!-- Hard Skills com Tooltip -->
             <div>
               <div class="flex items-center gap-1.5 mb-2 relative group w-max">
                 <label class="block text-[10px] font-bold text-slate-400 uppercase m-0">Hard Skills</label>
                 <i class="ph ph-info text-emerald-400 cursor-help text-sm"></i>
-                <!-- Tooltip Educativo -->
                 <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-slate-800 text-white text-[10px] font-medium p-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl leading-relaxed border border-slate-600">
                   <strong class="text-emerald-400 block mb-1">Competências Técnicas:</strong> Ferramentas, softwares e conhecimentos teóricos (Ex: Excel, Python, CorelDraw).
                   <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-600"></div>
                 </div>
               </div>
-              <div class="relative">
-                 <i class="ph ph-wrench absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                 <input type="text" id="nv-hard-skills" placeholder="Ex: Pacote Office, Power BI" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
+              <div class="relative group">
+                 <i class="ph ph-wrench absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-400 transition-colors"></i>
+                 <input type="text" id="nv-hard-skills" placeholder="Ex: Pacote Office, Power BI" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-inner">
               </div>
             </div>
 
@@ -973,15 +1017,14 @@
               <div class="flex items-center gap-1.5 mb-2 relative group w-max">
                 <label class="block text-[10px] font-bold text-slate-400 uppercase m-0">Soft Skills</label>
                 <i class="ph ph-info text-purple-400 cursor-help text-sm"></i>
-                <!-- Tooltip Educativo -->
                 <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-slate-800 text-white text-[10px] font-medium p-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl leading-relaxed border border-slate-600">
-                  <strong class="text-purple-400 block mb-1">Habilidades Comportamentais:</strong> Relacionamento, inteligência emocional e atitudes (Ex: Liderança, Comunicação, Resiliência).
+                  <strong class="text-purple-400 block mb-1">Habilidades Comportamentais:</strong> Relacionamento, inteligência emocional e atitudes (Ex: Liderança, Comunicação).
                   <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-600"></div>
                 </div>
               </div>
-              <div class="relative">
-                 <i class="ph ph-users-three absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                 <input type="text" id="nv-soft-skills" placeholder="Ex: Comunicação, Liderança" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
+              <div class="relative group">
+                 <i class="ph ph-users-three absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-purple-400 transition-colors"></i>
+                 <input type="text" id="nv-soft-skills" placeholder="Ex: Comunicação, Liderança" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all shadow-inner">
               </div>
             </div>
 
