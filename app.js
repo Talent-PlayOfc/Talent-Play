@@ -650,9 +650,6 @@ window.criarNovaVaga = async function(e) {
   });
 
   const destacarErro = (idElemento, mensagem) => {
-    // 🔥 VOLTAMOS COM O INFORMATIVO (TOAST) COMO VOCÊ EXIGIU!
-    mostrarToast(mensagem, 'error');
-
     const elOriginal = document.getElementById(idElemento);
     if (!elOriginal) return;
 
@@ -683,13 +680,13 @@ window.criarNovaVaga = async function(e) {
     }
     if (isCustomSelect) wrapper = elOriginal.parentElement;
 
-    // Insere o texto em vermelho abaixo do campo
+    // 🔥 INFORMATIVO VERMELHO PISCANDO: Insere o texto abaixo do campo
     const msgEl = document.createElement('div');
     msgEl.className = 'custom-error-msg text-rose-400 text-[11px] font-bold mt-1.5 flex items-center gap-1 animate-pulse';
     msgEl.innerHTML = `<i class="ph ph-warning-circle text-sm"></i> ${mensagem}`;
     wrapper.appendChild(msgEl);
 
-    // 🔥 MÁGICA: Limpa o vermelho IMEDIATAMENTE assim que o campo for mexido
+    // 🔥 MÁGICA DE LIMPEZA: Remove o vermelho e o aviso INSTANTANEAMENTE
     const limparErro = () => {
       el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
       el.classList.add('border-slate-700');
@@ -697,12 +694,14 @@ window.criarNovaVaga = async function(e) {
       if (msgEl.parentNode) msgEl.remove();
     };
 
-    // Escuta tudo: digitação, troca de valores e cliques nos selects customizados
+    // Escuta digitação e cliques
     elOriginal.addEventListener('input', limparErro, { once: true });
     elOriginal.addEventListener('change', limparErro, { once: true });
+    
+    // Limpa imediatamente ao clicar para abrir um Select de Luxo (Modalidade/Escala)
     if (isCustomSelect) el.addEventListener('click', limparErro, { once: true });
 
-    // 🔥 RESOLVENDO O BUG DAS CIDADES: Se clicar em uma cidade na lista, apaga na hora!
+    // Limpa imediatamente ao selecionar uma Cidade na lista suspensa
     if (idElemento === 'nv-local-input') {
         const dropdownCidades = document.getElementById('dropdown-cidades');
         if (dropdownCidades) dropdownCidades.addEventListener('click', limparErro, { once: true });
