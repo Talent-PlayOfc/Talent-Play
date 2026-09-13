@@ -971,6 +971,7 @@ window.adicionarVagaNaTela = function(vaga) {
       
       // Peso Flexibilidade e Desenvolvimento
       'Day Off': { icone: 'ph-calendar-star', curto: 'Day Off', rank: 10 },
+      'Recesso Remunerado': { icone: 'ph-calendar-plus', curto: 'Recesso', rank: 10 },
       'Home Office': { icone: 'ph-house-line', curto: 'Home Office', rank: 11 },
       'Horário Flexível': { icone: 'ph-clock-user', curto: 'Flexível', rank: 12 },
       'Auxílio Educação': { icone: 'ph-graduation-cap', curto: 'Aux. Educação', rank: 13 },
@@ -988,6 +989,8 @@ window.adicionarVagaNaTela = function(vaga) {
       'Celular Corporativo': { icone: 'ph-device-mobile', curto: 'Celular Corp.', rank: 23 },
       'Vale Transporte': { icone: 'ph-bus', curto: 'VT', rank: 24 },
       'Clube de Vantagens': { icone: 'ph-tag', curto: 'Parcerias', rank: 25 }
+      'Cesta Natalina': { icone: 'ph-gift', curto: 'Cesta Natal', rank: 26 },
+      'Área de Lazer': { icone: 'ph-game-controller', curto: 'Lazer', rank: 27 }
     };
 
     // Mapeia e organiza os benefícios do RH pela ordem de importância do dicionário
