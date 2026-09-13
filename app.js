@@ -986,7 +986,7 @@ window.adicionarVagaNaTela = function(vaga) {
       'Veículo da Empresa': { icone: 'ph-car-profile', curto: 'Carro Empresa', rank: 22 },
       'Celular Corporativo': { icone: 'ph-device-mobile', curto: 'Celular Corp.', rank: 23 },
       'Vale Transporte': { icone: 'ph-bus', curto: 'VT', rank: 24 },
-      'Clube de Vantagens': { icone: 'ph-tag', curto: 'Parcerias', rank: 25 }
+      'Clube de Vantagens': { icone: 'ph-tag', curto: 'Parcerias', rank: 25 },
       'Cesta Natalina': { icone: 'ph-gift', curto: 'Cesta Natal', rank: 26 },
       'Área de Lazer': { icone: 'ph-game-controller', curto: 'Lazer', rank: 27 }
     };
