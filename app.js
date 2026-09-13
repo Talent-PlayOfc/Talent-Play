@@ -1936,10 +1936,10 @@ window.acionarBuscaGlobal = function() {
             if (areaConteudo) areaConteudo.scrollTo({ top: 0, behavior: 'smooth' });
             
             inputPrincipal.focus();
-            inputPrincipal.classList.add('ring-4', 'ring-indigo-500/50', 'scale-[1.02]');
+            inputPrincipal.classList.add('ring-4', 'ring-emerald-500/50', 'scale-[1.02]');
             
             setTimeout(() => {
-                inputPrincipal.classList.remove('ring-4', 'ring-indigo-500/50', 'scale-[1.02]');
+                inputPrincipal.classList.remove('ring-4', 'ring-emerald-500/50', 'scale-[1.02]');
             }, 400);
         }
     }, 150); 
