@@ -165,12 +165,11 @@
       <div class="flex items-center gap-3 sm:gap-5">
 
         <!-- Barra de Busca Global (Teletransporte) -->
-        <div class="hidden lg:flex items-center relative group cursor-pointer" onclick="acionarBuscaGlobal()">
-          <i class="ph ph-magnifying-glass absolute left-3 text-slate-500 text-lg group-hover:text-indigo-400 transition-colors"></i>
-          <div class="bg-slate-900 border border-slate-700 text-slate-400 text-sm rounded-full pl-10 pr-4 py-2 w-64 transition-all duration-300 group-hover:border-indigo-500/50 group-hover:bg-slate-800 group-hover:w-72 flex items-center justify-between shadow-inner">
-            <span class="truncate">Buscar missões ou guildas...</span>
-            <span class="text-[10px] font-black bg-slate-950 border border-slate-700 px-1.5 py-0.5 rounded text-slate-500 uppercase tracking-widest shadow-sm group-hover:text-indigo-400 group-hover:border-indigo-500/30 transition-colors">Ctrl K</span>
-          </div>
+        <div class="hidden lg:flex items-center relative cursor-pointer group" onclick="acionarBuscaGlobal()">
+          <i class="ph ph-magnifying-glass absolute left-3 text-slate-500 text-lg group-hover:text-indigo-400 transition-colors z-10 pointer-events-none"></i>
+          
+          <!-- O input falso: visual idêntico ao antigo, mas redireciona ao clicar -->
+          <input type="text" readonly placeholder="Pesquisar oportunidades, empresas ou skills..." class="bg-slate-900 border border-slate-700 text-white text-sm rounded-full pl-10 pr-4 py-2 outline-none w-64 transition-all cursor-pointer group-hover:border-indigo-500/50 group-hover:bg-slate-800 pointer-events-none">
         </div>
 
         <div id="auth-container" class="flex items-center gap-4 border-l border-slate-800 pl-5">
