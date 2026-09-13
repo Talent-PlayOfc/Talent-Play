@@ -36,3 +36,53 @@ input:-webkit-autofill:active {
     -webkit-text-fill-color: white !important; /* Força o texto branco */
     caret-color: white !important; /* Cor do cursor piscando */
 }
+
+/* ==============================================================
+   MODO CREME (A REVOLUÇÃO DO OFF-WHITE)
+   ============================================================== */
+body.modo-creme {
+    background-color: #F9F8F4 !important; /* Cor de Papel Marfim / Aveia */
+    color: #1e293b !important; /* Cinza chumbo profundo para leitura perfeita */
+}
+
+/* Inverte as caixas escuras para caixas brancas luxuosas */
+body.modo-creme .bg-slate-950, 
+body.modo-creme .bg-slate-900 {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Ajuste de Textos Brancos para Escuros */
+body.modo-creme .text-white {
+    color: #0f172a !important; 
+}
+
+/* Ajuste de Textos Cinzas (Labels e Parágrafos) */
+body.modo-creme .text-slate-400, 
+body.modo-creme .text-slate-300,
+body.modo-creme .text-slate-200 {
+    color: #475569 !important; 
+}
+
+/* Suaviza as bordas grossas do modo dark */
+body.modo-creme .border-slate-800, 
+body.modo-creme .border-slate-700 {
+    border-color: #cbd5e1 !important; 
+}
+
+/* Remove a transparência e ajusta o painel de vidro (Header) */
+body.modo-creme .glass-panel {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(10px);
+    border-bottom-color: #e2e8f0 !important;
+}
+
+/* Mantém os inputs com aparência premium */
+body.modo-creme input, 
+body.modo-creme select, 
+body.modo-creme textarea {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
