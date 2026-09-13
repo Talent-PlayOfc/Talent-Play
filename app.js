@@ -1923,28 +1923,109 @@ styleSheet.innerText = `@keyframes fadeIn { from { opacity: 0; transform: transl
 document.head.appendChild(styleSheet);
 
 // ==============================================================
-// TELETRANSPORTE DE BUSCA GLOBAL
+// TELETRANSPORTE INTELIGENTE DE BUSCA (A MÁGICA)
 // ==============================================================
 window.acionarBuscaGlobal = function() {
-    navegarPara('tela-vagas');
+    let inputPrincipal;
+    
+    // INTELIGÊNCIA: Se for Recrutador, vai pro Radar de Talentos. Se for Candidato, vai pra Vagas.
+    if (appState.perfilAtual && appState.perfilAtual.tipo_conta === 'empresa') {
+        navegarPara('tela-buscar-candidatos');
+        inputPrincipal = document.getElementById('busca-talentos-input');
+        // Renderiza os talentos falsos para impressionar se o grid estiver vazio
+        if (document.getElementById('grid-candidatos').children.length === 0) {
+            gerarCandidatosDemonstracao();
+        }
+    } else {
+        navegarPara('tela-vagas');
+        inputPrincipal = document.getElementById('busca-vagas-input');
+    }
     
     setTimeout(() => {
-        const inputPrincipal = document.getElementById('busca-vagas-input');
         const areaConteudo = document.getElementById('app-content-area');
-        
         if (inputPrincipal) {
             if (areaConteudo) areaConteudo.scrollTo({ top: 0, behavior: 'smooth' });
             
             inputPrincipal.focus();
-            inputPrincipal.classList.add('ring-4', 'ring-emerald-500/50', 'scale-[1.02]');
             
+            // Efeito visual dependendo de quem está logado (Esmeralda para RH, Índigo para Candidato)
+            const corAnel = (appState.perfilAtual && appState.perfilAtual.tipo_conta === 'empresa') ? 'ring-emerald-500/50' : 'ring-indigo-500/50';
+            
+            inputPrincipal.classList.add('ring-4', corAnel, 'scale-[1.02]');
             setTimeout(() => {
-                inputPrincipal.classList.remove('ring-4', 'ring-emerald-500/50', 'scale-[1.02]');
+                inputPrincipal.classList.remove('ring-4', corAnel, 'scale-[1.02]');
             }, 400);
         }
     }, 150); 
 };
-        e.preventDefault(); // Impede o navegador de abrir a busca padrão dele
-        acionarBuscaGlobal();
+
+// ==============================================================
+// MOTOR DE DEMONSTRAÇÃO: RADAR DE TALENTOS (MOCKUP PARA TV)
+// ==============================================================
+window.gerarCandidatosDemonstracao = function() {
+    const podio = document.getElementById('podio-talentos');
+    const grid = document.getElementById('grid-candidatos');
+    if (!podio || !grid) return;
+
+    // 1. Destaques (Top Performers com bordas douradas/neon)
+    const talentosVIP = [
+        { nome: 'Ricardo Lima', titulo: 'Especialista em Logística', lvl: 12, xp: 1240, avatar: 'https://api.iconify.design/ph:user-circle-duotone.svg?color=%2310b981', skills: ['Gestão de Frota', 'Excel Avançado', 'Power BI'], estilo: 'border-orange-500/50 shadow-[0_0_30px_rgba(249,115,22,0.15)] bg-gradient-to-br from-slate-900 to-orange-900/10' },
+        { nome: 'Amanda Castro', titulo: 'Customer Success', lvl: 9, xp: 980, avatar: 'https://api.iconify.design/ph:user-circle-duotone.svg?color=%238b5cf6', skills: ['Comunicação', 'Zendesk', 'Resolução de Conflitos'], estilo: 'border-indigo-500/50 shadow-[0_0_30px_rgba(99,102,241,0.15)] bg-gradient-to-br from-slate-900 to-indigo-900/10' },
+        { nome: 'João Silva', titulo: 'Auxiliar Administrativo', lvl: 7, xp: 750, avatar: 'https://api.iconify.design/ph:user-circle-duotone.svg?color=%23eab308', skills: ['Pacote Office', 'Organização', 'Trello'], estilo: 'border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.15)] bg-gradient-to-br from-slate-900 to-emerald-900/10' }
+    ];
+
+    podio.innerHTML = '';
+    talentosVIP.forEach(t => {
+        podio.innerHTML += `
+            <div class="rounded-3xl p-6 relative group overflow-hidden border transition-transform hover:-translate-y-1 ${t.estilo}">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-white/5 blur-[30px] rounded-full"></div>
+                <div class="flex justify-between items-start mb-4">
+                    <img src="${t.avatar}" class="w-14 h-14 bg-slate-950 rounded-2xl p-1 border border-slate-700">
+                    <div class="text-right">
+                        <span class="bg-slate-950 border border-slate-700 text-white font-black text-[10px] px-2 py-1 rounded-lg uppercase tracking-widest block mb-1">Lvl ${t.lvl}</span>
+                        <span class="text-yellow-500 text-xs font-black"><i class="ph ph-star-fill"></i> ${t.xp} XP</span>
+                    </div>
+                </div>
+                <h3 class="text-xl font-black text-white leading-tight">${t.nome}</h3>
+                <p class="text-xs text-slate-400 font-bold mb-4">${t.titulo}</p>
+                <div class="flex flex-wrap gap-1.5 mb-5">
+                    ${t.skills.map(s => `<span class="bg-slate-950/50 border border-slate-700 text-slate-300 text-[9px] px-2 py-1 rounded uppercase tracking-wider font-bold">${s}</span>`).join('')}
+                </div>
+                <button onclick="mostrarToast('Convite enviado para ${t.nome}!', 'success')" class="w-full bg-slate-950 hover:bg-slate-800 border border-slate-700 text-white py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2">
+                    <i class="ph ph-handshake text-lg"></i> Convidar para Vaga
+                </button>
+            </div>
+        `;
+    });
+
+    // 2. Grid de Candidatos Normais
+    const nomesFalsos = ['Lucas Oliveira', 'Beatriz Souza', 'Carlos Mendes', 'Fernanda Lima', 'Thiago Rocha', 'Camila Dias', 'Rafael Costa', 'Juliana Alves'];
+    const profissoesFalsas = ['Jovem Aprendiz', 'Estagiário de RH', 'Analista Financeiro Jr', 'Suporte Técnico', 'Vendedor', 'Recepcionista', 'Assistente de Logística', 'Desenvolvedor Jr'];
+
+    grid.innerHTML = '';
+    for (let i = 0; i < 8; i++) {
+        let xp = Math.floor(Math.random() * 500) + 100;
+        let lvl = Math.floor(xp / 100) + 1;
+        
+        grid.innerHTML += `
+            <div class="bg-slate-900 border border-slate-800 hover:border-emerald-500/30 rounded-2xl p-5 transition-all shadow-md group">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-slate-950 border border-slate-700 rounded-xl flex items-center justify-center text-xl text-slate-500 group-hover:text-emerald-400 transition-colors">
+                        <i class="ph ph-user"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-black text-base leading-tight">${nomesFalsos[i]}</h4>
+                        <p class="text-slate-400 text-[11px] font-bold">${profissoesFalsas[i]}</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between bg-slate-950 rounded-lg p-2.5 border border-slate-800 mb-4">
+                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Nível ${lvl}</span>
+                    <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">${xp} XP</span>
+                </div>
+                <button onclick="mostrarToast('Perfil detalhado em desenvolvimento.', 'info')" class="w-full bg-slate-800 hover:bg-emerald-600 text-white py-2.5 rounded-lg font-bold text-[11px] uppercase tracking-wider transition-colors">
+                    Ver Perfil Completo
+                </button>
+            </div>
+        `;
     }
-});
+};
