@@ -1921,25 +1921,3 @@ window.filtrarVagas = function() {
 const styleSheet = document.createElement("style");
 styleSheet.innerText = `@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`;
 document.head.appendChild(styleSheet);
-
-// ==============================================================
-// ALTERNADOR DE TEMA (DARK / CREME REVOLUCIONÁRIO)
-// ==============================================================
-window.alternarTema = function() {
-    const body = document.body;
-    const iconeTema = document.getElementById('icone-tema');
-    
-    body.classList.toggle('modo-creme');
-    
-    if (body.classList.contains('modo-creme')) {
-        iconeTema.classList.remove('ph-moon');
-        iconeTema.classList.add('ph-sun');
-        iconeTema.classList.replace('text-xl', 'text-2xl');
-        mostrarToast('Modo Creme ativado! O luxo da clareza.', 'success');
-    } else {
-        iconeTema.classList.remove('ph-sun');
-        iconeTema.classList.add('ph-moon');
-        iconeTema.classList.replace('text-2xl', 'text-xl');
-        mostrarToast('Modo Dark ativado! Foco total.', 'info');
-    }
-};
