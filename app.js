@@ -1867,7 +1867,7 @@ window.formatarTituloVaga = function(input) {
         }
 
         // 2. REGRA DE SIGLAS: Se for tudo maiúsculo e tiver até 5 letras (ex: CIEE, SENAI, RH, TI), mantém!
-        if (palavra === palavra.toUpperCase() && palavra.length <= 5 && palavra.length > 1) {
+        if (palavra === palavra.toUpperCase() && palavra.length <= 6 && palavra.length > 1) {
             // Ignora números soltos ou pontuações, foca em letras
             if (/[A-Z]/.test(palavra)) return palavra;
         }
