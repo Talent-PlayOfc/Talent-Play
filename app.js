@@ -642,7 +642,7 @@ window.editarVaga = function(vagaJsonStr) {
 window.criarNovaVaga = async function(e) {
   e.preventDefault();
 
-  // RESET GLOBAL: Limpa restos de erro ao clicar em salvar novamente
+  // RESET GLOBAL IMPLACÁVEL: Limpa todos os erros antigos da tela
   document.querySelectorAll('.custom-error-msg').forEach(msg => msg.remove());
   document.querySelectorAll('.\\!border-rose-500').forEach(el => {
     el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
@@ -660,33 +660,27 @@ window.criarNovaVaga = async function(e) {
 
     const apenasLinha = el.classList.contains('border-b') && !el.classList.contains('border');
 
-    // Pinta o campo de vermelho absoluto
+    // Aplica o vermelho implacável
     el.classList.remove('border-slate-700', 'focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
     el.classList.add('!border-rose-500');
     if (!apenasLinha) el.classList.add('!ring-2', '!ring-rose-500/50'); 
     
-    // Foca e rola a tela
+    // Foca e rola a tela para o erro
     if (!isCustomSelect) elOriginal.focus();
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // Ajuste perfeito da caixa de erro para não empurrar os ícones
-    let wrapper = el.parentElement;
-    const iconeAbsoluto = wrapper.querySelector('.absolute.-translate-y-1/2');
-    if (iconeAbsoluto && !isCustomSelect) {
-        const paiRelativo = el.closest('.relative');
-        if (paiRelativo && paiRelativo.parentElement && !paiRelativo.parentElement.classList.contains('grid')) {
-            wrapper = paiRelativo.parentElement;
-        }
-    }
-    if (isCustomSelect) wrapper = elOriginal.parentElement;
+    // 🔥 A SOLUÇÃO INFALÍVEL: Descobre a "casca" principal do campo
+    let containerDoErro = isCustomSelect ? elOriginal.parentElement : (el.closest('.relative') || el);
 
-    // 🔥 INFORMATIVO VERMELHO PISCANDO: Insere o texto abaixo do campo
+    // Cria a mensagem de erro que pisca
     const msgEl = document.createElement('div');
     msgEl.className = 'custom-error-msg text-rose-400 text-[11px] font-bold mt-1.5 flex items-center gap-1 animate-pulse';
     msgEl.innerHTML = `<i class="ph ph-warning-circle text-sm"></i> ${mensagem}`;
-    wrapper.appendChild(msgEl);
+    
+    // 🔥 COLA O ERRO EXATAMENTE ABAIXO DO CAMPO (Sem quebrar o layout e 100% visível)
+    containerDoErro.after(msgEl);
 
-    // 🔥 MÁGICA DE LIMPEZA: Remove o vermelho e o aviso INSTANTANEAMENTE
+    // 🔥 MÁGICA DE LIMPEZA: Some instantaneamente ao corrigir
     const limparErro = () => {
       el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
       el.classList.add('border-slate-700');
@@ -694,14 +688,12 @@ window.criarNovaVaga = async function(e) {
       if (msgEl.parentNode) msgEl.remove();
     };
 
-    // Escuta digitação e cliques
+    // Escuta os cliques e digitações para limpar o erro na mesma hora
     elOriginal.addEventListener('input', limparErro, { once: true });
     elOriginal.addEventListener('change', limparErro, { once: true });
-    
-    // Limpa imediatamente ao clicar para abrir um Select de Luxo (Modalidade/Escala)
     if (isCustomSelect) el.addEventListener('click', limparErro, { once: true });
 
-    // Limpa imediatamente ao selecionar uma Cidade na lista suspensa
+    // Apaga o erro se clicar em alguma Cidade
     if (idElemento === 'nv-local-input') {
         const dropdownCidades = document.getElementById('dropdown-cidades');
         if (dropdownCidades) dropdownCidades.addEventListener('click', limparErro, { once: true });
