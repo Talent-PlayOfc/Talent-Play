@@ -170,10 +170,10 @@
 
         <!-- Barra de Busca Global (Teletransporte) -->
         <div class="hidden lg:flex items-center relative cursor-pointer group" onclick="acionarBuscaGlobal()">
-          <!-- Ícone (Fica esmeralda no hover) -->
-          <i class="ph ph-magnifying-glass absolute left-3 text-slate-400 text-lg group-hover:text-emerald-400 transition-colors duration-300 z-10 pointer-events-none"></i>
-          <!-- Input (Borda mais clara, texto menor, estica e fica esmeralda no hover) -->
-          <input type="text" readonly placeholder="Buscar oportunidades..." class="bg-slate-900 border border-slate-500 text-white text-sm rounded-full pl-10 pr-4 py-2 outline-none w-60 transition-all duration-300 cursor-pointer group-hover:border-emerald-500 group-hover:bg-emerald-500/5 group-hover:w-72 pointer-events-none">
+          <!-- Ícone já com um verde suave, acende no hover -->
+          <i class="ph ph-magnifying-glass absolute left-4 text-emerald-500/70 text-lg group-hover:text-emerald-400 transition-colors duration-300 z-10 pointer-events-none"></i>
+          <!-- Borda esmeralda por padrão, levemente mais alta (py-2.5) e expansão controlada (w-[270px]) -->
+          <input type="text" readonly placeholder="Buscar oportunidades..." class="bg-slate-900/80 border border-emerald-500/40 text-emerald-50 font-medium text-sm rounded-full pl-11 pr-4 py-2.5 outline-none w-64 transition-all duration-300 cursor-pointer group-hover:border-emerald-400 group-hover:bg-emerald-500/10 group-hover:w-[270px] group-hover:shadow-[0_0_15px_rgba(16,185,129,0.15)] pointer-events-none">
         </div>
 
         <div id="auth-container" class="flex items-center gap-4 border-l border-slate-800 pl-5">
