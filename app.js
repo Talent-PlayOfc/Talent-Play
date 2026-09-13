@@ -1923,39 +1923,27 @@ styleSheet.innerText = `@keyframes fadeIn { from { opacity: 0; transform: transl
 document.head.appendChild(styleSheet);
 
 // ==============================================================
-// TELETRANSPORTE DE BUSCA GLOBAL & ATALHO (CTRL + K)
+// TELETRANSPORTE DE BUSCA GLOBAL
 // ==============================================================
 window.acionarBuscaGlobal = function() {
-    // 1. Leva o usuário para a tela de Vagas instantaneamente
     navegarPara('tela-vagas');
     
-    // 2. Pequeno delay para a animação da tela acontecer
     setTimeout(() => {
         const inputPrincipal = document.getElementById('busca-vagas-input');
         const areaConteudo = document.getElementById('app-content-area');
         
         if (inputPrincipal) {
-            // Garante que a tela esteja no topo
             if (areaConteudo) areaConteudo.scrollTo({ top: 0, behavior: 'smooth' });
             
-            // Foca no input para o usuário já sair digitando
             inputPrincipal.focus();
-            
-            // 🔥 O DETALHE PREMIUM: Um pulso visual no input principal
             inputPrincipal.classList.add('ring-4', 'ring-indigo-500/50', 'scale-[1.02]');
             
-            // Remove o pulso logo em seguida para um efeito de "flash" suave
             setTimeout(() => {
                 inputPrincipal.classList.remove('ring-4', 'ring-indigo-500/50', 'scale-[1.02]');
             }, 400);
         }
-    }, 150); // Tempo exato da transição de telas
+    }, 150); 
 };
-
-// Capturador de Teclado (O "Easter Egg" para usuários avançados)
-document.addEventListener('keydown', function(e) {
-    // Se apertar Ctrl+K (Windows/Linux) ou Cmd+K (Mac)
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault(); // Impede o navegador de abrir a busca padrão dele
         acionarBuscaGlobal();
     }
