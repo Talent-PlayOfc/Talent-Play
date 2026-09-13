@@ -654,14 +654,18 @@ window.criarNovaVaga = async function(e) {
     if (!elOriginal) return;
 
     const isCustomSelect = elOriginal.classList.contains('select-customizado');
-    const el = isCustomSelect ? elOriginal.nextElementSibling : elOriginal;
+    const isDescricao = idElemento === 'nv-descricao'; // 🔥 DETECTA SE É O EDITOR DE DESCRIÇÃO
+
+    // Decide quem fica vermelho: O select falso, a casca da descrição, ou o campo normal
+    const el = isCustomSelect ? elOriginal.nextElementSibling : (isDescricao ? elOriginal.parentElement : elOriginal);
     if (!el) return;
 
     const apenasLinha = el.classList.contains('border-b') && !el.classList.contains('border');
 
     // 1. Aplica borda vermelha (EXCETO nas Cidades, para não bugar o dropdown)
     if (idElemento !== 'nv-local-input') {
-        el.classList.remove('border-slate-700', 'focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
+        // 🔥 Remove o verde da descrição também (border-emerald-500/30)
+        el.classList.remove('border-slate-700', 'focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1', 'border-emerald-500/30');
         el.classList.add('!border-rose-500');
         if (!apenasLinha) el.classList.add('!ring-2', '!ring-rose-500/50'); 
     }
@@ -669,47 +673,60 @@ window.criarNovaVaga = async function(e) {
     if (!isCustomSelect) elOriginal.focus();
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // 2. ACHA O LUGAR EXATO PARA DESCER A MENSAGEM (Sem quebrar layout)
-    let containerDoErro;
-    if (idElemento === 'nv-sal-min') {
-        // Joga a mensagem pra fora da Grade (grid) de colunas do salário
-        containerDoErro = document.getElementById('container-inputs-salario').parentElement;
-    } else if (isCustomSelect) {
-        containerDoErro = elOriginal.parentElement;
-    } else {
-        // Padrão perfeito para Empresa, Descrição, etc.
-        containerDoErro = el.parentElement; 
-    }
-
+    // 2. ACHA O LUGAR EXATO PARA DESCER A MENSAGEM
     const msgEl = document.createElement('div');
     msgEl.className = 'custom-error-msg text-rose-400 text-[11px] font-bold mt-2 flex items-center gap-1 animate-pulse';
     msgEl.innerHTML = `<i class="ph ph-warning-circle text-sm"></i> ${mensagem}`;
-    
-    // Cola o texto embaixo da caixa
-    containerDoErro.appendChild(msgEl);
+
+    if (idElemento === 'nv-sal-min') {
+        document.getElementById('container-inputs-salario').after(msgEl);
+    } else if (isCustomSelect || isDescricao) {
+        // 🔥 Joga o erro pra baixo da casca gigante da descrição
+        el.after(msgEl);
+    } else if (idElemento === 'nv-area-input' || idElemento === 'nv-local-input') {
+        let caixaRelativa = el.closest('.relative');
+        if (caixaRelativa && caixaRelativa.parentElement && caixaRelativa.parentElement.classList.contains('relative')) {
+            caixaRelativa = caixaRelativa.parentElement;
+        }
+        caixaRelativa.after(msgEl);
+    } else {
+        el.after(msgEl);
+    }
 
     // 3. LIMPEZA AUTOMÁTICA
     const limparErro = () => {
       if (idElemento !== 'nv-local-input') {
           el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
-          el.classList.add('border-slate-700');
-          if (!apenasLinha && !isCustomSelect) el.classList.add('focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
+          if (isDescricao) {
+              // Devolve o verde estiloso da casca da descrição
+              el.classList.add('border-emerald-500/30');
+          } else {
+              el.classList.add('border-slate-700');
+              if (!apenasLinha && !isCustomSelect) el.classList.add('focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
+          }
       }
       if (msgEl.parentNode) msgEl.remove();
     };
 
+    // Escuta eventos padrão
     elOriginal.addEventListener('input', limparErro, { once: true });
     elOriginal.addEventListener('change', limparErro, { once: true });
     if (isCustomSelect) el.addEventListener('click', limparErro, { once: true });
 
-    // Limpa erro das Cidades
+    // Limpeza da Área/Setor
+    if (idElemento === 'nv-area-input') {
+        const dropdownAreas = document.getElementById('dropdown-areas');
+        if (dropdownAreas) dropdownAreas.addEventListener('click', limparErro, { once: true });
+    }
+
+    // Limpeza das Cidades
     if (idElemento === 'nv-local-input') {
         const dropdownCidades = document.getElementById('dropdown-cidades');
         if (dropdownCidades) dropdownCidades.addEventListener('click', limparErro, { once: true });
         elOriginal.addEventListener('click', limparErro, { once: true });
     }
 
-    // Limpa erro do Salário ao clicar em "A Combinar"
+    // Limpeza do Salário
     if (idElemento === 'nv-sal-min') {
         const cbACombinar = document.getElementById('nv-a-combinar');
         if (cbACombinar) cbACombinar.addEventListener('change', limparErro, { once: true });
