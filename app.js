@@ -642,7 +642,7 @@ window.editarVaga = function(vagaJsonStr) {
 window.criarNovaVaga = async function(e) {
   e.preventDefault();
 
-  // RESET GLOBAL IMPLACÁVEL: Limpa todos os erros antigos da tela
+  // 🔥 RESET GLOBAL IMPLACÁVEL
   document.querySelectorAll('.custom-error-msg').forEach(msg => msg.remove());
   document.querySelectorAll('.\\!border-rose-500').forEach(el => {
     el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
@@ -653,54 +653,70 @@ window.criarNovaVaga = async function(e) {
     const elOriginal = document.getElementById(idElemento);
     if (!elOriginal) return;
 
-    // Detecta se é um Select de Luxo (Modalidade, Escala, etc)
     const isCustomSelect = elOriginal.classList.contains('select-customizado');
     const el = isCustomSelect ? elOriginal.nextElementSibling : elOriginal;
     if (!el) return;
 
     const apenasLinha = el.classList.contains('border-b') && !el.classList.contains('border');
 
-    // Aplica o vermelho implacável
-    el.classList.remove('border-slate-700', 'focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
-    el.classList.add('!border-rose-500');
-    if (!apenasLinha) el.classList.add('!ring-2', '!ring-rose-500/50'); 
+    // 1. Aplica borda vermelha (EXCETO nas Cidades, para não bugar o dropdown)
+    if (idElemento !== 'nv-local-input') {
+        el.classList.remove('border-slate-700', 'focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
+        el.classList.add('!border-rose-500');
+        if (!apenasLinha) el.classList.add('!ring-2', '!ring-rose-500/50'); 
+    }
     
-    // Foca e rola a tela para o erro
     if (!isCustomSelect) elOriginal.focus();
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // 🔥 A SOLUÇÃO INFALÍVEL: Descobre a "casca" principal do campo
-    let containerDoErro = isCustomSelect ? elOriginal.parentElement : (el.closest('.relative') || el);
+    // 2. ACHA O LUGAR EXATO PARA DESCER A MENSAGEM (Sem quebrar layout)
+    let containerDoErro;
+    if (idElemento === 'nv-sal-min') {
+        // Joga a mensagem pra fora da Grade (grid) de colunas do salário
+        containerDoErro = document.getElementById('container-inputs-salario').parentElement;
+    } else if (isCustomSelect) {
+        containerDoErro = elOriginal.parentElement;
+    } else {
+        // Padrão perfeito para Empresa, Descrição, etc.
+        containerDoErro = el.parentElement; 
+    }
 
-    // Cria a mensagem de erro que pisca
     const msgEl = document.createElement('div');
-    msgEl.className = 'custom-error-msg text-rose-400 text-[11px] font-bold mt-1.5 flex items-center gap-1 animate-pulse';
+    msgEl.className = 'custom-error-msg text-rose-400 text-[11px] font-bold mt-2 flex items-center gap-1 animate-pulse';
     msgEl.innerHTML = `<i class="ph ph-warning-circle text-sm"></i> ${mensagem}`;
     
-    // 🔥 COLA O ERRO EXATAMENTE ABAIXO DO CAMPO (Sem quebrar o layout e 100% visível)
-    containerDoErro.after(msgEl);
+    // Cola o texto embaixo da caixa
+    containerDoErro.appendChild(msgEl);
 
-    // 🔥 MÁGICA DE LIMPEZA: Some instantaneamente ao corrigir
+    // 3. LIMPEZA AUTOMÁTICA
     const limparErro = () => {
-      el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
-      el.classList.add('border-slate-700');
-      if (!apenasLinha && !isCustomSelect) el.classList.add('focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
+      if (idElemento !== 'nv-local-input') {
+          el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
+          el.classList.add('border-slate-700');
+          if (!apenasLinha && !isCustomSelect) el.classList.add('focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
+      }
       if (msgEl.parentNode) msgEl.remove();
     };
 
-    // Escuta os cliques e digitações para limpar o erro na mesma hora
     elOriginal.addEventListener('input', limparErro, { once: true });
     elOriginal.addEventListener('change', limparErro, { once: true });
     if (isCustomSelect) el.addEventListener('click', limparErro, { once: true });
 
-    // Apaga o erro se clicar em alguma Cidade
+    // Limpa erro das Cidades
     if (idElemento === 'nv-local-input') {
         const dropdownCidades = document.getElementById('dropdown-cidades');
         if (dropdownCidades) dropdownCidades.addEventListener('click', limparErro, { once: true });
+        elOriginal.addEventListener('click', limparErro, { once: true });
+    }
+
+    // Limpa erro do Salário ao clicar em "A Combinar"
+    if (idElemento === 'nv-sal-min') {
+        const cbACombinar = document.getElementById('nv-a-combinar');
+        if (cbACombinar) cbACombinar.addEventListener('change', limparErro, { once: true });
     }
   };
 
-  // Captura dos valores do formulário
+  // CAPTURA DOS DADOS
   const empresa = document.getElementById('nv-empresa').value.trim();
   const titulo = document.getElementById('nv-titulo').value.trim();
   const area = document.getElementById('nv-area-input').value.trim();
@@ -710,21 +726,26 @@ window.criarNovaVaga = async function(e) {
   const nivel = document.getElementById('nv-nivel').value;
   const contrato = document.getElementById('nv-contrato').value;
   const jornada = document.getElementById('nv-jornada').value;
+  const escolaridade = document.getElementById('nv-escolaridade').value;
+  const cnh = document.getElementById('nv-cnh').value;
+  const experiencia = document.getElementById('nv-experiencia').value;
 
-  // REGRAS DE VALIDAÇÃO...
-  // 🔥 DEFINA AQUI QUEM É OBRIGATÓRIO OU NÃO (Basta adicionar ou remover as linhas abaixo)
+  // 🔥 MODO QA: ABSOLUTAMENTE TODOS OS CAMPOS SÃO OBRIGATÓRIOS AGORA
   if (!empresa) { destacarErro('nv-empresa', 'Por favor, informe o nome da empresa.'); return; }
   if (!titulo) { destacarErro('nv-titulo', 'Por favor, informe o título da vaga.'); return; }
   if (!area) { destacarErro('nv-area-input', 'Por favor, selecione ou digite a área da vaga.'); return; }
   if (!descricao) { destacarErro('nv-descricao', 'A descrição da oportunidade não pode estar vazia.'); return; }
   if (!modelo) { destacarErro('nv-modelo', 'Selecione a modalidade da vaga.'); return; }
   if (!escala) { destacarErro('nv-escala', 'Selecione a escala de trabalho.'); return; }
-  if (cidadesSelecionadas.length === 0) { destacarErro('nv-local-input', 'Adicione pelo menos uma cidade.'); return; }
+  if (cidadesSelecionadas.length === 0) { destacarErro('nv-local-input', 'Adicione pelo menos uma cidade à oportunidade.'); return; }
   if (!nivel) { destacarErro('nv-nivel', 'Selecione o nível exigido.'); return; }
   if (!contrato) { destacarErro('nv-contrato', 'Selecione o tipo de contrato.'); return; }
   if (!jornada) { destacarErro('nv-jornada', 'Selecione a jornada de trabalho.'); return; }
+  if (!escolaridade) { destacarErro('nv-escolaridade', 'Selecione a escolaridade mínima.'); return; }
+  if (!cnh || cnh === '') { destacarErro('nv-cnh', 'Selecione a CNH exigida (ou deixe como Não Exigida).'); return; }
+  if (!experiencia) { destacarErro('nv-experiencia', 'Selecione o tempo de experiência exigido.'); return; }
 
-  // Validação Dinâmica do Salário
+  // VALIDAÇÃO SALARIAL INTELIGENTE
   const aCombinarChecked = document.getElementById('nv-a-combinar').checked;
   const salMin = document.getElementById('nv-sal-min').value;
   const salMax = document.getElementById('nv-sal-max').value;
