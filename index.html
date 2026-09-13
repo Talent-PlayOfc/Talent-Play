@@ -1021,17 +1021,28 @@
               </div>
 
               <!-- Popover de Ideias: Hard Skills -->
-              <div id="popover-ideias-hard" class="absolute top-[calc(100%+8px)] right-0 w-full lg:w-72 bg-slate-800 border border-emerald-500/30 rounded-xl shadow-2xl z-50 hidden p-3 origin-top-right transition-all">
+              <div id="popover-ideias-hard" class="absolute top-[calc(100%+8px)] right-0 w-full lg:w-80 bg-slate-800 border border-emerald-500/30 rounded-xl shadow-2xl z-50 hidden p-3 origin-top-right transition-all">
                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1"><i class="ph ph-cursor-click"></i> Adicionar Rápido</p>
-                 <div class="flex flex-wrap gap-1.5">
+                 <!-- Lista com rolagem (Scroll) caso fique muito grande -->
+                 <div class="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto menu-scroll pr-1">
                     <button type="button" onclick="inserirSkillRapida('hard', 'Pacote Office')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Pacote Office</button>
-                    <button type="button" onclick="inserirSkillRapida('hard', 'Excel Avançado')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Excel Avançado</button>
+                    <button type="button" onclick="inserirSkillRapida('hard', 'Word')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Word</button>
+                    <button type="button" onclick="inserirSkillRapida('hard', 'Excel')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Excel</button>
                     <button type="button" onclick="inserirSkillRapida('hard', 'Power BI')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Power BI</button>
+                    <button type="button" onclick="inserirSkillRapida('hard', 'Power Point')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Power Point</button>
                     <button type="button" onclick="inserirSkillRapida('hard', 'Metodologia Ágil (Scrum)')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Metodologia Ágil</button>
                     <button type="button" onclick="inserirSkillRapida('hard', 'CRM')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">CRM</button>
                     <button type="button" onclick="inserirSkillRapida('hard', 'Zendesk')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Zendesk</button>
                     <button type="button" onclick="inserirSkillRapida('hard', 'Canva')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Canva</button>
                     <button type="button" onclick="inserirSkillRapida('hard', 'ERP SAP')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">ERP SAP</button>
+                    <button type="button" onclick="inserirSkillRapida('hard', 'Salesforce')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Salesforce</button>
+                    <button type="button" onclick="inserirSkillRapida('hard', 'Figma')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Figma</button>
+                    <button type="button" onclick="inserirSkillRapida('hard', 'Trello / Asana')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Trello / Asana</button>
+                    <button type="button" onclick="inserirSkillRapida('hard', 'Google Analytics')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Google Analytics</button>
+                    <button type="button" onclick="inserirSkillRapida('hard', 'Meta Ads')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Meta Ads</button>
+                    <button type="button" onclick="inserirSkillRapida('hard', 'Gestão de Frota')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Gestão de Frota</button>
+                    <button type="button" onclick="inserirSkillRapida('hard', 'Python')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">Python</button>
+                    <button type="button" onclick="inserirSkillRapida('hard', 'SQL')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-emerald-500 hover:text-emerald-400 transition-colors">SQL</button>
                  </div>
               </div>
             </div>
@@ -1061,9 +1072,10 @@
               </div>
 
               <!-- Popover de Ideias: Soft Skills -->
-              <div id="popover-ideias-soft" class="absolute top-[calc(100%+8px)] right-0 w-full lg:w-72 bg-slate-800 border border-purple-500/30 rounded-xl shadow-2xl z-50 hidden p-3 origin-top-right transition-all">
+              <div id="popover-ideias-soft" class="absolute top-[calc(100%+8px)] right-0 w-full lg:w-80 bg-slate-800 border border-purple-500/30 rounded-xl shadow-2xl z-50 hidden p-3 origin-top-right transition-all">
                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1"><i class="ph ph-cursor-click"></i> Adicionar Rápido</p>
-                 <div class="flex flex-wrap gap-1.5">
+                 
+                 <div class="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto menu-scroll pr-1">
                     <button type="button" onclick="inserirSkillRapida('soft', 'Comunicação Assertiva')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Comunicação</button>
                     <button type="button" onclick="inserirSkillRapida('soft', 'Liderança')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Liderança</button>
                     <button type="button" onclick="inserirSkillRapida('soft', 'Resiliência')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Resiliência</button>
@@ -1071,6 +1083,14 @@
                     <button type="button" onclick="inserirSkillRapida('soft', 'Gestão de Tempo')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Gestão de Tempo</button>
                     <button type="button" onclick="inserirSkillRapida('soft', 'Trabalho em Equipe')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Trabalho em Equipe</button>
                     <button type="button" onclick="inserirSkillRapida('soft', 'Proatividade')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Proatividade</button>
+                    <button type="button" onclick="inserirSkillRapida('soft', 'Adaptabilidade')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Adaptabilidade</button>
+                    <button type="button" onclick="inserirSkillRapida('soft', 'Resolução de Problemas')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Resolução de Problemas</button>
+                    <button type="button" onclick="inserirSkillRapida('soft', 'Pensamento Crítico')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Pensamento Crítico</button>
+                    <button type="button" onclick="inserirSkillRapida('soft', 'Empatia')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Empatia</button>
+                    <button type="button" onclick="inserirSkillRapida('soft', 'Negociação')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Negociação</button>
+                    <button type="button" onclick="inserirSkillRapida('soft', 'Foco em Resultados')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Foco em Resultados</button>
+                    <button type="button" onclick="inserirSkillRapida('soft', 'Criatividade')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Criatividade</button>
+                    <button type="button" onclick="inserirSkillRapida('soft', 'Flexibilidade')" class="text-[10px] font-bold text-slate-300 bg-slate-900 border border-slate-700 px-2 py-1 rounded hover:border-purple-500 hover:text-purple-400 transition-colors">Flexibilidade</button>
                  </div>
               </div>
             </div>
