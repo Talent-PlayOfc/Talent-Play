@@ -26,3 +26,13 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; 
 .toast.info { background: rgba(79, 70, 229, 0.9); border: 1px solid #6366f1; }
 @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 @keyframes fadeOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+
+/* Remove o fundo branco do preenchimento automático (Autofill) dos navegadores */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #020617 inset !important; /* Força o fundo dark (slate-950) */
+    -webkit-text-fill-color: white !important; /* Força o texto branco */
+    caret-color: white !important; /* Cor do cursor piscando */
+}
