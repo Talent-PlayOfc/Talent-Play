@@ -642,58 +642,69 @@ window.editarVaga = function(vagaJsonStr) {
 window.criarNovaVaga = async function(e) {
   e.preventDefault();
 
-  // Função auxiliar para destacar o erro visualmente e rolar a tela até ele
- const destacarErro = (idElemento, mensagem) => {
-    const el = document.getElementById(idElemento);
+  // 🔥 RESET DE ERROS: Limpa todos os alertas visuais antes de validar de novo
+  document.querySelectorAll('.custom-error-msg').forEach(msg => msg.remove());
+  document.querySelectorAll('.\\!border-rose-500').forEach(el => {
+    el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
+    el.classList.add('border-slate-700');
+  });
+
+  const destacarErro = (idElemento, mensagem) => {
+    const elOriginal = document.getElementById(idElemento);
+    if (!elOriginal) return;
+
+    // 🔥 CORREÇÃO MODALIDADE/ESCALA: Detecta se é um Select de Luxo
+    const isCustomSelect = elOriginal.classList.contains('select-customizado');
+    // Se for, a borda vermelha vai para a caixa gerada pelo JS (o próximo irmão)
+    const el = isCustomSelect ? elOriginal.nextElementSibling : elOriginal;
     if (!el) return;
 
-    // 1. Aplica as cores de erro esmagando os estilos anteriores
     const apenasLinha = el.classList.contains('border-b') && !el.classList.contains('border');
+
+    // Remove bordas verdes e aplica o Vermelho Absoluto
     el.classList.remove('border-slate-700', 'focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
     el.classList.add('!border-rose-500');
     if (!apenasLinha) el.classList.add('!ring-2', '!ring-rose-500/50'); 
     
-    el.focus();
+    // Foca e rola a tela (Focamos no original para acessibilidade)
+    if (!isCustomSelect) elOriginal.focus();
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // 🔥 CORREÇÃO DA SETINHA DESCENDO
+    // Ajuste da caixa de erro para não empurrar a setinha dos inputs
     let wrapper = el.parentElement;
-    
-    // Verifica se o campo possui um ícone "flutuante" centralizado matematicamente
-    const iconeAbsoluto = el.parentElement.querySelector('.absolute.-translate-y-1/2');
-    if (iconeAbsoluto) {
+    const iconeAbsoluto = wrapper.querySelector('.absolute.-translate-y-1/2');
+    if (iconeAbsoluto && !isCustomSelect) {
         const paiRelativo = el.closest('.relative');
-        // Se existir, jogamos o erro para a "raiz" do campo, FORA da caixa que alinha o ícone
-        // Só não fazemos isso se o campo estiver numa grade (grid) para não quebrar colunas
         if (paiRelativo && paiRelativo.parentElement && !paiRelativo.parentElement.classList.contains('grid')) {
             wrapper = paiRelativo.parentElement;
         }
     }
-
-    // 2. Remove erros antigos e insere o novo no lugar exato
-    let erroAntigo = wrapper.querySelector('.custom-error-msg');
-    if (erroAntigo) erroAntigo.remove();
+    if (isCustomSelect) {
+        wrapper = elOriginal.parentElement; // Joga a mensagem pra baixo do select customizado
+    }
 
     const msgEl = document.createElement('div');
     msgEl.className = 'custom-error-msg text-rose-400 text-[11px] font-bold mt-1.5 flex items-center gap-1 animate-pulse';
     msgEl.innerHTML = `<i class="ph ph-warning-circle text-sm"></i> ${mensagem}`;
     wrapper.appendChild(msgEl);
 
-    // 3. Restaura tudo ao normal quando o usuário começar a corrigir
+    // Limpa o erro caso o usuário digite/clique diretamente no campo
     const limparErro = () => {
       el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
-      el.classList.add('border-slate-700', 'focus:border-emerald-500');
-      if (!apenasLinha) el.classList.add('focus:ring-emerald-500', 'focus:ring-1');
+      el.classList.add('border-slate-700');
+      if (!apenasLinha && !isCustomSelect) el.classList.add('focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
+      if (msgEl.parentNode) msgEl.remove();
       
-      msgEl.remove();
-      el.removeEventListener('input', limparErro);
-      el.removeEventListener('change', limparErro);
+      elOriginal.removeEventListener('input', limparErro);
+      elOriginal.removeEventListener('change', limparErro);
+      el.removeEventListener('mousedown', limparErro);
     };
 
-    el.addEventListener('input', limparErro);
-    el.addEventListener('change', limparErro);
+    elOriginal.addEventListener('input', limparErro);
+    elOriginal.addEventListener('change', limparErro);
+    el.addEventListener('mousedown', limparErro); // Captura cliques nos selects customizados
   };
-  
+
   // Captura dos valores do formulário
   const empresa = document.getElementById('nv-empresa').value.trim();
   const titulo = document.getElementById('nv-titulo').value.trim();
@@ -705,6 +716,7 @@ window.criarNovaVaga = async function(e) {
   const contrato = document.getElementById('nv-contrato').value;
   const jornada = document.getElementById('nv-jornada').value;
 
+  // REGRAS DE VALIDAÇÃO...
   // 🔥 DEFINA AQUI QUEM É OBRIGATÓRIO OU NÃO (Basta adicionar ou remover as linhas abaixo)
   if (!empresa) { destacarErro('nv-empresa', 'Por favor, informe o nome da empresa.'); return; }
   if (!titulo) { destacarErro('nv-titulo', 'Por favor, informe o título da vaga.'); return; }
