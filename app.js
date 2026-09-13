@@ -660,7 +660,7 @@ window.criarNovaVaga = async function(e) {
 
     const apenasLinha = el.classList.contains('border-b') && !el.classList.contains('border');
 
-    // 1. Aplica borda vermelha em TODOS os campos (incluindo Cidades)
+    // 1. Aplica borda vermelha em TODOS os campos
     el.classList.remove('border-slate-700', 'focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1', 'border-emerald-500/30');
     el.classList.add('!border-rose-500');
     if (!apenasLinha) el.classList.add('!ring-2', '!ring-rose-500/50'); 
@@ -668,23 +668,21 @@ window.criarNovaVaga = async function(e) {
     if (!isCustomSelect) elOriginal.focus();
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // 2. ACHA A CÉLULA EXATA PARA COLOCAR A MENSAGEM (Sem quebrar as colunas do Grid!)
-    let containerDoErro;
-    if (idElemento === 'nv-sal-min') {
-        containerDoErro = document.getElementById('container-inputs-salario').parentElement;
-    } else if (idElemento === 'nv-area-input' || idElemento === 'nv-local-input') {
-        // Pega a DIV "pai" da coluna para prender o erro dentro dela
-        containerDoErro = el.closest('.relative').parentElement; 
-    } else {
-        containerDoErro = el.parentElement;
-    }
-
+    // 2. ACHA O LUGAR EXATO PARA DESCER A MENSAGEM
     const msgEl = document.createElement('div');
     msgEl.className = 'custom-error-msg text-rose-400 text-[11px] font-bold mt-2 flex items-center gap-1 animate-pulse';
     msgEl.innerHTML = `<i class="ph ph-warning-circle text-sm"></i> ${mensagem}`;
 
-    // Cola o erro no fundo da célula do grid, preservando o alinhamento
-    containerDoErro.appendChild(msgEl);
+    if (idElemento === 'nv-sal-min') {
+        document.getElementById('container-inputs-salario').parentElement.appendChild(msgEl);
+    } else if (idElemento === 'nv-area-input' || idElemento === 'nv-local-input') {
+        el.closest('.relative').parentElement.appendChild(msgEl);
+    } else if (isDescricao) {
+        // 🔥 A MÁGICA AQUI: Cola o aviso cirurgicamente debaixo da casca da descrição!
+        el.after(msgEl);
+    } else {
+        el.parentElement.appendChild(msgEl);
+    }
 
     // 3. LIMPEZA AUTOMÁTICA
     const limparErro = () => {
