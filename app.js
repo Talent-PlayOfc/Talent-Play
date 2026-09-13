@@ -2111,3 +2111,71 @@ if (btnNovaOportunidade) {
         if(document.getElementById('container-idiomas-tags')) document.getElementById('container-idiomas-tags').innerHTML = '';
     });
 }
+
+// ==============================================================
+// MOTOR DE SUGESTÕES DE SKILLS (IDEIAS FLUTUANTES)
+// ==============================================================
+window.toggleIdeias = function(tipo) {
+    const popoverHard = document.getElementById('popover-ideias-hard');
+    const popoverSoft = document.getElementById('popover-ideias-soft');
+    
+    // Se clicar em um, fecha o outro automaticamente
+    if (tipo === 'hard') {
+        popoverSoft.classList.add('hidden');
+        popoverHard.classList.toggle('hidden');
+    } else {
+        popoverHard.classList.add('hidden');
+        popoverSoft.classList.toggle('hidden');
+    }
+    
+    // Evita que o evento de clique vaze e feche o menu na mesma hora
+    if(event) event.stopPropagation();
+};
+
+window.inserirSkillRapida = function(tipo, skill) {
+    const inputId = tipo === 'hard' ? 'nv-hard-skills' : 'nv-soft-skills';
+    const input = document.getElementById(inputId);
+    const popover = document.getElementById(`popover-ideias-${tipo}`);
+    
+    let valorAtual = input.value.trim();
+    
+    // Se o campo já tiver algo, insere uma vírgula e um espaço antes da nova skill
+    if (valorAtual && !valorAtual.endsWith(',')) {
+        valorAtual += ', ';
+    } else if (valorAtual.endsWith(',')) {
+        valorAtual += ' ';
+    }
+    
+    input.value = valorAtual + skill;
+    
+    // Roda a mágica do Title Case para garantir o padrão
+    formatarTituloVaga(input);
+    
+    // Pulso visual (Verde para Hard, Roxo para Soft) para mostrar a ação ao usuário
+    const corPulso = tipo === 'hard' ? 'ring-emerald-500' : 'ring-purple-500';
+    input.classList.add('ring-2', corPulso);
+    setTimeout(() => input.classList.remove('ring-2', corPulso), 300);
+    
+    // Fecha a caixinha e foca no input
+    popover.classList.add('hidden');
+    input.focus();
+};
+
+// Escuta cliques perdidos na tela para fechar os modais flutuantes
+document.addEventListener('click', function(e) {
+    const hardPop = document.getElementById('popover-ideias-hard');
+    const softPop = document.getElementById('popover-ideias-soft');
+    
+    if (hardPop && !hardPop.classList.contains('hidden')) {
+        // Se clicou fora do popover e fora do botão de abrir, fecha
+        if (!e.target.closest('#popover-ideias-hard') && !e.target.closest('button[onclick="toggleIdeias(\'hard\')"]')) {
+            hardPop.classList.add('hidden');
+        }
+    }
+    
+    if (softPop && !softPop.classList.contains('hidden')) {
+        if (!e.target.closest('#popover-ideias-soft') && !e.target.closest('button[onclick="toggleIdeias(\'soft\')"]')) {
+            softPop.classList.add('hidden');
+        }
+    }
+});
