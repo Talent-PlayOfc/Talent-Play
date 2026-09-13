@@ -647,25 +647,30 @@ window.criarNovaVaga = async function(e) {
     const el = document.getElementById(idElemento);
     if (!el) return;
 
-    // 1. Descobre se o campo tem apenas a linha de baixo (border-b)
+    // 1. Aplica as cores de erro esmagando os estilos anteriores
     const apenasLinha = el.classList.contains('border-b') && !el.classList.contains('border');
-
-    // 2. Remove as bordas e os anéis (rings) verdes originais para não dar conflito
     el.classList.remove('border-slate-700', 'focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
-
-    // 3. Aplica o vermelho absoluto (O "!" força a cor acima de tudo)
     el.classList.add('!border-rose-500');
-    if (!apenasLinha) {
-      // Se FOR uma caixa completa, adicionamos o brilho vermelho em volta
-      el.classList.add('!ring-2', '!ring-rose-500/50'); 
-    }
+    if (!apenasLinha) el.classList.add('!ring-2', '!ring-rose-500/50'); 
     
-    // Foca no erro e rola a tela
     el.focus();
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // 4. Cria a mensagem de erro
+    // 🔥 CORREÇÃO DA SETINHA DESCENDO
     let wrapper = el.parentElement;
+    
+    // Verifica se o campo possui um ícone "flutuante" centralizado matematicamente
+    const iconeAbsoluto = el.parentElement.querySelector('.absolute.-translate-y-1/2');
+    if (iconeAbsoluto) {
+        const paiRelativo = el.closest('.relative');
+        // Se existir, jogamos o erro para a "raiz" do campo, FORA da caixa que alinha o ícone
+        // Só não fazemos isso se o campo estiver numa grade (grid) para não quebrar colunas
+        if (paiRelativo && paiRelativo.parentElement && !paiRelativo.parentElement.classList.contains('grid')) {
+            wrapper = paiRelativo.parentElement;
+        }
+    }
+
+    // 2. Remove erros antigos e insere o novo no lugar exato
     let erroAntigo = wrapper.querySelector('.custom-error-msg');
     if (erroAntigo) erroAntigo.remove();
 
@@ -674,16 +679,11 @@ window.criarNovaVaga = async function(e) {
     msgEl.innerHTML = `<i class="ph ph-warning-circle text-sm"></i> ${mensagem}`;
     wrapper.appendChild(msgEl);
 
-    // 5. Restaura tudo ao normal quando o usuário começar a corrigir
+    // 3. Restaura tudo ao normal quando o usuário começar a corrigir
     const limparErro = () => {
-      // Tira o vermelho
       el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
-      
-      // Devolve o estado verde original
       el.classList.add('border-slate-700', 'focus:border-emerald-500');
-      if (!apenasLinha) {
-         el.classList.add('focus:ring-emerald-500', 'focus:ring-1');
-      }
+      if (!apenasLinha) el.classList.add('focus:ring-emerald-500', 'focus:ring-1');
       
       msgEl.remove();
       el.removeEventListener('input', limparErro);
@@ -693,7 +693,7 @@ window.criarNovaVaga = async function(e) {
     el.addEventListener('input', limparErro);
     el.addEventListener('change', limparErro);
   };
-
+  
   // Captura dos valores do formulário
   const empresa = document.getElementById('nv-empresa').value.trim();
   const titulo = document.getElementById('nv-titulo').value.trim();
