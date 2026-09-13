@@ -1878,3 +1878,68 @@ window.formatarTituloVaga = function(input) {
 
     input.value = formatado;
 };
+
+// ==============================================================
+// MOTOR DE BUSCA DINÂMICO
+// ==============================================================
+window.filtrarVagas = function() {
+    const input = document.getElementById('busca-vagas-input');
+    if (!input) return;
+
+    const termoBusca = input.value.toLowerCase().trim();
+    const containerVagas = document.getElementById('container-todas-vagas');
+    const msgVazio = document.getElementById('vagas-vazio');
+    
+    if (!containerVagas) return;
+    
+    const cards = containerVagas.children;
+    let vagasVisiveis = 0;
+
+    if (cards.length === 0) return;
+
+    Array.from(cards).forEach(card => {
+        // Pega todo o texto escrito no card para a busca ser universal
+        const textoCard = card.innerText.toLowerCase();
+        
+        if (textoCard.includes(termoBusca)) {
+            card.style.display = ''; 
+            card.style.animation = 'fadeIn 0.3s ease-in-out';
+            vagasVisiveis++;
+        } else {
+            card.style.display = 'none'; 
+        }
+    });
+
+    if (vagasVisiveis === 0) {
+        if(msgVazio) msgVazio.classList.remove('hidden');
+    } else {
+        if(msgVazio) msgVazio.classList.add('hidden');
+    }
+};
+
+// Adiciona a animação de busca suave dinamicamente
+const styleSheet = document.createElement("style");
+styleSheet.innerText = `@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`;
+document.head.appendChild(styleSheet);
+
+// ==============================================================
+// ALTERNADOR DE TEMA (DARK / CREME REVOLUCIONÁRIO)
+// ==============================================================
+window.alternarTema = function() {
+    const body = document.body;
+    const iconeTema = document.getElementById('icone-tema');
+    
+    body.classList.toggle('modo-creme');
+    
+    if (body.classList.contains('modo-creme')) {
+        iconeTema.classList.remove('ph-moon');
+        iconeTema.classList.add('ph-sun');
+        iconeTema.classList.replace('text-xl', 'text-2xl');
+        mostrarToast('Modo Creme ativado! O luxo da clareza.', 'success');
+    } else {
+        iconeTema.classList.remove('ph-sun');
+        iconeTema.classList.add('ph-moon');
+        iconeTema.classList.replace('text-2xl', 'text-xl');
+        mostrarToast('Modo Dark ativado! Foco total.', 'info');
+    }
+};
