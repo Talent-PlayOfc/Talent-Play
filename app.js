@@ -642,7 +642,7 @@ window.editarVaga = function(vagaJsonStr) {
 window.criarNovaVaga = async function(e) {
   e.preventDefault();
 
-  // 🔥 RESET DE ERROS: Limpa todos os alertas visuais antes de validar de novo
+  // RESET GLOBAL: Limpa restos de erro ao clicar em salvar novamente
   document.querySelectorAll('.custom-error-msg').forEach(msg => msg.remove());
   document.querySelectorAll('.\\!border-rose-500').forEach(el => {
     el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
@@ -650,27 +650,29 @@ window.criarNovaVaga = async function(e) {
   });
 
   const destacarErro = (idElemento, mensagem) => {
+    // 🔥 VOLTAMOS COM O INFORMATIVO (TOAST) COMO VOCÊ EXIGIU!
+    mostrarToast(mensagem, 'error');
+
     const elOriginal = document.getElementById(idElemento);
     if (!elOriginal) return;
 
-    // 🔥 CORREÇÃO MODALIDADE/ESCALA: Detecta se é um Select de Luxo
+    // Detecta se é um Select de Luxo (Modalidade, Escala, etc)
     const isCustomSelect = elOriginal.classList.contains('select-customizado');
-    // Se for, a borda vermelha vai para a caixa gerada pelo JS (o próximo irmão)
     const el = isCustomSelect ? elOriginal.nextElementSibling : elOriginal;
     if (!el) return;
 
     const apenasLinha = el.classList.contains('border-b') && !el.classList.contains('border');
 
-    // Remove bordas verdes e aplica o Vermelho Absoluto
+    // Pinta o campo de vermelho absoluto
     el.classList.remove('border-slate-700', 'focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
     el.classList.add('!border-rose-500');
     if (!apenasLinha) el.classList.add('!ring-2', '!ring-rose-500/50'); 
     
-    // Foca e rola a tela (Focamos no original para acessibilidade)
+    // Foca e rola a tela
     if (!isCustomSelect) elOriginal.focus();
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // Ajuste da caixa de erro para não empurrar a setinha dos inputs
+    // Ajuste perfeito da caixa de erro para não empurrar os ícones
     let wrapper = el.parentElement;
     const iconeAbsoluto = wrapper.querySelector('.absolute.-translate-y-1/2');
     if (iconeAbsoluto && !isCustomSelect) {
@@ -679,30 +681,32 @@ window.criarNovaVaga = async function(e) {
             wrapper = paiRelativo.parentElement;
         }
     }
-    if (isCustomSelect) {
-        wrapper = elOriginal.parentElement; // Joga a mensagem pra baixo do select customizado
-    }
+    if (isCustomSelect) wrapper = elOriginal.parentElement;
 
+    // Insere o texto em vermelho abaixo do campo
     const msgEl = document.createElement('div');
     msgEl.className = 'custom-error-msg text-rose-400 text-[11px] font-bold mt-1.5 flex items-center gap-1 animate-pulse';
     msgEl.innerHTML = `<i class="ph ph-warning-circle text-sm"></i> ${mensagem}`;
     wrapper.appendChild(msgEl);
 
-    // Limpa o erro caso o usuário digite/clique diretamente no campo
+    // 🔥 MÁGICA: Limpa o vermelho IMEDIATAMENTE assim que o campo for mexido
     const limparErro = () => {
       el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
       el.classList.add('border-slate-700');
       if (!apenasLinha && !isCustomSelect) el.classList.add('focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
       if (msgEl.parentNode) msgEl.remove();
-      
-      elOriginal.removeEventListener('input', limparErro);
-      elOriginal.removeEventListener('change', limparErro);
-      el.removeEventListener('mousedown', limparErro);
     };
 
-    elOriginal.addEventListener('input', limparErro);
-    elOriginal.addEventListener('change', limparErro);
-    el.addEventListener('mousedown', limparErro); // Captura cliques nos selects customizados
+    // Escuta tudo: digitação, troca de valores e cliques nos selects customizados
+    elOriginal.addEventListener('input', limparErro, { once: true });
+    elOriginal.addEventListener('change', limparErro, { once: true });
+    if (isCustomSelect) el.addEventListener('click', limparErro, { once: true });
+
+    // 🔥 RESOLVENDO O BUG DAS CIDADES: Se clicar em uma cidade na lista, apaga na hora!
+    if (idElemento === 'nv-local-input') {
+        const dropdownCidades = document.getElementById('dropdown-cidades');
+        if (dropdownCidades) dropdownCidades.addEventListener('click', limparErro, { once: true });
+    }
   };
 
   // Captura dos valores do formulário
@@ -715,6 +719,10 @@ window.criarNovaVaga = async function(e) {
   const nivel = document.getElementById('nv-nivel').value;
   const contrato = document.getElementById('nv-contrato').value;
   const jornada = document.getElementById('nv-jornada').value;
+
+  // 🔥 VALIDAÇÕES
+  if (!empresa) { destacarErro('nv-empresa', 'Por favor, informe o nome da empresa.'); return; }
+  // ... (o resto das validações e do código continua exatamente igual)
 
   // REGRAS DE VALIDAÇÃO...
   // 🔥 DEFINA AQUI QUEM É OBRIGATÓRIO OU NÃO (Basta adicionar ou remover as linhas abaixo)
