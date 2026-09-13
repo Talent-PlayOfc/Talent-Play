@@ -1852,22 +1852,29 @@ window.alternarSalarioCombinar = function(checkbox) {
 // ==============================================================
 // FORMATADOR INTELIGENTE DE TÍTULO (Title Case)
 // ==============================================================
-window.formatarTituloVaga = function(campo) {
-  // Transforma tudo em minúsculo primeiro e separa as palavras
-  let palavras = campo.value.toLowerCase().split(' ');
-  
-  // Lista de palavras que devem continuar minúsculas (se não forem a primeira palavra)
-  const conectivos = ['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'na', 'no', 'com', 'para', 'ou'];
-  
-  for (let i = 0; i < palavras.length; i++) {
-      if (palavras[i].length > 0) {
-          if (conectivos.includes(palavras[i]) && i !== 0) {
-              continue; // Pula a formatação e deixa minúsculo
-          }
-          // Pega a primeira letra, converte para maiúscula e junta com o resto da palavra
-          palavras[i] = palavras[i][0].toUpperCase() + palavras[i].substr(1);
-      }
-  }
-  
-  campo.value = palavras.join(' ');
+window.formatarTituloVaga = function(input) {
+    const ignorar = ['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'na', 'no', 'nas', 'nos', 'com', 'por', 'para'];
+    let palavras = input.value.split(' ');
+
+    let formatado = palavras.map((palavra, index) => {
+        if (!palavra) return '';
+
+        let p_min = palavra.toLowerCase();
+
+        // 1. Preposições ficam minúsculas (se não for a 1ª palavra)
+        if (index !== 0 && ignorar.includes(p_min)) {
+            return p_min;
+        }
+
+        // 2. REGRA DE SIGLAS: Se for tudo maiúsculo e tiver até 5 letras (ex: CIEE, SENAI, RH, TI), mantém!
+        if (palavra === palavra.toUpperCase() && palavra.length <= 5 && palavra.length > 1) {
+            // Ignora números soltos ou pontuações, foca em letras
+            if (/[A-Z]/.test(palavra)) return palavra;
+        }
+
+        // 3. Força o padrão elegante (Primeira maiúscula, resto minúscula) para palavras grandes
+        return p_min.charAt(0).toUpperCase() + p_min.slice(1);
+    }).join(' ');
+
+    input.value = formatado;
 };
