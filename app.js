@@ -720,10 +720,6 @@ window.criarNovaVaga = async function(e) {
   const contrato = document.getElementById('nv-contrato').value;
   const jornada = document.getElementById('nv-jornada').value;
 
-  // 🔥 VALIDAÇÕES
-  if (!empresa) { destacarErro('nv-empresa', 'Por favor, informe o nome da empresa.'); return; }
-  // ... (o resto das validações e do código continua exatamente igual)
-
   // REGRAS DE VALIDAÇÃO...
   // 🔥 DEFINA AQUI QUEM É OBRIGATÓRIO OU NÃO (Basta adicionar ou remover as linhas abaixo)
   if (!empresa) { destacarErro('nv-empresa', 'Por favor, informe o nome da empresa.'); return; }
