@@ -643,17 +643,28 @@ window.criarNovaVaga = async function(e) {
   e.preventDefault();
 
   // Função auxiliar para destacar o erro visualmente e rolar a tela até ele
-  const destacarErro = (idElemento, mensagem) => {
+ const destacarErro = (idElemento, mensagem) => {
     const el = document.getElementById(idElemento);
     if (!el) return;
 
-    // 1. Aplica o foco, a rolagem suave e substitui a borda verde pela vermelha
-    el.classList.remove('border-emerald-500', 'focus:border-emerald-500', 'border-slate-700');
-    el.classList.add('border-rose-500', 'ring-2', 'ring-rose-500/50', 'text-rose-200');
+    // 1. Descobre se o campo tem apenas a linha de baixo (border-b)
+    const apenasLinha = el.classList.contains('border-b') && !el.classList.contains('border');
+
+    // 2. Remove as bordas e os anéis (rings) verdes originais para não dar conflito
+    el.classList.remove('border-slate-700', 'focus:border-emerald-500', 'focus:ring-emerald-500', 'focus:ring-1');
+
+    // 3. Aplica o vermelho absoluto (O "!" força a cor acima de tudo)
+    el.classList.add('!border-rose-500');
+    if (!apenasLinha) {
+      // Se FOR uma caixa completa, adicionamos o brilho vermelho em volta
+      el.classList.add('!ring-2', '!ring-rose-500/50'); 
+    }
+    
+    // Foca no erro e rola a tela
     el.focus();
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // 2. Cria ou atualiza a mensagem de erro personalizada logo abaixo do campo
+    // 4. Cria a mensagem de erro
     let wrapper = el.parentElement;
     let erroAntigo = wrapper.querySelector('.custom-error-msg');
     if (erroAntigo) erroAntigo.remove();
@@ -663,10 +674,17 @@ window.criarNovaVaga = async function(e) {
     msgEl.innerHTML = `<i class="ph ph-warning-circle text-sm"></i> ${mensagem}`;
     wrapper.appendChild(msgEl);
 
-    // 3. Restaura o visual original assim que o usuário começar a corrigir o campo
+    // 5. Restaura tudo ao normal quando o usuário começar a corrigir
     const limparErro = () => {
-      el.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/50', 'text-rose-200');
-      el.classList.add('border-slate-700');
+      // Tira o vermelho
+      el.classList.remove('!border-rose-500', '!ring-2', '!ring-rose-500/50');
+      
+      // Devolve o estado verde original
+      el.classList.add('border-slate-700', 'focus:border-emerald-500');
+      if (!apenasLinha) {
+         el.classList.add('focus:ring-emerald-500', 'focus:ring-1');
+      }
+      
       msgEl.remove();
       el.removeEventListener('input', limparErro);
       el.removeEventListener('change', limparErro);
